@@ -8,26 +8,34 @@
 
 (enable-console-print!)
 
+(defonce valid-words #{"hello" "world"})
+(defonce valid-keys (set (clojure.string/split "abcdefghijklmnopqrstuvwyz " "")))
+
 (defonce app-state
-  (atom {:line ["m" "a" "s" "h" "!" " "]}))
+  (atom {:line {:input-state-stack [:empty]
+                :letters ["m" "a" "s" "h" "!" " "]}}))
 
 (defn line []
   (om/ref-cursor (:line (om/root-cursor app-state))))
+
+(defn handle-keydown [owner e]
+  (let [l (om/observe owner (line))
+        key (.-key e)]
+    (cond
+      (contains? valid-keys key)
+      (om/transact! l :letters #(conj % (.-key e))))))
 
 (defn line-view [cursor]
   (reify
     om/IRender
     (render [_]
-      (dom/div nil (clojure.string/join "" (:line cursor))))))
+      (dom/div nil (clojure.string/join "" (:letters cursor))))))
 
 (defn app-view [cursor owner]
   (reify
     om/IDidMount
     (did-mount [this]
-      (set! (.-onkeydown js/document.body)
-            (fn [e]
-              (let [l (om/observe owner (line))]
-                (om/transact! l #(conj % (.-key e)))))))
+      (set! (.-onkeydown js/document.body) (partial handle-keydown owner)))
     om/IRender
     (render [_]
       (dom/div #js {:style #js {:height "100vh"
@@ -35,7 +43,7 @@
                                 :overflow "hidden"
                                 :padding "0"
                                 :margin "0"}}
-               (om/build line-view cursor)))))
+               (om/build line-view (:line cursor))))))
 
 (om/root app-view app-state
          {:target (. js/document (getElementById "app"))})
