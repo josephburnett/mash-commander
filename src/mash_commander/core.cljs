@@ -8,51 +8,57 @@
 
 (enable-console-print!)
 
-(defonce valid-words #{"hello" "world"})
-(defonce valid-letters (set (str/split "abcdefghijklmnopqrstuvwyz" "")))
-
-(defn recognize? [letters]
-  (let [last-word (last (str/split (str/join "" letters) " "))]
-    (contains? valid-words last-word)))
-
 (defonce app-state
-  (atom {:line {:input-state-stack [:empty]
-                :letters ["m" "a" "s" "h" "!" " "]}}))
+  (atom {:line {:state [:empty]
+                :letters [" " "!" "h" "s" "a" "m"]}}))
 
 (defn line []
   (om/ref-cursor (:line (om/root-cursor app-state))))
 
+(defonce valid-words #{"hello" "world"})
+(defonce valid-letters (set (str/split "abcdefghijklmnopqrstuvwyz" "")))
+
+(defn recognize? [letters]
+  (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
+    (contains? valid-words last-word)))
+
 (defn handle-keydown [owner e]
   (let [key (.-key e)]
-    (om/transact! (om/observe owner (line))
-                  #(let [state (first (:input-state-stack %))
-                         new-state
-                         (cond
-                           ;; Typing a letter
-                           (contains? valid-letters key)
-                           (as-> % c
-                             (assoc c :letters (conj (:letters %) key))
-                             (if (recognize? (:letters c))
-                               (assoc c :input-state-stack (cons :typing (:input-state-stack %)))
-                               (assoc c :input-state-stack (cons :mashing (:input-state-stack %)))))
-                           ;; Pressing additional spaces
-                           (and (= " " key) (contains? #{:typing-space :mashing-space} state)) %
-                           ;; Pressing first space
-                           (= " " key)
-                           (as-> % c
-                             (assoc c :letters (conj (:letters %) key))
-                             (if (= :typing (first (:input-state-stack %)))
-                               (assoc c :input-state-stack (cons :typing-space (:input-state-stack %)))
-                               (assoc c :input-state-stack (cons :mashing-space (:input-state-stack %)))))
-                           :default %)]
-                     (print "state:" new-state)
-                     new-state))))
+    (om/transact!
+     (om/observe owner (line))
+     #(let [state (first (:state %))]
+        (cond
+          ;; Typing a letter
+          (contains? valid-letters key)
+          (as-> % c
+            (assoc c :letters (cons key (:letters %)))
+            (if (recognize? (:letters c))
+              (assoc c :state (cons :typing (:state %)))
+              (assoc c :state (cons :mashing (:state %)))))
+          ;; Ignore additional spaces
+          (and (= " " key) (contains? #{:typing-space :mashing-space} state)) %
+          ;; Pressing first space
+          (= " " key)
+          (as-> % c
+            (assoc c :letters (cons key (:letters %)))
+            (if (= :typing (first (:state %)))
+              (assoc c :state (cons :typing-space (:state %)))
+              (assoc c :state (cons :mashing-space (:state %)))))
+          ;; Ignore backspace on empty
+          (and (= "Backspace" key) (= :empty state)) %
+          ;; Backspace
+          (= "Backspace" key)
+          (as-> % c
+            (assoc c :state (rest (:state c)))
+            (assoc c :letters (rest (:letters c))))
+          ;; Ignore everything else
+          :default %)))))
 
 (defn line-view [cursor]
   (reify
     om/IRender
     (render [_]
-      (let [words (str/split (str/join "" (:letters cursor)) " ")]
+      (let [words (str/split (str/join (reverse (:letters cursor))) " ")]
         (apply dom/div nil
                (interleave
                 (map #(if (contains? valid-words %)
