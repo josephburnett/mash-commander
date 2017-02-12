@@ -30,8 +30,11 @@
                 (om/transact! l #(conj % (.-key e)))))))
     om/IRender
     (render [_]
-      (dom/div #js {:style #js {:color "#0b0"
-                                :fontFamily "monospace"}}
+      (dom/div #js {:style #js {:height "100vh"
+                                :width "100vw"
+                                :overflow "hidden"
+                                :padding "0"
+                                :margin "0"}}
                (om/build line-view cursor)))))
 
 (om/root app-view app-state
