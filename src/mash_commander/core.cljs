@@ -1,16 +1,29 @@
 (ns mash-commander.core
-  (:require ))
+  (:require-macros [cljs.core.async.macros :refer [go-loop]]
+                   [cljs.core.async.macros :refer [go]])
+  (:require [om.core :as om :include-macros true]
+            [om.dom :as dom :include-macros true]
+            [cljs.core.async :refer [chan put! <! >!]]
+            [clojure.string]))
 
 (enable-console-print!)
 
-(println "This text is printed from src/mash-commander/core.cljs. Go ahead and edit it and see reloading in action.")
+(defonce app-state
+  (atom {:line ["m" "a" "s" "h"]}))
 
-;; define your app data so that it doesn't get over-written on reload
+(defn line-view [cursor]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div nil (clojure.string/join "" (:line cursor))))))
 
-(defonce app-state (atom {:text "Hello world!"}))
+(defn app-view [cursor]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div #js {:style #js {:color "#0b0"
+                                :fontFamily "monospace"}}
+               (om/build line-view cursor)))))
 
-(defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+(om/root app-view app-state
+         {:target (. js/document (getElementById "app"))})

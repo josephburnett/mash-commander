@@ -9,7 +9,11 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.async "0.2.395"
-                  :exclusions [org.clojure/tools.reader]]]
+                  :exclusions [org.clojure/tools.reader]]
+                 [cljsjs/react "15.4.2-1"]
+                 [cljsjs/react-dom "15.4.2-1"]
+                 [sablono "0.7.7"]
+                 [org.omcljs/om "1.0.0-alpha46"]]
 
   :plugins [[lein-figwheel "0.5.9"]
             [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]
@@ -21,8 +25,7 @@
   :cljsbuild {:builds
               [{:id "dev"
                 :source-paths ["src"]
-                :figwheel {:on-jsload "mash-commander.core/on-js-reload"
-                           :open-urls ["http://localhost:3449/index.html"]
+                :figwheel {:open-urls ["http://localhost:3449/index.html"]
                            :websocket-host :js-client-host}
                 :compiler {:main mash-commander.core
                            :asset-path "js/compiled/out"
