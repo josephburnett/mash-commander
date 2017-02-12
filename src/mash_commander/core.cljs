@@ -9,7 +9,10 @@
 (enable-console-print!)
 
 (defonce app-state
-  (atom {:line ["m" "a" "s" "h"]}))
+  (atom {:line ["m" "a" "s" "h" "!" " "]}))
+
+(defn line []
+  (om/ref-cursor (:line (om/root-cursor app-state))))
 
 (defn line-view [cursor]
   (reify
@@ -17,8 +20,14 @@
     (render [_]
       (dom/div nil (clojure.string/join "" (:line cursor))))))
 
-(defn app-view [cursor]
+(defn app-view [cursor owner]
   (reify
+    om/IDidMount
+    (did-mount [this]
+      (set! (.-onkeydown js/document.body)
+            (fn [e]
+              (let [l (om/observe owner (line))]
+                (om/transact! l #(conj % (.-key e)))))))
     om/IRender
     (render [_]
       (dom/div #js {:style #js {:color "#0b0"
@@ -27,3 +36,4 @@
 
 (om/root app-view app-state
          {:target (. js/document (getElementById "app"))})
+
