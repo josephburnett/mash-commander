@@ -9,11 +9,12 @@
 (enable-console-print!)
 
 (defonce app-state
-  (atom {:line {:state [:empty]
-                :letters [" " "!" "h" "s" "a" "m"]}}))
+  (atom {:lines {:active {:state [:empty]
+                          :letters [" " "!" "h" "s" "a" "m"]}
+                 :history []}}))
 
-(defn line []
-  (om/ref-cursor (:line (om/root-cursor app-state))))
+(defn lines []
+  (om/ref-cursor (:lines (om/root-cursor app-state))))
 
 (defonce valid-words #{"hello" "world"})
 (defonce valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
@@ -26,52 +27,60 @@
 (defn handle-keydown [owner e]
   (let [key (.-key e)]
     (om/transact!
-     (om/observe owner (line))
-     #(let [state (first (:state %))]
+     (om/observe owner (lines))
+     #(let [state (first (get-in % [:active :state]))]
         (cond
           ;; Typing a letter
           (contains? valid-letters key)
           (as-> % c
-            (assoc c :letters (cons key (:letters %)))
+            (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
             (if (recognize? (:letters c))
-              (assoc c :state (cons :typing (:state %)))
-              (assoc c :state (cons :mashing (:state %)))))
+              (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
+              (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
           ;; Ignore additional spaces
           (and (= " " key) (contains? #{:typing-space :mashing-space} state)) %
           ;; Pressing first space
           (= " " key)
           (as-> % c
-            (assoc c :letters (cons key (:letters %)))
-            (if (= :typing (first (:state %)))
-              (assoc c :state (cons :typing-space (:state %)))
-              (assoc c :state (cons :mashing-space (:state %)))))
+            (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+            (if (= :typing state)
+              (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state])))
+              (assoc-in c [:active :state] (cons :mashing-space (get-in c [:active :state])))))
           ;; Ignore backspace on empty
           (and (= "Backspace" key) (= :empty state)) %
           ;; Backspace
           (= "Backspace" key)
           (as-> % c
-            (assoc c :state (rest (:state c)))
-            (assoc c :letters (rest (:letters c))))
+            (assoc-in c [:active :state] (rest (get-in c [:active :state])))
+            (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
+          ;; Enter
+          (= "Enter" key)
+          (as-> % c
+            (assoc c :history (cons (:active c) (:history c)))
+            (assoc c :active {:state [:empty] :letters []}))
           ;; Ignore everything else
           :default %)))))
 
 (defn line-view [cursor]
   (reify
-    om/IRender
-    (render [_]
+    om/IInitState
+    (init-state [_] {:focus false})
+    om/IRenderState
+    (render-state [_ state]
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
             space (contains? #{:typing-space :mashing-space} (first (:state cursor)))
-            cur (dom/span #js {:style #js {:color "#c00"}} "\u2588")]
+            cur (dom/span #js {:style #js {:color "#c00"}} "\u2588")
+            rendered-words (interpose
+                            (dom/span nil " ")
+                            (map #(if (contains? valid-words %)
+                                    (dom/span #js {:style #js {:color "#c00"}} %)
+                                    (dom/span nil %))
+                                 words))]
         (apply dom/div #js {:style #js {:fontSize "22px"
-                                        :padding "15px"}}
-               (concat 
-                (interpose
-                 (dom/span nil " ")
-                 (map #(if (contains? valid-words %)
-                         (dom/span #js {:style #js {:color "#c00"}} %)
-                         (dom/span nil %))
-                      words))
-                (if space [(dom/span nil " ") cur] [cur])))))))
+                                        :padding "15px 15px 0 15px"}}
+               (if (:focus state)
+                 (concat rendered-words (if space [(dom/span nil " ") cur] [cur]))
+                 rendered-words))))))
 
 (defn app-view [cursor owner]
   (reify
@@ -80,12 +89,14 @@
       (set! (.-onkeydown js/document.body) (partial handle-keydown owner)))
     om/IRender
     (render [_]
-      (dom/div #js {:style #js {:height "100vh"
-                                :width "100vw"
-                                :overflow "hidden"
-                                :padding "0"
-                                :margin "0"}}
-               (om/build line-view (:line cursor))))))
+      (apply dom/div #js {:style #js {:height "100vh"
+                                      :width "100vw"
+                                      :overflow "hidden"
+                                      :padding "0"
+                                      :margin "0"}}
+             (cons
+              (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
+              (om/build-all line-view (get-in cursor [:lines :history])))))))
 
 (om/root app-view app-state
          {:target (. js/document (getElementById "app"))})
