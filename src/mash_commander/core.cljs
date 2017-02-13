@@ -25,6 +25,28 @@
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
     (contains? valid-words last-word)))
 
+(defonce valid-commands #{"clear"})
+
+(defmulti dispatch-enter
+  (fn [cursor]
+    (let [letters (get-in cursor [:active :letters])
+          command (str/join (take-while #(not= " " %) (reverse letters)))]
+      (if (contains? valid-commands command)
+        command
+        :default))))
+
+(defmethod dispatch-enter :default
+  [cursor]
+  (as-> cursor c
+    (assoc c :history (cons (:active c) (:history c)))
+    (assoc c :active {:state [:empty] :letters []})))
+
+(defmethod dispatch-enter "clear"
+  [cursor]
+  (as-> cursor c
+    (assoc c :history [])
+    (assoc c :active {:state [:empty] :letters []})))49
+
 (defn handle-keydown [owner e]
   (let [key (.-key e)]
     (om/transact!
@@ -55,12 +77,9 @@
             (assoc-in c [:active :state] (rest (get-in c [:active :state])))
             (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
           ;; Enter
-          (= "Enter" key)
-          (as-> % c
-            (assoc c :history (cons (:active c) (:history c)))
-            (assoc c :active {:state [:empty] :letters []}))
+          (= "Enter" key) (dispatch-enter %)
           ;; Ignore everything else
-          :default (do (print key) %))))))
+          :default %)))))
 
 (defn line-view [cursor]
   (reify
@@ -69,8 +88,9 @@
     om/IRenderState
     (render-state [_ state]
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
-            space (contains? #{:typing-space :mashing-space} (first (:state cursor)))
-            cur (dom/span #js {:style #js {:color "#900"}} "\u2588")
+            spacing (contains? #{:typing-space :mashing-space} (first (:state cursor)))
+            commanding (contains? valid-commands (first words))
+            cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")
             rendered-words (interpose
                             (dom/span nil " ")
                             (map #(if (contains? valid-words %)
@@ -80,9 +100,11 @@
         (apply dom/div #js {:style #js {:fontSize "30px"
                                         :lineHeight "40px"
                                         :padding "15px 15px 0 15px"}}
-               (if (:focus state)
-                 (concat rendered-words (if space [(dom/span nil " ") cur] [cur]))
-                 rendered-words))))))
+               (as-> rendered-words r
+                 (if (and (:focus state) spacing) (concat r [(dom/span nil " ") cursor-char]) r)
+                 (if (and (:focus state) (not spacing)) (concat r [cursor-char]) r)
+                 (if commanding (cons (dom/span #js {:style #js {:color "#33f"}} (first words))
+                                      (rest r)) r)))))))
 
 (defn app-view [cursor owner]
   (reify
