@@ -19,7 +19,7 @@
 (defonce valid-words #{"hello" "world"})
 (defonce valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
                                     (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "")
-                                    (str/split "1234567890.?" ""))))
+                                    (str/split "1234567890" ""))))
 
 (defn recognize? [letters]
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
