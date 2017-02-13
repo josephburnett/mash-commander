@@ -16,7 +16,8 @@
   (om/ref-cursor (:line (om/root-cursor app-state))))
 
 (defonce valid-words #{"hello" "world"})
-(defonce valid-letters (set (str/split "abcdefghijklmnopqrstuvwyz" "")))
+(defonce valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
+                                    (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ""))))
 
 (defn recognize? [letters]
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
@@ -58,14 +59,19 @@
   (reify
     om/IRender
     (render [_]
-      (let [words (str/split (str/join (reverse (:letters cursor))) " ")]
-        (apply dom/div nil
-               (interleave
-                (map #(if (contains? valid-words %)
-                        (dom/span #js {:style #js {:color "#c00"}} %)
-                        (dom/span nil %))
-                     words)
-                (repeat (dom/span nil " "))))))))
+      (let [words (str/split (str/join (reverse (:letters cursor))) " ")
+            space (contains? #{:typing-space :mashing-space} (first (:state cursor)))
+            cur (dom/span #js {:style #js {:color "#c00"}} "\u2588")]
+        (apply dom/div #js {:style #js {:fontSize "22px"
+                                        :padding "15px"}}
+               (concat 
+                (interpose
+                 (dom/span nil " ")
+                 (map #(if (contains? valid-words %)
+                         (dom/span #js {:style #js {:color "#c00"}} %)
+                         (dom/span nil %))
+                      words))
+                (if space [(dom/span nil " ") cur] [cur])))))))
 
 (defn app-view [cursor owner]
   (reify
