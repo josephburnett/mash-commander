@@ -18,7 +18,8 @@
 
 (defonce valid-words #{"hello" "world"})
 (defonce valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
-                                    (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ""))))
+                                    (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "")
+                                    (str/split "1234567890.?" ""))))
 
 (defn recognize? [letters]
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
@@ -59,7 +60,7 @@
             (assoc c :history (cons (:active c) (:history c)))
             (assoc c :active {:state [:empty] :letters []}))
           ;; Ignore everything else
-          :default %)))))
+          :default (do (print key) %))))))
 
 (defn line-view [cursor]
   (reify
@@ -69,14 +70,15 @@
     (render-state [_ state]
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
             space (contains? #{:typing-space :mashing-space} (first (:state cursor)))
-            cur (dom/span #js {:style #js {:color "#c00"}} "\u2588")
+            cur (dom/span #js {:style #js {:color "#900"}} "\u2588")
             rendered-words (interpose
                             (dom/span nil " ")
                             (map #(if (contains? valid-words %)
-                                    (dom/span #js {:style #js {:color "#c00"}} %)
-                                    (dom/span nil %))
+                                    (dom/span #js {:style #js {:color "#0f0"}} %)
+                                    (dom/span #js {:style #js {:color "#080"}} %))
                                  words))]
-        (apply dom/div #js {:style #js {:fontSize "22px"
+        (apply dom/div #js {:style #js {:fontSize "30px"
+                                        :lineHeight "40px"
                                         :padding "15px 15px 0 15px"}}
                (if (:focus state)
                  (concat rendered-words (if space [(dom/span nil " ") cur] [cur]))
