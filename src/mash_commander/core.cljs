@@ -37,9 +37,11 @@
 
 (defmethod dispatch-enter :default
   [cursor]
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters []})))
+  (condp = (first (get-in cursor [:active :state]))
+    :empty cursor ; ignore empty lines
+    (as-> cursor c
+      (assoc c :history (cons (:active c) (:history c)))
+      (assoc c :active {:state [:empty] :letters []}))))
 
 (defmethod dispatch-enter "clear"
   [cursor]
