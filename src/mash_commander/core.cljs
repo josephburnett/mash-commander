@@ -10,7 +10,7 @@
 
 (defonce app-state
   (atom {:lines {:active {:state [:empty]
-                          :letters [" " "!" "h" "s" "a" "m"]}
+                          :letters []}
                  :history []}}))
 
 (defn lines []
@@ -62,8 +62,8 @@
             (if (recognize? (:letters c))
               (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
               (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
-          ;; Ignore additional spaces
-          (and (= " " key) (contains? #{:typing-space :mashing-space} state)) %
+          ;; Ignore leading and additional spaces
+          (and (= " " key) (contains? #{:empty :typing-space :mashing-space} state)) %
           ;; Pressing first space
           (= " " key)
           (as-> % c
