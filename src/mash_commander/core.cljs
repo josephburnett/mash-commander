@@ -3,10 +3,51 @@
                    [cljs.core.async.macros :refer [go]])
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [cljs.core.async :refer [chan put! <! >!]]
+            [cljs.core.async :refer [chan put! close! <! >!]]
             [clojure.string :as str]))
 
 (enable-console-print!)
+
+(defonce polly
+  (js/AWS.Polly. #js {:apiVersion "2016-06-10"
+                      :region "us-east-1"
+                      :accessKeyId "foo"
+                      :secretAccessKey "bar"}))
+
+;; https://gist.github.com/msgodf/9296652
+(defn decode-audio-data
+  [context data]
+  (let [ch (chan)]
+    (.decodeAudioData context
+                      data
+                      (fn [buffer]
+                        (go (>! ch buffer)
+                            (close! ch))))
+    ch))
+
+(defn play-audio [buffer]
+  (go
+    (let [AudioContext (or (.-AudioContext js/window)
+                           (.-webkitAudioContext js/window))
+          context (AudioContext.)
+          decoded-buffer (<! (decode-audio-data context buffer))
+          source (doto (.createBufferSource context)
+                   (aset "buffer" decoded-buffer))]
+      (.connect source (.-destination context))
+      (.start source 0))))
+
+(def polly-say (chan))
+(go-loop []
+    (let [what (<! polly-say)]
+      (. polly synthesizeSpeech (clj->js {:Text what
+                                          :OutputFormat "mp3"
+                                          :VoiceId "Ivy"})
+         (fn [err data]
+           (if err
+             (print err err.stack)
+             (let [buffer (.-buffer (.-AudioStream data))]
+               (play-audio buffer))))))
+    (recur))
 
 (defonce app-state
   (atom {:lines {:active {:state [:empty]
@@ -25,7 +66,7 @@
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
     (contains? valid-words last-word)))
 
-(defonce valid-commands #{"clear"})
+(defonce valid-commands #{"clear" "say"})
 
 (defmulti dispatch-enter
   (fn [cursor]
@@ -48,6 +89,13 @@
   (as-> cursor c
     (assoc c :history [])
     (assoc c :active {:state [:empty] :letters []})))49
+
+(defmethod dispatch-enter "say"
+  [cursor]
+  (go (>! polly-say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))
+  (as-> cursor c
+    (assoc c :history (cons (:active c) (:history c)))
+    (assoc c :active {:state [:empty] :letters[]})))
 
 (defn handle-keydown [owner e]
   (let [key (.-key e)]
