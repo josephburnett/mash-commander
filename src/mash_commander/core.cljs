@@ -9,10 +9,13 @@
 (enable-console-print!)
 
 (defonce polly
-  (js/AWS.Polly. #js {:apiVersion "2016-06-10"
-                      :region "us-east-1"
-                      :accessKeyId "foo"
-                      :secretAccessKey "bar"}))
+  (let [access-key-id (js/localStorage.getItem "accessKeyId")
+        secret-access-key (js/localStorage.getItem "secretAccessKey")]
+    (when-not (or (nil? access-key-id) (nil? secret-access-key))
+      (js/AWS.Polly. #js {:apiVersion "2016-06-10"
+                          :region "us-east-1"
+                          :accessKeyId access-key-id
+                          :secretAccessKey secret-access-key}))))
 
 ;; https://gist.github.com/msgodf/9296652
 (defn decode-audio-data
@@ -38,7 +41,12 @@
 
 (def polly-say (chan))
 (go-loop []
-    (let [what (<! polly-say)]
+  (let [what (<! polly-say)]
+    (if (nil? polly)
+      (do
+        (print "Polly needs AWS credentials to say:" what)
+        (print "window.localStorage.setItem('accessKeyId', /* access key id */)")
+        (print "window.localStorage.setItem('secretAccessKey', /* secret access key */"))
       (. polly synthesizeSpeech (clj->js {:Text what
                                           :OutputFormat "mp3"
                                           :VoiceId "Ivy"})
@@ -46,7 +54,7 @@
            (if err
              (print err err.stack)
              (let [buffer (.-buffer (.-AudioStream data))]
-               (play-audio buffer))))))
+               (play-audio buffer)))))))
     (recur))
 
 (defonce app-state
