@@ -139,10 +139,17 @@
           ;; Ignore everything else
           :default %)))))
 
-(defn line-view [cursor]
+(defn line-view [cursor owner]
   (reify
     om/IInitState
     (init-state [_] {:focus false})
+    om/IDidMount
+    (did-mount [_]
+      (when (om/get-state owner :focus)
+        (go-loop []
+          (let [state (<! (om/get-shared owner :set-line))]
+            (om/update! cursor state))
+          (recur))))
     om/IRenderState
     (render-state [_ state]
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
@@ -157,7 +164,8 @@
                                  words))]
         (apply dom/div #js {:style #js {:fontSize "30px"
                                         :lineHeight "40px"
-                                        :padding "15px 15px 0 15px"}}
+                                        :padding "15px 15px 0 15px"}
+                            :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
                (as-> rendered-words r
                  (if (and (:focus state) spacing) (concat r [(dom/span nil " ") cursor-char]) r)
                  (if (and (:focus state) (not spacing)) (concat r [cursor-char]) r)
@@ -171,15 +179,17 @@
       (set! (.-onkeydown js/document.body) (partial handle-keydown owner)))
     om/IRender
     (render [_]
-      (apply dom/div #js {:style #js {:height "100vh"
-                                      :width "100vw"
-                                      :overflow "hidden"
-                                      :padding "0"
-                                      :margin "0"}}
-             (cons
-              (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
-              (om/build-all line-view (get-in cursor [:lines :history])))))))
+      (let [set-state (chan)]
+        (apply dom/div #js {:style #js {:height "100vh"
+                                        :width "100vw"
+                                        :overflow "hidden"
+                                        :padding "0"
+                                        :margin "0"}}
+               (cons
+                (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
+                (om/build-all line-view (get-in cursor [:lines :history]))))))))
 
 (om/root app-view app-state
-         {:target (. js/document (getElementById "app"))})
+         {:target (. js/document (getElementById "app"))
+          :shared {:set-line (chan)}})
 
