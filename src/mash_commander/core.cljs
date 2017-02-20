@@ -4,13 +4,14 @@
   (:require [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [cljs.core.async :refer [chan put! close! <! >!]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [ajax.core :refer [GET]]))
 
 (enable-console-print!)
 
-(defonce polly
-  (let [access-key-id (js/localStorage.getItem "accessKeyId")
-        secret-access-key (js/localStorage.getItem "secretAccessKey")]
+(def polly
+  (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
+        secret-access-key (js/localStorage.getItem "aws-secret-access-key")]
     (when-not (or (nil? access-key-id) (nil? secret-access-key))
       (js/AWS.Polly. #js {:apiVersion "2016-06-10"
                           :region "us-east-1"
@@ -57,6 +58,33 @@
                (play-audio buffer)))))))
     (recur))
 
+(defn wolfram-handler [response]
+  (go (>! polly-say response)))
+
+(defn wolfram-error-handler [{:keys [status status-text]}]
+  (print "ERROR: wolfram" status status-text)
+  (go (>! polly-say (str "Error! " status-text))))
+
+(def wolfram
+  (let [app-id (js/localStorage.getItem "wolfram-app-id")]
+    (when-not (nil? app-id)
+      (fn [question]
+        (GET "http://api.wolframalpha.com/v1/result"
+             {:params {:appid app-id
+                       :i question}
+              :handler wolfram-handler
+              :error-handler wolfram-error-handler})))))
+
+(def wolfram-ask (chan))
+(go-loop []
+  (let [what (<! wolfram-ask)]
+    (if (nil? wolfram)
+      (do
+        (print "Wolfram needs an app id to ask:" what)
+        (print "window.localStorage.setItem('wolfram-app-id', /* App Id /*)"))
+      (wolfram what)))
+  (recur))
+
 (defonce app-state
   (atom {:lines {:active {:state [:empty]
                           :letters []}
@@ -65,8 +93,8 @@
 (defn lines []
   (om/ref-cursor (:lines (om/root-cursor app-state))))
 
-(defonce valid-words #{"hello" "world"})
-(defonce valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
+(def valid-words #{"hello" "world"})
+(def valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
                                     (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "")
                                     (str/split "1234567890" ""))))
 
@@ -74,7 +102,7 @@
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
     (contains? valid-words last-word)))
 
-(defonce valid-commands #{"clear" "say"})
+(def valid-commands #{"clear" "say" "wolfram"})
 
 (defmulti dispatch-enter
   (fn [cursor]
@@ -101,6 +129,13 @@
 (defmethod dispatch-enter "say"
   [cursor]
   (go (>! polly-say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))
+  (as-> cursor c
+    (assoc c :history (cons (:active c) (:history c)))
+    (assoc c :active {:state [:empty] :letters[]})))
+
+(defmethod dispatch-enter "wolfram"
+  [cursor]
+  (go (>! wolfram-ask (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
   (as-> cursor c
     (assoc c :history (cons (:active c) (:history c)))
     (assoc c :active {:state [:empty] :letters[]})))
