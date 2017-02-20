@@ -58,6 +58,53 @@
                (play-audio buffer)))))))
     (recur))
 
+(defn wiki-search-handler [return response]
+  (let [title (get-in response ["query" "search" 0 "title"])]
+    (go (>! return title))))
+
+(defn wiki-summary-handler [return response]
+  (let [pages (get-in response ["query" "pages"])
+        summary (get-in (second (first pages)) ["extract"])]
+    (go (>! return summary))))
+
+(defn wiki-error-handler [{:keys [status status-text]}]
+  (print "ERROR: wiki" status status-text)
+  (go (>! polly-say (str "Error! " status-text))))
+
+(defn wiki [term]
+  (let [return (chan)]
+    (GET "https://en.wikipedia.org/w/api.php"
+         {:params {:action "query"
+                   :list "search"
+                   :srprop "sectiontitle"
+                   :srlimit "1"
+                   :origin "*"
+                   :format "json"
+                   :srsearch term}
+          :handler (partial wiki-search-handler return)
+          :error-handler wiki-error-handler})
+    (go
+      (let [title (<! return)
+            return (chan)]
+        (GET "https://en.wikipedia.org/w/api.php"
+             {:params {:action "query"
+                       :prop "extracts"
+                       :explaintext nil
+                       :exintro nil
+                       :origin "*"
+                       :format "json"
+                       :titles title}
+              :handler (partial wiki-summary-handler return)
+              :error-handler wiki-error-handler})
+        (let [summary (<! return)]
+          (go (>! polly-say (subs summary 0 200)))))))) ; limit to 200 characters
+
+(def wiki-ask (chan))
+(go-loop []
+  (let [what (<! wiki-ask)]
+    (wiki what))
+  (recur))
+
 (defn wolfram-handler [response]
   (go (>! polly-say response)))
 
@@ -102,7 +149,7 @@
   (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
     (contains? valid-words last-word)))
 
-(def valid-commands #{"clear" "say" "wolfram"})
+(def valid-commands #{"clear" "say" "wolfram" "wiki"})
 
 (defmulti dispatch-enter
   (fn [cursor]
@@ -136,6 +183,13 @@
 (defmethod dispatch-enter "wolfram"
   [cursor]
   (go (>! wolfram-ask (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
+  (as-> cursor c
+    (assoc c :history (cons (:active c) (:history c)))
+    (assoc c :active {:state [:empty] :letters[]})))
+
+(defmethod dispatch-enter "wiki"
+  [cursor]
+  (go (>! wiki-ask (apply str (drop 4 (reverse (get-in cursor [:active :letters]))))))
   (as-> cursor c
     (assoc c :history (cons (:active c) (:history c)))
     (assoc c :active {:state [:empty] :letters[]})))
