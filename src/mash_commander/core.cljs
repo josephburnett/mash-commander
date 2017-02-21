@@ -171,7 +171,7 @@
   [cursor]
   (as-> cursor c
     (assoc c :history [])
-    (assoc c :active {:state [:empty] :letters []})))49
+    (assoc c :active {:state [:empty] :letters []})))
 
 (defmethod dispatch-enter "say"
   [cursor]
