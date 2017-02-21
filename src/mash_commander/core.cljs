@@ -46,8 +46,8 @@
     (if (nil? polly)
       (do
         (print "Polly needs AWS credentials to say:" what)
-        (print "window.localStorage.setItem('accessKeyId', /* access key id */)")
-        (print "window.localStorage.setItem('secretAccessKey', /* secret access key */"))
+        (print "window.localStorage.setItem('aws-access-key-id', /* access key id */)")
+        (print "window.localStorage.setItem('aws-secret-access-key', /* secret access key */"))
       (. polly synthesizeSpeech (clj->js {:Text what
                                           :OutputFormat "mp3"
                                           :VoiceId "Ivy"})
