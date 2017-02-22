@@ -14,7 +14,8 @@
                  [cljsjs/react-dom "15.4.2-1"]
                  [sablono "0.7.7"]
                  [org.omcljs/om "1.0.0-alpha46"]
-                 [cljs-ajax "0.5.8"]]
+                 [cljs-ajax "0.5.8"]
+                 [org.clojure/data.json "0.2.6"]]
 
   :plugins [[lein-figwheel "0.5.9"]
             [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]
@@ -49,4 +50,6 @@
                                   [com.cemerick/piggieback "0.2.1"]]
                    :source-paths ["src" "dev"]
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
+
+  :aliases {"generate" ["run" "-m" "mash-commander.generate" "main" :project/root]}
 )
