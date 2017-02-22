@@ -135,19 +135,26 @@
 (defonce app-state
   (atom {:lines {:active {:state [:empty]
                           :letters []}
-                 :history []}}))
+                 :history []}
+         :words {}}))
 
 (defn lines []
   (om/ref-cursor (:lines (om/root-cursor app-state))))
 
-(def valid-words #{"hello" "world"})
+(defn words []
+  (om/ref-cursor (:words (om/root-cursor app-state))))
+
 (def valid-letters (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
                                     (str/split "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "")
                                     (str/split "1234567890" ""))))
 
-(defn recognize? [letters]
-  (let [last-word (str/join (reverse (take-while #(not= " " %) letters)))]
-    (contains? valid-words last-word)))
+(defn last-word [letters]
+  (str/join (reverse (take-while #(not= " " %) letters))))
+
+(defn recognize? [owner word]
+  (let [trie (om/observe owner (words))
+        letters (seq word)]
+    (= "" (get-in trie (conj (into [] (map str/lower-case letters)) "")))))
 
 (def valid-commands #{"clear" "say" "wolfram" "wiki"})
 
@@ -204,7 +211,7 @@
           (contains? valid-letters key)
           (as-> % c
             (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
-            (if (recognize? (:letters c))
+            (if (recognize? owner (last-word (get-in c [:active :letters])))
               (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
               (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
           ;; Ignore leading and additional spaces
@@ -247,7 +254,7 @@
             cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")
             rendered-words (interpose
                             (dom/span nil " ")
-                            (map #(if (contains? valid-words %)
+                            (map #(if (recognize? owner %)
                                     (dom/span #js {:style #js {:color "#0f0"}} %)
                                     (dom/span #js {:style #js {:color "#080"}} %))
                                  words))]
@@ -265,7 +272,13 @@
   (reify
     om/IDidMount
     (did-mount [this]
-      (set! (.-onkeydown js/document.body) (partial handle-keydown owner)))
+      (set! (.-onkeydown js/document.body) (partial handle-keydown owner))
+      (go (GET "/words.json"
+               {:params {:response-format :json
+                         :keywords? false}
+                :handler (fn [trie]
+                           (om/transact! (om/observe owner (words)) #(merge % trie)))
+                :error-handler print})))
     om/IRender
     (render [_]
       (let [set-state (chan)]
