@@ -149,7 +149,10 @@
                                     (str/split "1234567890" ""))))
 
 (defn last-word [letters]
-  (str/join (reverse (take-while #(not= " " %) letters))))
+  (as-> letters l
+    (if (and (not (empty? letters)) (= " " (first letters)))
+      (rest l) l)
+    (str/join (reverse (take-while #(not= " " %) l)))))
 
 (defn recognize? [owner word]
   (let [trie (om/observe owner (words))
@@ -221,7 +224,10 @@
           (as-> % c
             (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
             (if (= :typing state)
-              (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state])))
+              (do
+                (let [what (last-word (get-in c [:active :letters]))]
+                  (go (>! polly-say what)))
+                (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state]))))
               (assoc-in c [:active :state] (cons :mashing-space (get-in c [:active :state])))))
           ;; Ignore backspace on empty
           (and (= "Backspace" key) (= :empty state)) %
@@ -231,7 +237,12 @@
             (assoc-in c [:active :state] (rest (get-in c [:active :state])))
             (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
           ;; Enter
-          (= "Enter" key) (dispatch-enter %)
+          (= "Enter" key)
+          (do
+            (when (= :typing state)
+              (let [what (last-word (get-in % [:active :letters]))]
+                (go (>! polly-say what))))
+            (dispatch-enter %))
           ;; Ignore everything else
           :default %)))))
 
