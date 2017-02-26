@@ -5,134 +5,13 @@
             [om.dom :as dom :include-macros true]
             [cljs.core.async :refer [chan put! close! <! >!]]
             [clojure.string :as str]
-            [ajax.core :refer [GET]]))
+            [ajax.core :refer [GET]]
+            [mash-commander.command :as command]
+            [mash-commander.speech :as speech]
+            [mash-commander.wiki]
+            [mash-commander.wolfram]))
 
 (enable-console-print!)
-
-(def polly
-  (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
-        secret-access-key (js/localStorage.getItem "aws-secret-access-key")]
-    (when-not (or (nil? access-key-id) (nil? secret-access-key))
-      (js/AWS.Polly. #js {:apiVersion "2016-06-10"
-                          :region "us-east-1"
-                          :accessKeyId access-key-id
-                          :secretAccessKey secret-access-key}))))
-
-;; https://gist.github.com/msgodf/9296652
-(defn decode-audio-data
-  [context data]
-  (let [ch (chan)]
-    (.decodeAudioData context
-                      data
-                      (fn [buffer]
-                        (go (>! ch buffer)
-                            (close! ch))))
-    ch))
-
-(def audio-context
-  (let [AudioContext (or (.-AudioContext js/window)
-                         (.-webkitAudioContext js/window))]
-    (AudioContext.)))
-
-(defn play-audio [buffer]
-  (go
-    (let [decoded-buffer (<! (decode-audio-data audio-context buffer))
-          source (doto (.createBufferSource audio-context)
-                   (aset "buffer" decoded-buffer))]
-      (.connect source (.-destination audio-context))
-      (.start source 0))))
-
-(def polly-say (chan))
-(go-loop []
-  (let [what (<! polly-say)]
-    (if (nil? polly)
-      (do
-        (print "Polly needs AWS credentials to say:" what)
-        (print "window.localStorage.setItem('aws-access-key-id', /* access key id */)")
-        (print "window.localStorage.setItem('aws-secret-access-key', /* secret access key */"))
-      (. polly synthesizeSpeech (clj->js {:Text what
-                                          :OutputFormat "mp3"
-                                          :VoiceId "Ivy"})
-         (fn [err data]
-           (if err
-             (print err err.stack)
-             (let [buffer (.-buffer (.-AudioStream data))]
-               (play-audio buffer)))))))
-    (recur))
-
-(defn wiki-search-handler [return response]
-  (let [title (get-in response ["query" "search" 0 "title"])]
-    (go (>! return title))))
-
-(defn wiki-summary-handler [return response]
-  (let [pages (get-in response ["query" "pages"])
-        summary (get-in (second (first pages)) ["extract"])]
-    (go (>! return summary))))
-
-(defn wiki-error-handler [{:keys [status status-text]}]
-  (print "ERROR: wiki" status status-text)
-  (go (>! polly-say (str "Error! " status-text))))
-
-(defn wiki [term]
-  (let [return (chan)]
-    (GET "https://en.wikipedia.org/w/api.php"
-         {:params {:action "query"
-                   :list "search"
-                   :srprop "sectiontitle"
-                   :srlimit "1"
-                   :origin "*"
-                   :format "json"
-                   :srsearch term}
-          :handler (partial wiki-search-handler return)
-          :error-handler wiki-error-handler})
-    (go
-      (let [title (<! return)
-            return (chan)]
-        (GET "https://en.wikipedia.org/w/api.php"
-             {:params {:action "query"
-                       :prop "extracts"
-                       :explaintext nil
-                       :exintro nil
-                       :origin "*"
-                       :format "json"
-                       :titles title}
-              :handler (partial wiki-summary-handler return)
-              :error-handler wiki-error-handler})
-        (let [summary (<! return)]
-          (go (>! polly-say (subs summary 0 200)))))))) ; limit to 200 characters
-
-(def wiki-ask (chan))
-(go-loop []
-  (let [what (<! wiki-ask)]
-    (wiki what))
-  (recur))
-
-(defn wolfram-handler [response]
-  (go (>! polly-say response)))
-
-(defn wolfram-error-handler [{:keys [status status-text]}]
-  (print "ERROR: wolfram" status status-text)
-  (go (>! polly-say (str "Error! " status-text))))
-
-(def wolfram
-  (let [app-id (js/localStorage.getItem "wolfram-app-id")]
-    (when-not (nil? app-id)
-      (fn [question]
-        (GET "http://api.wolframalpha.com/v1/result"
-             {:params {:appid app-id
-                       :i question}
-              :handler wolfram-handler
-              :error-handler wolfram-error-handler})))))
-
-(def wolfram-ask (chan))
-(go-loop []
-  (let [what (<! wolfram-ask)]
-    (if (nil? wolfram)
-      (do
-        (print "Wolfram needs an app id to ask:" what)
-        (print "window.localStorage.setItem('wolfram-app-id', /* App Id /*)"))
-      (wolfram what)))
-  (recur))
 
 (defonce app-state
   (atom {:lines {:active {:state [:empty]
@@ -161,51 +40,6 @@
         letters (seq word)]
     (= "" (get-in trie (conj (into [] (map str/lower-case letters)) "")))))
 
-(def valid-commands #{"clear" "say" "wolfram" "wiki"})
-
-(defmulti dispatch-enter
-  (fn [cursor]
-    (let [letters (get-in cursor [:active :letters])
-          command (str/join (take-while #(not= " " %) (reverse letters)))]
-      (if (contains? valid-commands command)
-        command
-        :default))))
-
-(defmethod dispatch-enter :default
-  [cursor]
-  (condp = (first (get-in cursor [:active :state]))
-    :empty cursor ; ignore empty lines
-    (as-> cursor c
-      (assoc c :history (cons (:active c) (:history c)))
-      (assoc c :active {:state [:empty] :letters []}))))
-
-(defmethod dispatch-enter "clear"
-  [cursor]
-  (as-> cursor c
-    (assoc c :history [])
-    (assoc c :active {:state [:empty] :letters []})))
-
-(defmethod dispatch-enter "say"
-  [cursor]
-  (go (>! polly-say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters[]})))
-
-(defmethod dispatch-enter "wolfram"
-  [cursor]
-  (go (>! wolfram-ask (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters[]})))
-
-(defmethod dispatch-enter "wiki"
-  [cursor]
-  (go (>! wiki-ask (apply str (drop 4 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters[]})))
-
 (defn handle-keydown [owner e]
   (let [key (.-key e)]
     (om/transact!
@@ -228,7 +62,7 @@
             (if (= :typing state)
               (do
                 (let [what (last-word (get-in c [:active :letters]))]
-                  (go (>! polly-say what)))
+                  (go (>! speech/say what)))
                 (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state]))))
               (assoc-in c [:active :state] (cons :mashing-space (get-in c [:active :state])))))
           ;; Ignore backspace on empty
@@ -243,8 +77,8 @@
           (do
             (when (= :typing state)
               (let [what (last-word (get-in % [:active :letters]))]
-                (go (>! polly-say what))))
-            (dispatch-enter %))
+                (go (>! speech/say what))))
+            (command/dispatch-enter %))
           ;; Ignore everything else
           :default %)))))
 
@@ -263,7 +97,7 @@
     (render-state [_ state]
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
             spacing (contains? #{:typing-space :mashing-space} (first (:state cursor)))
-            commanding (contains? valid-commands (first words))
+            commanding (contains? @command/valid-commands (first words))
             command-prompt (dom/span #js {:style #js {:color "#33f"
                                                       :fontWeight "bold"}} "$ ")
             cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")
