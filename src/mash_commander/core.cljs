@@ -29,15 +29,17 @@
                             (close! ch))))
     ch))
 
+(def audio-context
+  (let [AudioContext (or (.-AudioContext js/window)
+                         (.-webkitAudioContext js/window))]
+    (AudioContext.)))
+
 (defn play-audio [buffer]
   (go
-    (let [AudioContext (or (.-AudioContext js/window)
-                           (.-webkitAudioContext js/window))
-          context (AudioContext.)
-          decoded-buffer (<! (decode-audio-data context buffer))
-          source (doto (.createBufferSource context)
+    (let [decoded-buffer (<! (decode-audio-data audio-context buffer))
+          source (doto (.createBufferSource audio-context)
                    (aset "buffer" decoded-buffer))]
-      (.connect source (.-destination context))
+      (.connect source (.-destination audio-context))
       (.start source 0))))
 
 (def polly-say (chan))
