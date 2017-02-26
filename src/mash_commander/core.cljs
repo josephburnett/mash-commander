@@ -264,6 +264,8 @@
       (let [words (str/split (str/join (reverse (:letters cursor))) " ")
             spacing (contains? #{:typing-space :mashing-space} (first (:state cursor)))
             commanding (contains? valid-commands (first words))
+            command-prompt (dom/span #js {:style #js {:color "#33f"
+                                                      :fontWeight "bold"}} "$ ")
             cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")
             rendered-words (interpose
                             (dom/span nil " ")
@@ -279,7 +281,9 @@
                  (if (and (:focus state) spacing) (concat r [(dom/span nil " ") cursor-char]) r)
                  (if (and (:focus state) (not spacing)) (concat r [cursor-char]) r)
                  (if commanding (cons (dom/span #js {:style #js {:color "#33f"}} (first words))
-                                      (rest r)) r)))))))
+                                      (rest r)) r)
+                 (if (:focus state) (cons command-prompt r) r)))))))
+
 
 (defn app-view [cursor owner]
   (reify
