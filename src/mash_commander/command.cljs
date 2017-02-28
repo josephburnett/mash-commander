@@ -1,5 +1,6 @@
 (ns mash-commander.command
-  (:require [clojure.string :as str]))
+  (:require [mash-commander.state :as mash-state]
+            [clojure.string :as str]))
 
 (def valid-commands (atom #{"clear"}))
 
@@ -17,11 +18,11 @@
     :empty cursor ; ignore empty lines
     (as-> cursor c
       (assoc c :history (cons (:active c) (:history c)))
-      (assoc c :active {:state [:empty] :letters []}))))
+      (assoc c :active (mash-state/initial-line-state)))))
 
 (defmethod dispatch-enter "clear"
   [cursor]
   (as-> cursor c
     (assoc c :history [])
-    (assoc c :active {:state [:empty] :letters []})))
+    (assoc c :active (mash-state/initial-line-state))))
 

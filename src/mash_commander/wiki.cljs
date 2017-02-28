@@ -52,10 +52,3 @@
     (wiki-search what))
   (recur))
 
-(defmethod command/dispatch-enter "wiki"
-  [cursor]
-  (go (>! search (apply str (drop 4 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters[]})))
-(swap! command/valid-commands #(conj % "wiki"))

@@ -31,11 +31,3 @@
         (print "window.localStorage.setItem('wolfram-app-id', /* App Id /*)"))
       (wolfram what)))
   (recur))
-
-(defmethod command/dispatch-enter "wolfram"
-  [cursor]
-  (go (>! answer (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active {:state [:empty] :letters[]})))
-(swap! command/valid-commands #(conj % "wolfram"))
