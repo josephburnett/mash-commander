@@ -2,7 +2,7 @@
 
 (defmulti dispatch-keydown
   (fn [cursor owner e]
-    (get-in cursor [:lines :active :mode])))
+    (get-in cursor [:mode])))
 
 (defmulti line-render-state
   (fn [cursor owner state]

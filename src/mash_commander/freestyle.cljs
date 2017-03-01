@@ -28,10 +28,9 @@
 
 (defmethod mode/dispatch-keydown :freestyle
   [cursor owner e]
-  (print "freestyle is handling keydown")
   (let [key (.-key e)]
     (om/transact!
-     cursor :lines
+     (om/observe owner (mash-state/lines))
      #(let [state (first (get-in % [:active :state]))]
         (cond
           ;; Typing a letter

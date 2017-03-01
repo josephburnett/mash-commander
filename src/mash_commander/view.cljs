@@ -13,10 +13,17 @@
     om/IDidMount
     (did-mount [_]
       (when (om/get-state owner :focus)
+        (set! (.-onkeydown js/document.body)
+              (fn [e] (mode/dispatch-keydown cursor owner e)))
         (go-loop []
           (let [state (<! (om/get-shared owner :set-line))]
             (om/update! cursor state))
           (recur))))
+    om/IWillReceiveProps
+    (will-receive-props [_ next]
+      (when-not (= (:mode cursor) (:mode next))
+        (set! (.-onkeydown js/document.body)
+              (fn [e] (mode/dispatch-keydown next owner e)))))
     om/IRenderState
     (render-state [_ state]
       (mode/line-render-state cursor owner state))))
@@ -33,8 +40,6 @@
   (reify
     om/IDidMount
     (did-mount [this]
-      (set! (.-onkeydown js/document.body)
-            (fn [e] (mode/dispatch-keydown cursor owner e)))
       (load-words cursor))
     om/IRender
     (render [_]

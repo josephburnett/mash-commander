@@ -2,7 +2,7 @@
   (:require [mash-commander.state :as mash-state]
             [clojure.string :as str]))
 
-(def valid-commands (atom #{"clear"}))
+(def valid-commands (atom #{}))
 
 (defmulti dispatch-enter
   (fn [cursor]
@@ -25,4 +25,11 @@
   (as-> cursor c
     (assoc c :history [])
     (assoc c :active (mash-state/initial-line-state))))
+(swap! valid-commands #(conj % "clear"))
 
+(defmethod dispatch-enter "set"
+  [cursor]
+  (as-> cursor c
+    (assoc c :history (cons (:active c) (:history c)))
+    (assoc c :active (mash-state/initial-line-state-set))))
+(swap! valid-commands #(conj % "set"))
