@@ -65,7 +65,7 @@
             (when (= :typing state)
               (let [what (last-word (get-in % [:active :letters]))]
                 (go (>! speech/say what))))
-            (command/dispatch-enter %))
+            (command/dispatch-enter % owner))
           ;; Ignore everything else
           :default %)))))
 

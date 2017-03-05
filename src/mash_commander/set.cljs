@@ -36,13 +36,20 @@
         actions (load-actions set)]
     {:actions actions :trie word-trie}))
 
-(defn- do-action [action]
+(defn- do-action [set-name action]
   (let [say-phrase (get-in action ["say" "phrase"])
-        show-picture-url (get-in action ["show" "picture" "url"])]
+        show-picture-url (get-in action ["show" "picture" "url"])
+        show-picture-file (get-in action ["show" "picture" "file"])]
+    ;; Say
     (when-not (nil? say-phrase)
       (go (>! speech/say say-phrase)))
-    (when-not (nil? show-picture-url)
-      (go (>! image/show show-picture-url)))))
+    ;; Show
+    (let [url (cond
+                (not (nil? show-picture-url)) show-picture-url
+                (not (nil? show-picture-file)) (str "/sets/" set-name "/" show-picture-file)
+                :default nil)]
+      (when-not (nil? url)
+        (go (>! image/show url))))))
 
 (defmethod mode/dispatch-keydown :set
   [cursor owner e]
@@ -67,7 +74,7 @@
             (when (contains? (get trie key) "")
               (let [current-set (get sets (get-in % [:active :set]))
                     action (str/join (reverse (cons key (get-in % [:active :letters]))))]
-                (do-action (get-in current-set [:actions action]))))
+                (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
             (as-> % c
               (assoc-in c [:active :trie-stack] (cons trie (get-in c [:active :trie-stack])))
               (assoc-in c [:active :trie] (get trie key))

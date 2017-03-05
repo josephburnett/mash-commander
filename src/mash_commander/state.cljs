@@ -6,15 +6,6 @@
    :state [:empty]
    :letters []})
 
-(defn initial-line-state-set []
-  {:mode :set
-   :set "animals"
-   :trie {"d" {"o" {"g" {"" ""}}}
-          "c" {"o" {"w" {"" ""}}
-               "a" {"t" {"" ""}}}}
-   :trie-stack []
-   :letters []})
-
 (defonce app-state
   (atom {:lines {:active (initial-line-state)
                  :history []}
@@ -29,3 +20,12 @@
 
 (defn sets []
   (om/ref-cursor (:sets (om/root-cursor app-state))))
+
+(defn initial-line-state-set [owner set-name]
+  (let [trie (get-in (om/observe owner (sets)) [set-name :trie])]
+    {:mode :set
+     :set set-name
+     :trie trie
+     :trie-stack []
+     :letters []}))
+

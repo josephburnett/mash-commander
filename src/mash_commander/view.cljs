@@ -38,7 +38,7 @@
             :error-handler print})))
 
 (defn- load-set [cursor name]
-  (go (GET (str "/sets/" name ".json")
+  (go (GET (str "/sets/" name "/" name ".json")
            {:params {:response-format :json
                      :keywords? false}
             :handler (fn [s]

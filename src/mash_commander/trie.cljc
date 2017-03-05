@@ -7,4 +7,4 @@
       trie (assoc-in trie (conj letters "") ""))))
 
 (defn build [words]
-  (reduce add-word {} words))
+  (get (reduce add-word {} words) ""))

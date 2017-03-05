@@ -1,0 +1,82 @@
+[
+    {
+	"when": {
+	    "type": "dog",
+	    "then": {
+		"say": {
+		    "phrase": "dog"
+		},
+		"show": {
+		    "picture": {
+			"file": "dog.jpg",
+			"source": "By YellowLabradorLooking_new.jpg: *derivative work: Djmirko (talk)YellowLabradorLooking.jpg: User:HabjGolden_Retriever_Sammy.jpg: Pharaoh HoundCockerpoo.jpg: ALMMLonghaired_yorkie.jpg: Ed Garcia from United StatesBoxer_female_brown.jpg: Flickr user boxercabMilù_050.JPG: AleRBeagle1.jpg: TobycatBasset_Hound_600.jpg: ToBNewfoundland_dog_Smoky.jpg: Flickr user DanDee Shotsderivative work: December21st2012Freak (talk) - YellowLabradorLooking_new.jpgGolden_Retriever_Sammy.jpgCockerpoo.jpgLonghaired_yorkie.jpgBoxer_female_brown.jpgMilù_050.JPGBeagle1.jpgBasset_Hound_600.jpgNewfoundland_dog_Smoky.jpg, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=10793219"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "cat",
+	    "then": {
+		"say": {
+		    "phrase": "cat"
+		},
+		"show": {
+		    "picture": {
+			"file": "cat.jpg",
+			"source": "By Alvesgaspar - Top left:File:Cat August 2010-4.jpg by AlvesgasparTop middle:File:Gustav chocolate.jpg by Martin BahmannTop right:File:Orange tabby cat sitting on fallen leaves-Hisashi-01A.jpg by HisashiBottom left:File:Siam lilacpoint.jpg by Martin BahmannBottom middle:File:Felis catus-cat on snow.jpg by Von.grzankaBottom right:File:Sheba1.JPG by Dovenetel, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=17960205"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "cow",
+	    "then": {
+		"say": {
+		    "phrase": "cow"
+		},
+		"show": {
+		    "picture": {
+			"file": "cow.jpg",
+			"source": "By Daniel Schwen, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=39998498"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "horse",
+	    "then": {
+		"say": {
+		    "phrase": "horse"
+		},
+		"show": {
+		    "picture": {
+			"file": "horse.jpg",
+			"source": "By Nokota_Horses.jpg: François Marchalderivative work: Dana boomer (talk) - Nokota_Horses.jpg, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=9456234"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "mouse",
+	    "then": {
+		"say": {
+		    "phrase": "mouse"
+		},
+		"show": {
+		    "picture": {
+			"file": "mouse.jpg",
+			"source": "By George Shuklin (talk) - Own work, CC BY-SA 1.0, https://commons.wikimedia.org/w/index.php?curid=5521043"
+		    }
+		}
+	    }
+	}
+    }
+]
