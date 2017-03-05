@@ -58,7 +58,8 @@
                                         :width "100vw"
                                         :overflow "hidden"
                                         :padding "0"
-                                        :margin "0"}}
+                                        :margin "0"
+                                        :position "absolute"}}
                (cons
                 (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
                 (om/build-all line-view (get-in cursor [:lines :history]))))))))

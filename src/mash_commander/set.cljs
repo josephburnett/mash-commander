@@ -3,6 +3,7 @@
   (:require [mash-commander.mode :as mode]
             [mash-commander.trie :as trie]
             [mash-commander.speech :as speech]
+            [mash-commander.image :as image]
             [mash-commander.state :as mash-state]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
@@ -36,9 +37,12 @@
     {:actions actions :trie word-trie}))
 
 (defn- do-action [action]
-  (let [say-phrase (get-in action ["say" "phrase"])]
+  (let [say-phrase (get-in action ["say" "phrase"])
+        show-picture-url (get-in action ["show" "picture" "url"])]
     (when-not (nil? say-phrase)
-      (go (>! speech/say say-phrase)))))
+      (go (>! speech/say say-phrase)))
+    (when-not (nil? show-picture-url)
+      (go (>! image/show show-picture-url)))))
 
 (defmethod mode/dispatch-keydown :set
   [cursor owner e]

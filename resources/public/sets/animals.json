@@ -13,5 +13,20 @@
 		}
 	    }
 	}
+    },
+    {
+	"when": {
+	    "type": "cat",
+	    "then": {
+		"say": {
+		    "phrase": "cat"
+		},
+		"show": {
+		    "picture": {
+			"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Cat_poster_1.jpg/2560px-Cat_poster_1.jpg"
+		    }
+		}
+	    }
+	}
     }
 ]

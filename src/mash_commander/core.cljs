@@ -7,7 +7,8 @@
             [mash-commander.view :as view]
             [mash-commander.state :as state]
             [mash-commander.freestyle]
-            [mash-commander.set]))
+            [mash-commander.set]
+            [mash-commander.image :as image]))
 
 (enable-console-print!)
 
@@ -15,3 +16,5 @@
          {:target (. js/document (getElementById "app"))
           :shared {:set-line (chan)}})
 
+(om/root image/display-view image/display-state
+         {:target (. js/document (getElementById "display"))})
