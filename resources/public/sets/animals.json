@@ -1,0 +1,17 @@
+[
+    {
+	"when": {
+	    "type": "dog",
+	    "then": {
+		"say": {
+		    "phrase": "dog"
+		},
+		"show": {
+		    "picture": {
+			"url": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Collage_of_Nine_Dogs.jpg"
+		    }
+		}
+	    }
+	}
+    }
+]

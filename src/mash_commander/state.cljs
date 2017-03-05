@@ -26,3 +26,6 @@
 
 (defn words []
   (om/ref-cursor (:words (om/root-cursor app-state))))
+
+(defn sets []
+  (om/ref-cursor (:sets (om/root-cursor app-state))))

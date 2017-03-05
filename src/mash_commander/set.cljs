@@ -17,19 +17,36 @@
              {:error (str "Word must contain only lower case letters, "
                           "single spaces and no leading or trailing "
                           "whitespace")}
-             :default word)))))
+             :default word))
+         words)))
 
-(defn- load [set]
+(defn- load-actions [set]
+  (reduce
+   (fn [actions a]
+     (let [type (get-in a ["when" "type"])
+           then (get-in a ["when" "then"])]
+       (if (or (nil? type) (nil? then)) actions
+           (assoc actions type then))))
+   {} set))
+
+(defn load [set]
   (let [words (load-words set)
-        word-trie (trie/build words)]
-    {:set set :trie word-trie}))
+        word-trie (trie/build words)
+        actions (load-actions set)]
+    {:actions actions :trie word-trie}))
+
+(defn- do-action [action]
+  (let [say-phrase (get-in action ["say" "phrase"])]
+    (when-not (nil? say-phrase)
+      (go (>! speech/say say-phrase)))))
 
 (defmethod mode/dispatch-keydown :set
   [cursor owner e]
   (let [key (.-key e)]
     (om/transact!
      (om/observe owner (mash-state/lines))
-     #(let [trie (get-in % [:active :trie])]
+     #(let [trie (get-in % [:active :trie])
+            sets (om/observe owner (mash-state/sets))]
         (cond
           ;; Backspace
           (= "Backspace" key)
@@ -44,7 +61,9 @@
           :default
           (do
             (when (contains? (get trie key) "")
-              (go (>! speech/say (str/join (reverse (cons key (get-in % [:active :letters])))))))
+              (let [current-set (get sets (get-in % [:active :set]))
+                    action (str/join (reverse (cons key (get-in % [:active :letters]))))]
+                (do-action (get-in current-set [:actions action]))))
             (as-> % c
               (assoc-in c [:active :trie-stack] (cons trie (get-in c [:active :trie-stack])))
               (assoc-in c [:active :trie] (get trie key))
