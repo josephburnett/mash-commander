@@ -66,6 +66,21 @@
                 (assoc-in c [:active :trie] (first (get-in c [:active :trie-stack])))
                 (assoc-in c [:active :trie-stack] (rest (get-in c [:active :trie-stack])))
                 (assoc-in c [:active :letters] (rest (get-in c [:active :letters])))))
+          ;; Space
+          (= " " key)
+          (do
+            (when (contains? trie "")
+              (let [current-set (get sets (get-in % [:active :set]))
+                    action (str/join (reverse (get-in % [:active :letters])))]
+                (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
+            %)
+          ;; Enter
+          (= "Enter" key)
+          (if (contains? trie "")
+            (as-> % c
+              (assoc c :history (cons (:active c) (:history c)))
+              (assoc c :active (mash-state/initial-line-state-set owner (get-in c [:active :set]))))
+            %)
           ;; Ignore invalid transitions
           (not (contains? trie key)) %
           ;; Valid transition
@@ -83,16 +98,19 @@
 (defmethod mode/line-render-state :set
   [cursor owner state]
   (let [words (str/join (reverse (:letters cursor)))
+        rendered-words               (if (contains? (:trie cursor) "")
+                                       (dom/span #js {:style #js {:color "#0f0"}} words)
+                                       (dom/span #js {:style #js {:color "#080"}} words))
         command-prompt (dom/span #js {:style #js {:color "#33f"
                                                   :fontWeight "bold"}}
                                  (str (:set cursor) " $ "))
         cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")]
-    (dom/div #js {:style #js {:fontSize "30px"
-                              :lineHeight "40px"
-                              :padding "15px 15px 0 15px"}
-                  :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
-             command-prompt
-             (if (contains? (:trie cursor) "")
-               (dom/span #js {:style #js {:color "#0f0"}} words)
-               (dom/span #js {:style #js {:color "#080"}} words))
-             cursor-char)))
+    (apply dom/div #js {:style #js {:fontSize "30px"
+                                    :lineHeight "40px"
+                                    :padding "15px 15px 0 15px"}
+                        :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
+           (if (:focus state)
+             [command-prompt
+              rendered-words
+              cursor-char]
+             [rendered-words]))))

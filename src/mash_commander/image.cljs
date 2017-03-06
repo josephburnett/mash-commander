@@ -17,7 +17,6 @@
     (did-mount [_]
       (go-loop []
         (let [what (<! show)]
-          (print "display:" what)
           (om/transact!
            cursor
            #(let [sequence (inc (:sequence %))]
