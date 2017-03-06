@@ -39,7 +39,7 @@
                                            :width "50vw"
                                            :maxHeight "100%"
                                            :padding "0"
-                                           :margin "25vh auto 0 auto"
+                                           :margin "15vh auto 0 auto"
                                            :textAlign "center"}}
                           (when-not (nil? image-url)
                             (dom/img #js {:src image-url

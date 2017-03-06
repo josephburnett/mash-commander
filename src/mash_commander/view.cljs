@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.mode :as mode]
             [mash-commander.set :as set]
+            [mash-commander.keyboard :as keyboard]
             [ajax.core :refer [GET]]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
@@ -61,6 +62,8 @@
                                         :margin "0"
                                         :position "absolute"}}
                (cons
-                (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
-                (om/build-all line-view (get-in cursor [:lines :history]))))))))
+                (om/build keyboard/keyboard-view (get-in cursor [:lines :active]))
+                (cons
+                 (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
+                 (om/build-all line-view (get-in cursor [:lines :history])))))))))
 
