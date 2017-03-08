@@ -1,0 +1,167 @@
+[
+    {
+	"when": {
+	    "type": "a",
+	    "then": {
+		"say": {
+		    "phrase": "A is for asteroid."
+		},
+		"show": {
+		    "picture": {
+			"file": "asteroid-1.jpg",
+			"source": "By NASA/JPL-Caltech/JAXA/ESA - http://dawn.jpl.nasa.gov/multimedia/images/571372main_pia14316-43_800-600.jpg, Public Domain, https://commons.wikimedia.org/w/index.php?curid=15852353"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "asteroid",
+	    "then": {
+		"say": {
+		    "phrase": "Asteroids are minor planets, especially those of the inner Solar System.",
+		    "source": "https://en.wikipedia.org/wiki/Asteroid"
+		},
+		"show": {
+		    "picture": {
+			"file": "asteroid-2.gif",
+			"source": "By Images obtained by Stefano Sposetti, Switzerland on March 18, 2004. Animation made Raoul Behrend, Geneva Observatory, Switzerland. - http://www.nasa.gov/, Public Domain, https://commons.wikimedia.org/w/index.php?curid=251214"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "b",
+	    "then": {
+		"say": {
+		    "phrase": "B is for banjo."
+		},
+		"show": {
+		    "picture": {
+			"file": "banjo-1.jpg",
+			"source": "By No machine-readable author provided. Arent assumed (based on copyright claims). - No machine-readable source provided. Own work assumed (based on copyright claims)., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=251933"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "banjo",
+	    "then": {
+		"say": {
+		    "phrase": "The banjo is a four-, five- or six-stringed instrument",
+		    "source": "https://en.wikipedia.org/wiki/Banjo"
+		},
+		"show": {
+		    "picture": {
+			"file": "banjo-2.jpg",
+			"source": "By I, I.R. Annie IP., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2423133"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "c",
+	    "then": {
+		"say": {
+		    "phrase": "C is for calculator."
+		},
+		"show": {
+		    "picture": {
+			"file": "calculator-1.jpg",
+			"source": "By No machine-readable author provided. Heretiq assumed (based on copyright claims). - No machine-readable source provided. Own work assumed (based on copyright claims)., CC BY-SA 2.5, https://commons.wikimedia.org/w/index.php?curid=460311"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "calculator",
+	    "then": {
+		"say": {
+		    "phrase": "An electronic calculator is a small, portable electronic device used to perform operations ranging from basic arithmetic to complex mathematics.",
+		    "source": "https://en.wikipedia.org/wiki/Calculator"
+		},
+		"show": {
+		    "picture": {
+			"file": "calculator-2.jpg",
+			"source": "By Loadmaster (David R. Tribble)This image was made by Loadmaster (David R. Tribble)Email the author: David R. TribbleAlso see my personal gallery at Google Picasa - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=9789878"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "d",
+	    "then": {
+		"say": {
+		    "phrase": "D is for dinosaur."
+		},
+		"show": {
+		    "picture": {
+			"file": "dinosaur-1.jpg",
+			"source": "By Marcin Chady - Flickr: http://www.flickr.com/photos/marcinchady/3854063132/in/photostream/, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=16535059"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "dinosaur",
+	    "then": {
+		"say": {
+		    "phrase": "A collection of fossil dinosaur skeletons.",
+		    "source": "https://en.wikipedia.org/wiki/Dinosaur"
+		},
+		"show": {
+		    "picture": {
+			"file": "dinosaur-2.jpg",
+			"source": "By Uploader: User:DrKiernan; based on selection at File:Various dinosaurs2.pngUser:CaptmondoTadek KurpaskiHectonichusAgsftwPerry QuanKabacchi - Wikimedia Commons, CC BY 2.0, https://commons.wikimedia.org/w/index.php?curid=39663853"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "e",
+	    "then": {
+		"say": {
+		    "phrase": "E is for earth."
+		},
+		"show": {
+		    "picture": {
+			"file": "earth-1.jpg",
+			"source": "By NASA/Apollo 17 crew; taken by either Harrison Schmitt or Ron Evans - http://www.nasa.gov/images/content/115334main_image_feature_329_ys_full.jpgAlt: http://grin.hq.nasa.gov/ABSTRACTS/GPN-2000-001138.html (direct link), Public Domain, https://commons.wikimedia.org/w/index.php?curid=43894484"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "earth",
+	    "then": {
+		"say": {
+		    "phrase": "Earth, otherwise known as the world, is the third planet from the Sun and the only object in the Universe known to harbor life.",
+		    "source": "https://en.wikipedia.org/wiki/Earth"
+		},
+		"show": {
+		    "picture": {
+			"file": "earth-2.gif",
+			"source": "By NASA/EPIC, edit by Tdadamemd - http://epic.gsfc.nasa.gov/#2016-05-29, Public Domain, https://commons.wikimedia.org/w/index.php?curid=49177679"
+		    }
+		}
+	    }
+	}
+    }
+]

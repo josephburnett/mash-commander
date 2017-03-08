@@ -51,6 +51,7 @@
     om/IDidMount
     (did-mount [this]
       (load-words cursor)
+      (load-set cursor "alphabet")
       (load-set cursor "animals"))
     om/IRender
     (render [_]
