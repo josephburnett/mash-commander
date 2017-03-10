@@ -13,9 +13,17 @@
                  [cljsjs/react "15.4.2-1"]
                  [cljsjs/react-dom "15.4.2-1"]
                  [sablono "0.7.7"]
-                 [org.omcljs/om "1.0.0-alpha46"]
-                 [cljs-ajax "0.5.8"]
-                 [org.clojure/data.json "0.2.6"]]
+                 [org.omcljs/om "1.0.0-alpha46"
+                  :exclusions
+                  [com.fasterxml.jackson.core/jackson-core]]
+                 [cljs-ajax "0.5.8"
+                  :exclusions
+                  [com.fasterxml.jackson.core/jackson-core
+                   com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
+                   com.fasterxml.jackson.dataformat/jackson-dataformat-smile]]
+                 [org.clojure/data.json "0.2.6"]
+                 [amazonica "0.3.89"]
+                 [digest "1.4.5"]]
 
   :plugins [[lein-figwheel "0.5.9"]
             [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]
