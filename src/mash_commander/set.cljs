@@ -32,7 +32,7 @@
 
 (defn load [set]
   (let [words (load-words set)
-        word-trie (trie/build words)
+        word-trie (get (trie/build words) "")
         actions (load-actions set)]
     {:actions actions :trie word-trie}))
 

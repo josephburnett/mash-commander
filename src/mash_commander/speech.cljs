@@ -1,7 +1,16 @@
 (ns mash-commander.speech
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.command :as command]
+            [ajax.core :refer [GET]]
+            [cljs-hash.md5 :as digest]
             [cljs.core.async :refer [chan put! close! <! >!]]))
+
+(def ^:private speech-manifest (atom {}))
+(go (GET "/cache/speech:manifest.json"
+         {:params {:response-format :json
+                   :keywords? :false}
+          :handler (fn [word-set]
+                     (reset! speech-manifest word-set))}))
 
 (def ^:private polly
   (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
@@ -36,21 +45,34 @@
       (.connect source (.-destination audio-context))
       (.start source 0))))
 
+(defn- adhoc-say [what]
+  (if (nil? polly)
+    (do
+      (print "Polly needs AWS credentials to say:" what)
+      (print "window.localStorage.setItem('aws-access-key-id', /* access key id */)")
+      (print "window.localStorage.setItem('aws-secret-access-key', /* secret access key */"))
+    (. polly synthesizeSpeech (clj->js {:Text what
+                                        :OutputFormat "mp3"
+                                        :VoiceId "Ivy"})
+       (fn [err data]
+         (if err
+           (print err err.stack)
+           (let [buffer (.-buffer (.-AudioStream data))]
+             (play-audio buffer)))))))
+
+(defn- cache-say [what]
+  (let [md5 (digest/md5 what)
+        filename (str "/cache/speech:ivy:" md5 ".mp3")]
+    (GET filename
+         {:handler play-audio
+          :response-format {:type :arraybuffer
+                            :read #(.getResponse %)}})))
+
 (def say (chan))
 (go-loop []
   (let [what (<! say)]
-    (if (nil? polly)
-      (do
-        (print "Polly needs AWS credentials to say:" what)
-        (print "window.localStorage.setItem('aws-access-key-id', /* access key id */)")
-        (print "window.localStorage.setItem('aws-secret-access-key', /* secret access key */"))
-      (. polly synthesizeSpeech (clj->js {:Text what
-                                          :OutputFormat "mp3"
-                                          :VoiceId "Ivy"})
-         (fn [err data]
-           (if err
-             (print err err.stack)
-             (let [buffer (.-buffer (.-AudioStream data))]
-               (play-audio buffer)))))))
-    (recur))
+    (if (contains? @speech-manifest (digest/md5 what))
+      (cache-say what)
+      (adhoc-say what))
+    (recur)))
 

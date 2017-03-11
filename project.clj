@@ -23,7 +23,8 @@
                    com.fasterxml.jackson.dataformat/jackson-dataformat-smile]]
                  [org.clojure/data.json "0.2.6"]
                  [amazonica "0.3.89"]
-                 [digest "1.4.5"]]
+                 [digest "1.4.5"]
+                 [cljs-hash "0.0.2"]]
 
   :plugins [[lein-figwheel "0.5.9"]
             [lein-cljsbuild "1.1.5" :exclusions [[org.clojure/clojure]]]]

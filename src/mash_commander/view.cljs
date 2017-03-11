@@ -31,20 +31,18 @@
       (mode/line-render-state cursor owner state))))
 
 (defn- load-words [cursor]
-  (go (GET "/words.json"
+  (go (GET "/cache/words:trie.json"
            {:params {:response-format :json
                      :keywords? false}
             :handler (fn [trie]
-                       (om/transact! cursor :words #(merge % trie)))
-            :error-handler print})))
+                       (om/transact! cursor :words #(merge % trie)))})))
 
 (defn- load-set [cursor name]
   (go (GET (str "/sets/" name "/" name ".json")
            {:params {:response-format :json
                      :keywords? false}
             :handler (fn [s]
-                       (om/transact! cursor :sets #(assoc % name (set/load s))))
-            :error-handler print})))
+                       (om/transact! cursor :sets #(assoc % name (set/load s))))})))
 
 (defn app-view [cursor owner]
   (reify
