@@ -14,7 +14,7 @@ Mash Commander is a command-line game for kids with an extremely low barrier to 
 
 Type `animals` to explore the animal set.
 
-![screenshot of mash-commander set mode](doc/mash-commander-animals-1.png)
+
 ![screenshot of mash-commander set mode](doc/mash-commander-animals-2.png)
 
 ## Features
