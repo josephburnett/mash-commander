@@ -96,26 +96,26 @@
                                   (rest r)) r)
              (if (:focus state) (cons command-prompt r) r)))))
 
-(defmethod command/dispatch-enter "say"
-  [cursor]
-  (go (>! speech/say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active (mash-state/initial-line-state))))
-(swap! command/valid-commands #(conj % "say"))
+;; (defmethod command/dispatch-enter "say"
+;;   [cursor]
+;;   (go (>! speech/say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))
+;;   (as-> cursor c
+;;     (assoc c :history (cons (:active c) (:history c)))
+;;     (assoc c :active (mash-state/initial-line-state))))
+;; (swap! command/valid-commands #(conj % "say"))
 
-(defmethod command/dispatch-enter "wiki"
-  [cursor]
-  (go (>! wiki/search (apply str (drop 4 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-    (assoc c :active (mash-state/initial-line-state))))
-(swap! command/valid-commands #(conj % "wiki"))
+;; (defmethod command/dispatch-enter "wiki"
+;;   [cursor]
+;;   (go (>! wiki/search (apply str (drop 4 (reverse (get-in cursor [:active :letters]))))))
+;;   (as-> cursor c
+;;     (assoc c :history (cons (:active c) (:history c)))
+;;     (assoc c :active (mash-state/initial-line-state))))
+;; (swap! command/valid-commands #(conj % "wiki"))
 
-(defmethod command/dispatch-enter "wolfram"
-  [cursor]
-  (go (>! wolfram/answer (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
-  (as-> cursor c
-    (assoc c :history (cons (:active c) (:history c)))
-     (assoc c :active (mash-state/initial-line-state))))
-(swap! command/valid-commands #(conj % "wolfram"))
+;; (defmethod command/dispatch-enter "wolfram"
+;;   [cursor]
+;;   (go (>! wolfram/answer (apply str (drop 7 (reverse (get-in cursor [:active :letters]))))))
+;;   (as-> cursor c
+;;     (assoc c :history (cons (:active c) (:history c)))
+;;      (assoc c :active (mash-state/initial-line-state))))
+;; (swap! command/valid-commands #(conj % "wolfram"))
