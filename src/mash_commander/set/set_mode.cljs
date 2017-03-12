@@ -54,7 +54,7 @@
             (assoc c :active (mash-state/initial-line-state-set (get-in c [:active :set]))))
           %)
         ;; Ignore invalid transitions
-        (not (contains? trie key)) (do (println (str "ignored key >" key "<")) %)
+        (not (contains? trie key)) %
         ;; Valid transition
         :default
         (do

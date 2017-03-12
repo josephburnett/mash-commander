@@ -3,6 +3,7 @@
   (:require [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
             [mash-commander.state :as mash-state]
+            [mash-commander.set.manifest :as set-manifest]
             [mash-commander.speech :as speech]
             [mash-commander.freestyle.wiki :as wiki]
             [mash-commander.freestyle.wolfram :as wolfram]
@@ -72,7 +73,9 @@
   [cursor owner state]
   (let [words (str/split (str/join (reverse (:letters cursor))) " ")
         spacing (contains? #{:typing-space :mashing-space} (first (:state cursor)))
-        commanding (contains? @command/valid-commands (first words))
+        commanding (or
+                    (contains? @command/valid-commands (first words))
+                    (contains? @set-manifest/sets (first words)))
         command-prompt (dom/span #js {:style #js {:color "#33f"
                                                   :fontWeight "bold"}} "$ ")
         cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")
