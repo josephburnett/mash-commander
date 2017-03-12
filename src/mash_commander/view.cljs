@@ -16,7 +16,7 @@
     (did-mount [_]
       (when (om/get-state owner :focus)
         (set! (.-onkeydown js/document.body)
-              (fn [e] (mode/dispatch-keydown cursor owner e)))
+              (fn [e] (mode/dispatch-keydown cursor owner (.-key e))))
         (go-loop []
           (let [state (<! (om/get-shared owner :set-line))]
             (om/update! cursor state))
@@ -25,7 +25,7 @@
     (will-receive-props [_ next]
       (when-not (= (:mode cursor) (:mode next))
         (set! (.-onkeydown js/document.body)
-              (fn [e] (mode/dispatch-keydown next owner e)))))
+              (fn [e] (mode/dispatch-keydown next owner (.-key e))))))
     om/IRenderState
     (render-state [_ state]
       (mode/line-render-state cursor owner state))))
@@ -52,7 +52,7 @@
                                         :margin "0"
                                         :position "absolute"}}
                (cons
-                (om/build keyboard/keyboard-view (get-in cursor [:lines :active]))
+                (om/build keyboard/keyboard-view (get-in cursor [:lines]))
                 (cons
                  (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
                  (om/build-all line-view (get-in cursor [:lines :history])))))))))

@@ -27,47 +27,46 @@
     (= "" (get-in trie (conj (into [] (map str/lower-case letters)) "")))))
 
 (defmethod mode/dispatch-keydown :freestyle
-  [cursor owner e]
-  (let [key (.-key e)]
-    (om/transact!
-     (om/observe owner (mash-state/lines))
-     #(let [state (first (get-in % [:active :state]))]
-        (cond
-          ;; Typing a letter
-          (contains? valid-letters key)
-          (as-> % c
-            (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
-            (if (recognize? owner (last-word (get-in c [:active :letters])))
-              (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
-              (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
-          ;; Ignore leading and additional spaces
-          (and (= " " key) (contains? #{:empty :typing-space :mashing-space} state)) %
-          ;; Pressing first space
-          (= " " key)
-          (as-> % c
-            (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
-            (if (= :typing state)
-              (do
-                (let [what (last-word (get-in c [:active :letters]))]
-                  (go (>! speech/say what)))
-                (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state]))))
-              (assoc-in c [:active :state] (cons :mashing-space (get-in c [:active :state])))))
-          ;; Ignore backspace on empty
-          (and (= "Backspace" key) (= :empty state)) %
-          ;; Backspace
-          (= "Backspace" key)
-          (as-> % c
-            (assoc-in c [:active :state] (rest (get-in c [:active :state])))
-            (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
-          ;; Enter
-          (= "Enter" key)
-          (do
-            (when (= :typing state)
-              (let [what (last-word (get-in % [:active :letters]))]
-                (go (>! speech/say what))))
-            (command/dispatch-enter % owner))
-          ;; Ignore everything else
-          :default %)))))
+  [cursor owner key]
+  (om/transact!
+   (om/observe owner (mash-state/lines))
+   #(let [state (first (get-in % [:active :state]))]
+      (cond
+        ;; Typing a letter
+        (contains? valid-letters key)
+        (as-> % c
+          (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+          (if (recognize? owner (last-word (get-in c [:active :letters])))
+            (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
+            (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
+        ;; Ignore leading and additional spaces
+        (and (= " " key) (contains? #{:empty :typing-space :mashing-space} state)) %
+        ;; Pressing first space
+        (= " " key)
+        (as-> % c
+          (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+          (if (= :typing state)
+            (do
+              (let [what (last-word (get-in c [:active :letters]))]
+                (go (>! speech/say what)))
+              (assoc-in c [:active :state] (cons :typing-space (get-in c [:active :state]))))
+            (assoc-in c [:active :state] (cons :mashing-space (get-in c [:active :state])))))
+        ;; Ignore backspace on empty
+        (and (= "Backspace" key) (= :empty state)) %
+        ;; Backspace
+        (= "Backspace" key)
+        (as-> % c
+          (assoc-in c [:active :state] (rest (get-in c [:active :state])))
+          (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
+        ;; Enter
+        (= "Enter" key)
+        (do
+          (when (= :typing state)
+            (let [what (last-word (get-in % [:active :letters]))]
+              (go (>! speech/say what))))
+          (command/dispatch-enter % owner))
+        ;; Ignore everything else
+        :default %))))
 
 (defmethod mode/line-render-state :freestyle
   [cursor owner state]

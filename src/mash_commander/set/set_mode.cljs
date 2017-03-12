@@ -26,47 +26,46 @@
         (go (>! image/show url))))))
 
 (defmethod mode/dispatch-keydown :set
-  [cursor owner e]
-  (let [key (.-key e)]
-    (om/transact!
-     (om/observe owner (mash-state/lines))
-     #(let [trie (get-in % [:active :trie])]
-        (cond
-          ;; Backspace
-          (= "Backspace" key)
-          (if (empty? (get-in % [:active :letters])) %
-              (as-> % c
-                (assoc-in c [:active :trie] (first (get-in c [:active :trie-stack])))
-                (assoc-in c [:active :trie-stack] (rest (get-in c [:active :trie-stack])))
-                (assoc-in c [:active :letters] (rest (get-in c [:active :letters])))))
-          ;; Space
-          (= " " key)
-          (do
-            (when (contains? trie "")
-              (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
-                    action (str/join (reverse (get-in % [:active :letters])))]
-                (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
-            %)
-          ;; Enter
-          (= "Enter" key)
-          (if (contains? trie "")
+  [cursor owner key]
+  (om/transact!
+   (om/observe owner (mash-state/lines))
+   #(let [trie (get-in % [:active :trie])]
+      (cond
+        ;; Backspace
+        (= "Backspace" key)
+        (if (empty? (get-in % [:active :letters])) %
             (as-> % c
-              (assoc c :history (cons (:active c) (:history c)))
-              (assoc c :active (mash-state/initial-line-state-set (get-in c [:active :set]))))
-            %)
-          ;; Ignore invalid transitions
-          (not (contains? trie key)) %
-          ;; Valid transition
-          :default
-          (do
-            (when (contains? (get trie key) "")
-              (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
-                    action (str/join (reverse (cons key (get-in % [:active :letters]))))]
-                (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
-            (as-> % c
-              (assoc-in c [:active :trie-stack] (cons trie (get-in c [:active :trie-stack])))
-              (assoc-in c [:active :trie] (get trie key))
-              (assoc-in c [:active :letters] (cons key (get-in c [:active :letters]))))))))))
+              (assoc-in c [:active :trie] (first (get-in c [:active :trie-stack])))
+              (assoc-in c [:active :trie-stack] (rest (get-in c [:active :trie-stack])))
+              (assoc-in c [:active :letters] (rest (get-in c [:active :letters])))))
+        ;; Space
+        (= " " key)
+        (do
+          (when (contains? trie "")
+            (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
+                  action (str/join (reverse (get-in % [:active :letters])))]
+              (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
+          %)
+        ;; Enter
+        (= "Enter" key)
+        (if (contains? trie "")
+          (as-> % c
+            (assoc c :history (cons (:active c) (:history c)))
+            (assoc c :active (mash-state/initial-line-state-set (get-in c [:active :set]))))
+          %)
+        ;; Ignore invalid transitions
+        (not (contains? trie key)) (do (println (str "ignored key >" key "<")) %)
+        ;; Valid transition
+        :default
+        (do
+          (when (contains? (get trie key) "")
+            (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
+                  action (str/join (reverse (cons key (get-in % [:active :letters]))))]
+              (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
+          (as-> % c
+            (assoc-in c [:active :trie-stack] (cons trie (get-in c [:active :trie-stack])))
+            (assoc-in c [:active :trie] (get trie key))
+            (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))))))))
 
 (defmethod mode/line-render-state :set
   [cursor owner state]
