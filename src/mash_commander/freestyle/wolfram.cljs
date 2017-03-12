@@ -1,8 +1,8 @@
-(ns mash-commander.wolfram
+(ns mash-commander.freestyle.wolfram
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [ajax.core :refer [GET]]
             [cljs.core.async :refer [chan put! close! <! >!]]
-            [mash-commander.command :as command]
+            [mash-commander.freestyle.command :as command]
             [mash-commander.speech :as speech]))
 
 (defn- wolfram-handler [response]

@@ -1,11 +1,11 @@
-(ns mash-commander.freestyle
+(ns mash-commander.freestyle.freestyle-mode
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [mash-commander.command :as command]
+  (:require [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
             [mash-commander.state :as mash-state]
             [mash-commander.speech :as speech]
-            [mash-commander.wiki :as wiki]
-            [mash-commander.wolfram :as wolfram]
+            [mash-commander.freestyle.wiki :as wiki]
+            [mash-commander.freestyle.wolfram :as wolfram]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [clojure.string :as str]

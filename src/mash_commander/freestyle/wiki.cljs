@@ -1,8 +1,8 @@
-(ns mash-commander.wiki
+(ns mash-commander.freestyle.wiki
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [ajax.core :refer [GET]]
             [cljs.core.async :refer [chan put! close! <! >!]]
-            [mash-commander.command :as command]
+            [mash-commander.freestyle.command :as command]
             [mash-commander.speech :as speech]))
 
 (defn- wiki-search-handler [return response]

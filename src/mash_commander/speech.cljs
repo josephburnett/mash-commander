@@ -1,7 +1,6 @@
 (ns mash-commander.speech
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [mash-commander.command :as command]
-            [ajax.core :refer [GET]]
+  (:require [ajax.core :refer [GET]]
             [cljs-hash.md5 :as digest]
             [cljs.core.async :refer [chan put! close! <! >!]]))
 

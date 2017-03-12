@@ -1,5 +1,6 @@
-(ns mash-commander.command
-  (:require [mash-commander.state :as mash-state]
+(ns mash-commander.freestyle.command
+  (:require [mash-commander.set.manifest :as set-manifest]
+            [mash-commander.state :as mash-state]
             [om.core :as om :include-macros true]
             [clojure.string :as str]))
 
@@ -32,9 +33,9 @@
   [cursor owner]
   (let [letters (get-in cursor [:active :letters])
         set-name (str/join (reverse (take-while #(not= " " %) letters)))]
-    (if (contains? (om/observe owner (mash-state/sets)) set-name)
+    (if (contains? @set-manifest/sets set-name)
       (as-> cursor c
         (assoc c :history [])
-        (assoc c :active (mash-state/initial-line-state-set owner set-name)))
+        (assoc c :active (mash-state/initial-line-state-set set-name)))
       cursor))) ;; Do nothing when set name is invalid
 (swap! valid-commands #(conj % "set"))

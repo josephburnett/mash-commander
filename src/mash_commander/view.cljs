@@ -1,7 +1,7 @@
 (ns mash-commander.view
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.mode :as mode]
-            [mash-commander.set :as set]
+            [mash-commander.set.set-mode :as set]
             [mash-commander.keyboard :as keyboard]
             [ajax.core :refer [GET]]
             [om.core :as om :include-macros true]
@@ -37,20 +37,11 @@
             :handler (fn [trie]
                        (om/transact! cursor :words #(merge % trie)))})))
 
-(defn- load-set [cursor name]
-  (go (GET (str "/sets/" name "/" name ".json")
-           {:params {:response-format :json
-                     :keywords? false}
-            :handler (fn [s]
-                       (om/transact! cursor :sets #(assoc % name (set/load s))))})))
-
 (defn app-view [cursor owner]
   (reify
     om/IDidMount
     (did-mount [this]
-      (load-words cursor)
-      (load-set cursor "alphabet")
-      (load-set cursor "animals"))
+      (load-words cursor))
     om/IRender
     (render [_]
       (let [set-state (chan)]

@@ -1,40 +1,14 @@
-(ns mash-commander.set
+(ns mash-commander.set.set-mode
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.mode :as mode]
             [mash-commander.trie :as trie]
             [mash-commander.speech :as speech]
             [mash-commander.image :as image]
             [mash-commander.state :as mash-state]
+            [mash-commander.set.manifest :as set-manifest]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [clojure.string :as str]))
-
-(defn- load-words [set]
-  (let [words (map #(get-in % ["when" "type"]) set)]
-    (map (fn [word]
-           (cond
-             (empty? word) {:error "Word must not be empty."}
-             (not (re-matches #"^[a-z]+( [a-z]+)*$" word))
-             {:error (str "Word must contain only lower case letters, "
-                          "single spaces and no leading or trailing "
-                          "whitespace")}
-             :default word))
-         words)))
-
-(defn- load-actions [set]
-  (reduce
-   (fn [actions a]
-     (let [type (get-in a ["when" "type"])
-           then (get-in a ["when" "then"])]
-       (if (or (nil? type) (nil? then)) actions
-           (assoc actions type then))))
-   {} set))
-
-(defn load [set]
-  (let [words (load-words set)
-        word-trie (get (trie/build words) "")
-        actions (load-actions set)]
-    {:actions actions :trie word-trie}))
 
 (defn- do-action [set-name action]
   (let [say-phrase (get-in action ["say" "phrase"])
@@ -56,8 +30,7 @@
   (let [key (.-key e)]
     (om/transact!
      (om/observe owner (mash-state/lines))
-     #(let [trie (get-in % [:active :trie])
-            sets (om/observe owner (mash-state/sets))]
+     #(let [trie (get-in % [:active :trie])]
         (cond
           ;; Backspace
           (= "Backspace" key)
@@ -70,7 +43,7 @@
           (= " " key)
           (do
             (when (contains? trie "")
-              (let [current-set (get sets (get-in % [:active :set]))
+              (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
                     action (str/join (reverse (get-in % [:active :letters])))]
                 (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
             %)
@@ -79,7 +52,7 @@
           (if (contains? trie "")
             (as-> % c
               (assoc c :history (cons (:active c) (:history c)))
-              (assoc c :active (mash-state/initial-line-state-set owner (get-in c [:active :set]))))
+              (assoc c :active (mash-state/initial-line-state-set (get-in c [:active :set]))))
             %)
           ;; Ignore invalid transitions
           (not (contains? trie key)) %
@@ -87,7 +60,7 @@
           :default
           (do
             (when (contains? (get trie key) "")
-              (let [current-set (get sets (get-in % [:active :set]))
+              (let [current-set (get @set-manifest/sets (get-in % [:active :set]))
                     action (str/join (reverse (cons key (get-in % [:active :letters]))))]
                 (do-action (get-in % [:active :set]) (get-in current-set [:actions action]))))
             (as-> % c

@@ -6,8 +6,8 @@
             [cljs.core.async :refer [chan]]
             [mash-commander.view :as view]
             [mash-commander.state :as state]
-            [mash-commander.freestyle]
-            [mash-commander.set]
+            [mash-commander.freestyle.freestyle-mode]
+            [mash-commander.set.set-mode]
             [mash-commander.image :as image]))
 
 (enable-console-print!)
