@@ -34,7 +34,7 @@
                                   :padding "0"
                                   :margin "0"
                                   :position "absolute"}}
-                 (dom/div #js {:style #js {:height "50vh"
+                 (dom/div #js {:style #js {:height "40vh"
                                            :width "50vw"
                                            :maxHeight "100%"
                                            :padding "0"
