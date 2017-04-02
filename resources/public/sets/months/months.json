@@ -1,0 +1,122 @@
+[
+    {
+	"when": {
+	    "type": "january",
+	    "then": {
+		"say": {
+		    "phrase": "january"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "february",
+	    "then": {
+		"say": {
+		    "phrase": "february"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "march",
+	    "then": {
+		"say": {
+		    "phrase": "march"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "april",
+	    "then": {
+		"say": {
+		    "phrase": "april"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "may",
+	    "then": {
+		"say": {
+		    "phrase": "may"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "june",
+	    "then": {
+		"say": {
+		    "phrase": "june"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "july",
+	    "then": {
+		"say": {
+		    "phrase": "july"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "august",
+	    "then": {
+		"say": {
+		    "phrase": "august"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "september",
+	    "then": {
+		"say": {
+		    "phrase": "september"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "october",
+	    "then": {
+		"say": {
+		    "phrase": "october"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "november",
+	    "then": {
+		"say": {
+		    "phrase": "november"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "december",
+	    "then": {
+		"say": {
+		    "phrase": "december"
+		}
+	    }
+	}
+    }
+]
