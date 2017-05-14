@@ -22,10 +22,11 @@
                             :color (if (contains? key-set letter)
                                      "#0b0" "#444")}
                            (:style letter-spec)))
-                  :onMouseDown #(when (contains? key-set letter)
+                  :onMouseDown #(when (or (empty? key-set) (contains? key-set letter))
                                   (mode/dispatch-keydown cursor owner
                                                          (condp = letter
                                                            "Esc" "Escape"
+                                                           "Space" " "
                                                            letter)))}
              letter)))
 
@@ -43,26 +44,26 @@
   (reify
     om/IRender
     (render [_]
-      (when (= :set (get-in cursor [:active :mode]))
-        (let [key-set (set (keys (get-in cursor [:active :trie])))
-              key-set (conj key-set "Esc")
-              rv (partial row-view (:active cursor) owner)]
-          (dom/div #js {:style #js {:position "absolute"
-                                    :width "100vw"
-                                    :heigth "100vh"}}
-                   (dom/div #js {:style #js {:backgroundColor "#ddd"
-                                             :width "870px"
-                                             :height "25vm"
-                                             :maxHeight "100%"
-                                             :margin "60vh auto 0 auto"
-                                             :zIndex "100"}}
-                            (rv (cons {:letter "Esc" :style {:width "80px"
-                                                             :margin-right "20px"}}
-                                      (standard-keys "1234567890")) "0px" key-set)
-                            (rv (standard-keys "qwertyuiop") "130px" key-set)
-                            (rv (concat
-                                 (standard-keys "asdfghjkl")
-                                 [{:letter "Enter" :style {:width "120px"
-                                                           :margin-left "50px"}}]) "150px" key-set)
-                            (rv (standard-keys "zxcvbnm") "170px" key-set)
-                            (rv [{:letter "Space" :style {:width "295px"}}] "290px" key-set))))))))
+      (let [key-set (if (= :set (get-in cursor [:active :mode]))
+                      (conj (set (keys (get-in cursor [:active :trie]))) "Esc")
+                      #{})
+            rv (partial row-view (:active cursor) owner)]
+        (dom/div #js {:style #js {:position "absolute"
+                                  :width "100vw"
+                                  :heigth "100vh"}}
+                 (dom/div #js {:style #js {:backgroundColor "#ddd"
+                                           :width "870px"
+                                           :height "25vm"
+                                           :maxHeight "100%"
+                                           :margin "60vh auto 0 auto"
+                                           :zIndex "100"}}
+                          (rv (cons {:letter "Esc" :style {:width "80px"
+                                                           :marginRight "20px"}}
+                                    (standard-keys "1234567890")) "0px" key-set)
+                          (rv (standard-keys "qwertyuiop") "130px" key-set)
+                          (rv (concat
+                               (standard-keys "asdfghjkl")
+                               [{:letter "Enter" :style {:width "120px"
+                                                         :marginLeft "50px"}}]) "150px" key-set)
+                          (rv (standard-keys "zxcvbnm") "170px" key-set)
+                          (rv [{:letter "Space" :style {:width "295px"}}] "290px" key-set)))))))
