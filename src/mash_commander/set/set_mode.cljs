@@ -31,6 +31,13 @@
    (om/observe owner (mash-state/lines))
    #(let [trie (get-in % [:active :trie])]
       (cond
+        ;; Esc
+        (= "Escape" key)
+        (as-> % c
+          (assoc c :active (:prev-active c))
+          (assoc c :history (:prev-history c))
+          (dissoc c :prev-active)
+          (dissoc c :prev-history))
         ;; Backspace
         (= "Backspace" key)
         (if (empty? (get-in % [:active :letters])) %

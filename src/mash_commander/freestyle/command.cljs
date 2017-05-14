@@ -28,6 +28,10 @@
   (let [letters (get-in cursor [:active :letters])
         set-name (str/join (take-while #(not= " " %) (reverse letters)))]
     (as-> cursor c
+      (assoc c :history (cons (:active c) (:history c)))
+      (assoc c :active (mash-state/initial-line-state))
+      (assoc c :prev-history (:history c))
+      (assoc c :prev-active (:active c))
       (assoc c :history [])
       (assoc c :active (mash-state/initial-line-state-set set-name)))))
 

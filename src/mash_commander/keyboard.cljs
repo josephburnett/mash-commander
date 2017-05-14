@@ -23,7 +23,10 @@
                                      "#0b0" "#444")}
                            (:style letter-spec)))
                   :onMouseDown #(when (contains? key-set letter)
-                                  (mode/dispatch-keydown cursor owner letter))}
+                                  (mode/dispatch-keydown cursor owner
+                                                         (condp = letter
+                                                           "Esc" "Escape"
+                                                           letter)))}
              letter)))
 
 (defn- row-view [cursor owner letters offset key-set]
@@ -42,6 +45,7 @@
     (render [_]
       (when (= :set (get-in cursor [:active :mode]))
         (let [key-set (set (keys (get-in cursor [:active :trie])))
+              key-set (conj key-set "Esc")
               rv (partial row-view (:active cursor) owner)]
           (dom/div #js {:style #js {:position "absolute"
                                     :width "100vw"
