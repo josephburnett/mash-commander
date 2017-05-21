@@ -1,23 +1,9 @@
 (ns mash-commander.state
-  (:require [mash-commander.set.manifest :as set-manifest]
+  (:require [mash-commander.mode :as mode]
             [om.core :as om :include-macros true]))
 
-(defn initial-line-state []
-  {:mode :freestyle
-   :state [:empty]
-   :letters []})
-
-(defn initial-line-state-set [name]
-  (let [trie (get-in @set-manifest/sets [name :trie])]
-    {:mode :set
-     :set name
-     :trie trie
-     :trie-stack []
-     :letters []}))
-
 (defonce app-state
-  (atom {:lines {:active (initial-line-state)
-                 :history []}
+  (atom {:lines {:history []}
          :words {}}))
 
 (defn lines []
@@ -26,3 +12,10 @@
 (defn words []
   (om/ref-cursor (:words (om/root-cursor app-state))))
 
+(defn load []
+  (print "State loaded."))
+
+(defn init []
+  (swap! app-state #(assoc-in % [:lines :active]
+                              (mode/initial-line-state {:mode :freestyle}))))
+    

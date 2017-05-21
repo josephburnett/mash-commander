@@ -1,8 +1,11 @@
 (ns mash-commander.view
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.mode :as mode]
-            [mash-commander.set.set-mode :as set]
             [mash-commander.keyboard :as keyboard]
+            [mash-commander.freestyle.freestyle-mode]
+            [mash-commander.set.set-mode]
+            [mash-commander.image :as image]
+            [mash-commander.state :as state]
             [ajax.core :refer [GET]]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
@@ -30,18 +33,8 @@
     (render-state [_ state]
       (mode/line-render-state cursor owner state))))
 
-(defn- load-words [cursor]
-  (go (GET "/cache/words:trie.json"
-           {:params {:response-format :json
-                     :keywords? false}
-            :handler (fn [trie]
-                       (om/transact! cursor :words #(merge % trie)))})))
-
 (defn app-view [cursor owner]
   (reify
-    om/IDidMount
-    (did-mount [this]
-      (load-words cursor))
     om/IRender
     (render [_]
       (let [set-state (chan)]
@@ -57,3 +50,10 @@
                  (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
                  (om/build-all line-view (get-in cursor [:lines :history])))))))))
 
+(defn init[]
+  (om/root app-view state/app-state
+           {:target (. js/document (getElementById "app"))
+            :shared {:set-line (chan)}})
+  (om/root image/display-view image/display-state
+           {:target (. js/document (getElementById "display"))}))
+  

@@ -8,3 +8,6 @@
 
 (defn build [words]
   (reduce add-word {} words))
+
+(defn trie-merge [a b]
+  (merge-with trie-merge a b))

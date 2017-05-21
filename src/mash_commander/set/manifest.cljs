@@ -2,9 +2,13 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [mash-commander.trie :as trie]
             [ajax.core :refer [GET]]
-            [cljs.core.async :refer [chan put! close! <! >!]]))
+            [cljs.core.async :as async :refer [chan put! close! <! >!]]))
 
 (def ^:private sets (atom {}))
+(def ^:private set-trie (atom {}))
+
+(defn get-set-trie []
+  @set-trie)
 
 (defn- load-words [set]
   (let [words (map #(get-in % ["when" "type"]) set)]
@@ -34,15 +38,25 @@
     {:actions actions :trie word-trie}))
 
 (defn- load-set [name]
-  (go (GET (str "/sets/" name "/" name ".json")
-           {:params {:response-format :json
-                     :keywords? false}
-            :handler (fn [s]
-                       (let [loaded-set (load s)]
-                         (swap! sets assoc name loaded-set)))})))
+  (let [done (chan)]
+    (go (GET (str "/sets/" name "/" name ".json")
+             {:params {:response-format :json
+                       :keywords? false}
+              :handler (fn [s]
+                         (let [loaded-set (load s)]
+                           (swap! sets assoc name loaded-set)
+                           (swap! set-trie #(trie/trie-merge % (trie/build (keys @sets))))
+                           (close! done)))}))
+    done))
 
-(go (GET (str "/cache/set:manifest.json")
-         {:params {:response-format :json
-                   :keywords? false}
-          :handler (fn [m] (doall (map load-set m)))}))
+(defn init []
+  (let [done (chan)]
+    (go (GET (str "/cache/set:manifest.json")
+             {:params {:response-format :json
+                       :keywords? false}
+              :handler (fn [m]
+                         (go
+                           (<! (async/merge (map load-set m)))
+                           (close! done)))}))
+    done))
 

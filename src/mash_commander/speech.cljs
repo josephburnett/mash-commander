@@ -5,11 +5,6 @@
             [cljs.core.async :refer [chan put! close! <! >!]]))
 
 (def ^:private speech-manifest (atom {}))
-(go (GET "/cache/speech:manifest.json"
-         {:params {:response-format :json
-                   :keywords? :false}
-          :handler (fn [word-set]
-                     (reset! speech-manifest word-set))}))
 
 (def ^:private polly
   (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
@@ -68,10 +63,20 @@
                             :read #(.getResponse %)}})))
 
 (def say (chan))
-(go-loop []
-  (let [what (<! say)]
-    (if (contains? @speech-manifest (digest/md5 what))
-      (cache-say what)
-      (adhoc-say what))
-    (recur)))
+    (go-loop []
+      (let [what (<! say)]
+        (if (contains? @speech-manifest (digest/md5 what))
+          (cache-say what)
+          (adhoc-say what))
+        (recur)))
+
+(defn init []
+  (let [done (chan)]
+    (go (GET "/cache/speech:manifest.json"
+             {:params {:response-format :json
+                       :keywords? :false}
+              :handler (fn [word-set]
+                         (reset! speech-manifest word-set)
+                         (close! done))}))
+    done))
 

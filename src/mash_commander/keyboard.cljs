@@ -4,8 +4,11 @@
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
 
-(defn- key-view [cursor owner key-set letter-spec]
-  (let [letter (:letter letter-spec)]
+(defn- key-view [cursor owner word-key-set command-key-set default-enabled key-spec]
+  (let [key (:key key-spec)
+        enabled (or (contains? word-key-set key)
+                    (contains? command-key-set key)
+                    default-enabled)]
     (dom/div #js {:style (clj->js
                           (merge
                            {:height "46px"
@@ -19,34 +22,39 @@
                             :borderColor "#000"
                             :borderStyle "solid"
                             :borderRadius "8px"
-                            :color (if (contains? key-set letter)
-                                     "#0b0" "#444")}
-                           (:style letter-spec)))
-                  :onMouseDown #(when (or (empty? key-set) (contains? key-set letter))
+                            :color (cond
+                                     (contains? command-key-set key) "#33f"
+                                     (contains? word-key-set key) "#0b0"
+                                     default-enabled "#080"
+                                     :else "#444")}
+                           (:style key-spec)))
+                  :onMouseDown #(when enabled
                                   (mode/dispatch-keydown cursor owner
-                                                         (condp = letter
+                                                         (condp = key
                                                            "Esc" "Escape"
                                                            "Space" " "
-                                                           letter)))}
-             letter)))
+                                                           key)))}
+             key)))
 
-(defn- row-view [cursor owner letters offset key-set]
+(defn- row-view [cursor owner key-list offset word-key-set command-key-set default-enabled]
   (apply dom/div #js {:style #js {:float "left"
                                   :clear "both"
                                   :paddingLeft offset}}
-         (map (partial key-view cursor owner key-set) letters)))
+         (map (partial key-view cursor owner word-key-set command-key-set default-enabled)
+              key-list)))
 
-(defn- standard-keys [letters]
-  (map #(assoc {:style {}} :letter %)
-       (seq letters)))
+(defn- standard-keys [key-list]
+  (map #(assoc {:style {}} :key %)
+       (seq key-list)))
 
 (defn keyboard-view [cursor owner]
   (reify
     om/IRender
     (render [_]
-      (let [key-set (if (= :set (get-in cursor [:active :mode]))
-                      (conj (set (keys (get-in cursor [:active :trie]))) "Esc")
-                      #{})
+      (let [word-key-set (conj (set (keys (get-in cursor [:active :trie]))) "Esc")
+            command-key-set (if (= :freestyle (get-in cursor [:active :mode]))
+                              (set (keys (get-in cursor [:active :command-trie]))) #{})
+            default-enabled (= :freestyle (get-in cursor [:active :mode]))
             rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
                                   :width "100vw"
@@ -57,13 +65,13 @@
                                            :maxHeight "100%"
                                            :margin "60vh auto 0 auto"
                                            :zIndex "100"}}
-                          (rv (cons {:letter "Esc" :style {:width "80px"
-                                                           :marginRight "20px"}}
-                                    (standard-keys "1234567890")) "0px" key-set)
-                          (rv (standard-keys "qwertyuiop") "130px" key-set)
+                          (rv (cons {:key "Esc" :style {:width "80px"
+                                                        :marginRight "20px"}}
+                                    (standard-keys "1234567890")) "0px" word-key-set)
+                          (rv (standard-keys "qwertyuiop") "130px" word-key-set)
                           (rv (concat
                                (standard-keys "asdfghjkl")
-                               [{:letter "Enter" :style {:width "120px"
-                                                         :marginLeft "50px"}}]) "150px" key-set)
-                          (rv (standard-keys "zxcvbnm") "170px" key-set)
-                          (rv [{:letter "Space" :style {:width "295px"}}] "290px" key-set)))))))
+                               [{:key "Enter" :style {:width "120px"
+                                                      :marginLeft "50px"}}]) "150px" word-key-set)
+                          (rv (standard-keys "zxcvbnm") "170px" word-key-set)
+                          (rv [{:key "Space" :style {:width "295px"}}] "290px" word-key-set)))))))

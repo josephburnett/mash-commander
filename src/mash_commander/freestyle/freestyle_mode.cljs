@@ -7,6 +7,7 @@
             [mash-commander.speech :as speech]
             [mash-commander.freestyle.wiki :as wiki]
             [mash-commander.freestyle.wolfram :as wolfram]
+            [mash-commander.words :as mash-words]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [clojure.string :as str]
@@ -23,7 +24,7 @@
     (str/join (reverse (take-while #(not= " " %) l)))))
 
 (defn- recognize? [owner word]
-  (let [trie (om/observe owner (mash-state/words))
+  (let [trie (mash-words/get-word-trie)
         letters (seq word)]
     (= "" (get-in trie (conj (into [] (map str/lower-case letters)) "")))))
 
@@ -95,6 +96,15 @@
              (if commanding (cons (dom/span #js {:style #js {:color "#33f"}} (first words))
                                   (rest r)) r)
              (if (:focus state) (cons command-prompt r) r)))))
+
+(defmethod mode/initial-line-state :freestyle [state]
+  (merge state
+         {:state [:empty]
+          :trie (mash-words/get-word-trie)
+          :trie-stack []
+          :command-trie (command/get-command-trie)
+          :command-trie-stack []
+          :letters []}))
 
 ;; (defmethod command/dispatch-enter "say"
 ;;   [cursor]

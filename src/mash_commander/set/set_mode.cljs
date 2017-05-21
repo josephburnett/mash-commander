@@ -58,7 +58,8 @@
         (if (contains? trie "")
           (as-> % c
             (assoc c :history (cons (:active c) (:history c)))
-            (assoc c :active (mash-state/initial-line-state-set (get-in c [:active :set]))))
+            (assoc c :active (mode/initial-line-state {:mode :set
+                                                       :set (get-in c [:active :set])})))
           %)
         ;; Ignore invalid transitions
         (not (contains? trie key)) %
@@ -93,3 +94,14 @@
               rendered-words
               cursor-char]
              [rendered-words]))))
+
+(defmethod mode/initial-line-state :set [state]
+  (let [trie (get-in @set-manifest/sets [(:set state) :trie])]
+    (merge state
+           {:trie trie
+            :trie-stack []
+            :letters []})))
+
+(defn load []
+  (print "Loading set mode."))
+
