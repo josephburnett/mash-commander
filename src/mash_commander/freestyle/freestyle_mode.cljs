@@ -28,16 +28,29 @@
         letters (seq word)]
     (= "" (get-in trie (conj (into [] (map str/lower-case letters)) "")))))
 
+(defn- trie-step [trie letter]
+  (if (or (empty? trie) (not (contains? trie letter))) {}
+      (get trie letter)))
+      
 (defmethod mode/dispatch-keydown :freestyle
   [cursor owner key]
   (om/transact!
    (om/observe owner (mash-state/lines))
-   #(let [state (first (get-in % [:active :state]))]
+   #(let [state (first (get-in % [:active :state]))
+          letters (get-in % [:active :letters])
+          trie (get-in % [:active :trie])
+          trie-stack (get-in % [:active :trie-stack])
+          command-trie (get-in % [:active :command-trie])
+          command-trie-stack (get-in % [:active :command-trie-stack])]
       (cond
         ;; Typing a letter
         (contains? valid-letters key)
         (as-> % c
-          (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+          (assoc-in c [:active :letters] (cons key letters))
+          (assoc-in c [:active :trie-stack] (cons trie trie-stack))
+          (assoc-in c [:active :command-trie-stack] (cons command-trie command-trie-stack))
+          (assoc-in c [:active :trie] (trie-step trie key))
+          (assoc-in c [:active :command-trie] (trie-step command-trie key))
           (if (recognize? owner (last-word (get-in c [:active :letters])))
             (assoc-in c [:active :state] (cons :typing (get-in c [:active :state])))
             (assoc-in c [:active :state] (cons :mashing (get-in c [:active :state])))))
@@ -46,7 +59,11 @@
         ;; Pressing first space
         (= " " key)
         (as-> % c
-          (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+          (assoc-in c [:active :letters] (cons key letters))
+          (assoc-in c [:active :trie-stack] (cons trie trie-stack))
+          (assoc-in c [:active :command-trie-stack] (cons command-trie command-trie-stack))
+          (assoc-in c [:acitve :trie] (mash-words/get-word-trie))
+          (assoc-in c [:active :command-trie] {}) ;; only the first word is a command
           (if (= :typing state)
             (do
               (let [what (last-word (get-in c [:active :letters]))]
@@ -59,7 +76,11 @@
         (= "Backspace" key)
         (as-> % c
           (assoc-in c [:active :state] (rest (get-in c [:active :state])))
-          (assoc-in c [:active :letters] (rest (get-in c [:active :letters]))))
+          (assoc-in c [:active :letters] (rest (get-in c [:active :letters])))
+          (assoc-in c [:active :trie] (first trie-stack))
+          (assoc-in c [:active :trie-stack] (rest trie-stack))
+          (assoc-in c [:active :command-trie] (first command-trie-stack))
+          (assoc-in c [:active :command-trie-stack] (rest command-trie-stack)))
         ;; Enter
         (= "Enter" key)
         (do

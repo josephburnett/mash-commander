@@ -11,11 +11,9 @@
 
 (defn add-command [name]
   (swap! valid-commands #(conj % name))
-  (swap! built-in-command-trie (trie/build @valid-commands)))
+  (swap! built-in-command-trie #(trie/trie-merge % (trie/build @valid-commands))))
 
 (defn get-command-trie []
-  (print "get-command-trie")
-  (print "set-manifest/get-set-trie: " (set-manifest/get-set-trie))
   (trie/trie-merge @built-in-command-trie (set-manifest/get-set-trie)))
 
 (defn valid-command? [name]

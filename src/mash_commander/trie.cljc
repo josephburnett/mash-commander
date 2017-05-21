@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (defn- add-word [trie word]
-  (let [letters (into [] (map str/lower-case (str/split word #"")))]
+  (let [letters (into [] (map str/lower-case (rest (str/split word #""))))]
     (if (or (empty? letters) (= "#" (first letters)))
       trie (assoc-in trie (conj letters "") ""))))
 
