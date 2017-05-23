@@ -17,14 +17,13 @@
                             :textAlign "center"
                             :fontSize "30px"
                             :borderWidth "2px"
-                            :borderColor "#000"
+                            :borderColor (if (= :command potential) "#227" "#000")
                             :borderStyle "solid"
                             :borderRadius "8px"
-                            :color (condp = potential
-                                     :command "#33f"
-                                     :typing "#0b0"
-                                     :mashing "#060"
-                                     :disabled "#444")}
+                            :color (cond
+                                     (contains? #{:command :typing} potential) "#0b0"
+                                     (= :mashing potential) "#060"
+                                     :else "#444")}
                            (:style key-spec)))
                   :onMouseDown #(when-not (= :disabled potential)
                                   (mode/dispatch-keydown line-cursor owner
