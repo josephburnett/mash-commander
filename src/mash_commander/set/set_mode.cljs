@@ -102,6 +102,21 @@
             :trie-stack []
             :letters []})))
 
+(defmethod mode/key-potential :set
+  [line key]
+  (let [word-trie (:trie line)]
+    (cond
+      ;; Typing potential
+      (or (contains? word-trie key)
+          (and (= "Enter" key)
+               (contains? word-trie "")))
+      :typing
+      ;; Escape back to freestyle mode
+      (= "Escape" key)
+      :mashing
+      ;; Other keys disabled
+      :else :disabled)))
+
 (defn load []
   (print "Loading set mode."))
 

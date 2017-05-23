@@ -2,16 +2,17 @@
   (:require [om.dom :as dom :include-macros true]))
 
 (defmulti dispatch-keydown
-  (fn [cursor owner e]
-    (get-in cursor [:mode])))
+  (fn [line owner e]
+    (get line :mode)))
 
 (defmulti line-render-state
-  (fn [cursor owner state]
-    (get-in cursor [:mode])))
-
-(defmethod line-render-state :default [cursor owner state]
-  (dom/div nil "not ready yet"))
+  (fn [line owner state]
+    (get line :mode)))
 
 (defmulti initial-line-state
   (fn [line]
-    (get-in line [:mode])))
+    (get line :mode)))
+
+(defmulti key-potential
+  (fn [line key]
+    (get line :mode)))

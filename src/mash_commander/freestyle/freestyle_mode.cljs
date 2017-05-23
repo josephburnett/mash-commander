@@ -127,6 +127,37 @@
           :command-trie-stack []
           :letters []}))
 
+(defmethod mode/key-potential :freestyle
+  [line key]
+  (let [state (first (:state line))
+        word-trie (:trie line)
+        command-trie (:command-trie line)]
+    (cond
+      ;; No enter or space on empty lines
+      (and (= :empty state)
+           (contains? #{"Enter" "Space"} key))
+      :disabled
+      ;; No double spaces
+      (and (contains? #{:typing-space :mashing-space} state)
+           (= "Space" key))
+      :disabled
+      ;; No escape
+      (= "Esc" key)
+      :disabled
+      ;; Command potential
+      (or (contains? command-trie key)
+          (and (= "Enter" key)
+               (contains? command-trie "")))
+      :command
+      ;; Typing potential
+      (or (contains? word-trie key)
+          (and (= "Enter" key)
+               (contains? word-trie "")))
+      :typing
+      ;; Mashing potential
+      :else :mashing)))
+
+
 ;; (defmethod command/dispatch-enter "say"
 ;;   [cursor]
 ;;   (go (>! speech/say (apply str (drop 3 (reverse (get-in cursor [:active :letters]))))))

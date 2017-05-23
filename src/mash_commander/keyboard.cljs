@@ -4,12 +4,9 @@
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
 
-(defn- key-view [cursor owner word-key-set command-key-set default-enabled
-                 freestyle-state key-spec]
+(defn- key-view [line-cursor owner key-spec]
   (let [key (:key key-spec)
-        enabled (or (contains? word-key-set key)
-                    (contains? command-key-set key)
-                    default-enabled)]
+        potential (mode/key-potential line-cursor key)]
     (dom/div #js {:style (clj->js
                           (merge
                            {:height "46px"
@@ -23,30 +20,25 @@
                             :borderColor "#000"
                             :borderStyle "solid"
                             :borderRadius "8px"
-                            :color (cond
-                                     (contains? command-key-set key) "#33f"
-                                     (or (contains? word-key-set key)
-                                         (and (= "Enter" key)
-                                              (contains? #{:typing :typing-space} freestyle-state))) "#0b0"
-                                     (and default-enabled
-                                          (contains? #{:typing :mashing} freestyle-state)) "#060"
-                                     :else "#444")}
+                            :color (condp = potential
+                                     :command "#33f"
+                                     :typing "#0b0"
+                                     :mashing "#060"
+                                     :disabled "#444")}
                            (:style key-spec)))
-                  :onMouseDown #(when enabled
-                                  (mode/dispatch-keydown cursor owner
+                  :onMouseDown #(when-not (= :disabled potential)
+                                  (mode/dispatch-keydown line-cursor owner
                                                          (condp = key
                                                            "Esc" "Escape"
                                                            "Space" " "
                                                            key)))}
              key)))
 
-(defn- row-view [cursor owner word-key-set command-key-set default-enabled
-                 freestyle-state key-list offset]
+(defn- row-view [line-cursor owner key-list offset]
   (apply dom/div #js {:style #js {:float "left"
                                   :clear "both"
                                   :paddingLeft offset}}
-         (map (partial key-view cursor owner word-key-set command-key-set default-enabled
-                       freestyle-state)
+         (map (partial key-view line-cursor owner)
               key-list)))
 
 (defn- standard-keys [key-list]
@@ -57,14 +49,7 @@
   (reify
     om/IRender
     (render [_]
-      (let [word-key-set (conj (set (keys (get-in cursor [:active :trie]))) "Esc")
-            command-key-set (if (= :freestyle (get-in cursor [:active :mode]))
-                              (set (keys (get-in cursor [:active :command-trie]))) #{})
-            mode (get-in cursor [:active :mode])
-            default-enabled (= :freestyle mode)
-            freestyle-state (when (= :freestyle mode) (first (get-in cursor [:active :state])))
-            rv (partial row-view (:active cursor)
-                        owner word-key-set command-key-set default-enabled freestyle-state)]
+      (let [rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
                                   :width "100vw"
                                   :heigth "100vh"}}
