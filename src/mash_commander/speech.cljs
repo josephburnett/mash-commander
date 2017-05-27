@@ -6,14 +6,16 @@
 
 (def ^:private speech-manifest (atom {}))
 
-(def ^:private polly
-  (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
-        secret-access-key (js/localStorage.getItem "aws-secret-access-key")]
-    (when-not (or (nil? access-key-id) (nil? secret-access-key))
-      (js/AWS.Polly. #js {:apiVersion "2016-06-10"
-                          :region "us-east-1"
-                          :accessKeyId access-key-id
-                          :secretAccessKey secret-access-key}))))
+(def ^:private polly nil)
+  ;; Advanced compilation breaks AWS Polly.
+  ;;
+  ;; (let [access-key-id (js/localStorage.getItem "aws-access-key-id")
+  ;;       secret-access-key (js/localStorage.getItem "aws-secret-access-key")]
+  ;;   (when-not (or (nil? access-key-id) (nil? secret-access-key))
+  ;;     (js/AWS.Polly. #js {:apiVersion "2016-06-10"
+  ;;                         :region "us-east-1"
+  ;;                         :accessKeyId access-key-id
+  ;;                         :secretAccessKey secret-access-key}))))
 
 ;; https://gist.github.com/msgodf/9296652
 (defn- decode-audio-data
@@ -40,11 +42,7 @@
       (.start source 0))))
 
 (defn- adhoc-say [what]
-  (if (nil? polly)
-    (do
-      (print "Polly needs AWS credentials to say:" what)
-      (print "window.localStorage.setItem('aws-access-key-id', /* access key id */)")
-      (print "window.localStorage.setItem('aws-secret-access-key', /* secret access key */"))
+  (when-not (nil? polly)
     (. polly synthesizeSpeech (clj->js {:Text what
                                         :OutputFormat "mp3"
                                         :VoiceId "Ivy"})

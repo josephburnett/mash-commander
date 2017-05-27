@@ -48,8 +48,8 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/mash_commander.js"
                            :main mash-commander.core
-                           :optimizations :simple ; advanced optimizations break AWS Polly SDK
-                           :externs ["externs/aws-sdk-polly-2.16.0.min.js"]
+                           :optimizations :advanced ;; Breaks AWS Polly.  Use :simple for adhoc speech and uncomment:
+                                                    ;; :externs ["externs/aws-sdk-polly-2.16.0.min.js"]
                            :pretty-print false}}]}
 
   :figwheel {:css-dirs ["resources/public/css"]}
