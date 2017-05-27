@@ -16,22 +16,19 @@
                             :float "left"
                             :textAlign "center"
                             :fontSize "30px"
-                            :borderWidth "2px"
-                            :borderColor (if (= :command potential) "#227" "#000")
+                            :borderWidth "1px"
+                            :borderColor "#000"
                             :borderStyle "solid"
                             :borderRadius "8px"
-                            :color (cond
-                                     (contains? #{:command :typing} potential) "#0b0"
-                                     (= :mashing potential) "#060"
-                                     :else "#444")}
+                            :color (condp = potential
+                                     :command "#33f"
+                                      :typing "#0b0"
+                                     :mashing "#060"
+                                     "#444")}
                            (:style key-spec)))
                   :onMouseDown #(when-not (= :disabled potential)
-                                  (mode/dispatch-keydown line-cursor owner
-                                                         (condp = key
-                                                           "Esc" "Escape"
-                                                           "Space" " "
-                                                           key)))}
-             key)))
+                                  (mode/dispatch-keydown line-cursor owner key))}
+             (:display key-spec))))
 
 (defn- row-view [line-cursor owner key-list offset]
   (apply dom/div #js {:style #js {:float "left"
@@ -41,7 +38,7 @@
               key-list)))
 
 (defn- standard-keys [key-list]
-  (map #(assoc {:style {}} :key %)
+  (map #(assoc {:style {}} :key % :display %)
        (seq key-list)))
 
 (defn keyboard-view [cursor owner]
@@ -58,13 +55,13 @@
                                            :maxHeight "100%"
                                            :margin "60vh auto 0 auto"
                                            :zIndex "100"}}
-                          (rv (cons {:key "Esc" :style {:width "80px"
-                                                        :marginRight "20px"}}
-                                    (standard-keys "1234567890")) "0px")
+                          (rv (concat
+                               [{:key "Escape" :display "Esc" :style {:width "80px" :marginRight "20px"}}]
+                               (standard-keys "1234567890")
+                               [{:key "Backspace" :display "<--" :style {:width "100px" :marginLeft "60px"}}]) "0px")
                           (rv (standard-keys "qwertyuiop") "130px")
                           (rv (concat
                                (standard-keys "asdfghjkl")
-                               [{:key "Enter" :style {:width "120px"
-                                                      :marginLeft "50px"}}]) "150px")
+                               [{:key "Enter" :display "Enter":style {:width "120px" :marginLeft "50px"}}]) "150px")
                           (rv (standard-keys "zxcvbnm") "170px")
-                          (rv [{:key "Space" :style {:width "295px"}}] "290px")))))))
+                          (rv [{:key " " :display "Space" :style {:width "295px"}}] "290px")))))))

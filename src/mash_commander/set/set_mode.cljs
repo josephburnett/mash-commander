@@ -114,6 +114,10 @@
       ;; Escape back to freestyle mode
       (= "Escape" key)
       :mashing
+      ;; Backspace when not empty
+      (and (not (empty? (:letters line)))
+           (= "Backspace" key))
+      :mashing
       ;; Other keys disabled
       :else :disabled)))
 

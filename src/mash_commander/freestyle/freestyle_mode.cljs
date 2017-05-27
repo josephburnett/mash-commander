@@ -135,14 +135,18 @@
     (cond
       ;; No enter or space on empty lines
       (and (= :empty state)
-           (contains? #{"Enter" "Space"} key))
+           (contains? #{"Enter" " "} key))
       :disabled
       ;; No double spaces
       (and (contains? #{:typing-space :mashing-space} state)
-           (= "Space" key))
+           (= " " key))
       :disabled
       ;; No escape
-      (= "Esc" key)
+      (= "Escape" key)
+      :disabled
+      ;; No backspace on empty
+      (and (= :empty state)
+           (= "Backspace" key))
       :disabled
       ;; Command potential
       (or (contains? command-trie key)
