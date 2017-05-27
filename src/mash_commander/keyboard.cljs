@@ -24,7 +24,10 @@
                                      :command "#33f"
                                       :typing "#0b0"
                                      :mashing "#060"
-                                     "#444")}
+                                     "#444")
+                           :MozUserSelect "none"
+                           :WebkitUserSelect "none"
+                           :msUserSelect "none"}
                            (:style key-spec)))
                   :onMouseDown #(when-not (= :disabled potential)
                                   (mode/dispatch-keydown line-cursor owner key))}
