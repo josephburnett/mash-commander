@@ -118,6 +118,10 @@
       (and (not (empty? (:letters line)))
            (= "Backspace" key))
       :mashing
+      ;; Space at a leaf node replays the node
+      (and (contains? word-trie "")
+           (= " " key))
+      :mashing
       ;; Other keys disabled
       :else :disabled)))
 
