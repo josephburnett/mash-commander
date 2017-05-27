@@ -14,4 +14,4 @@ lein clean
 lein cljsbuild once min
 
 cd ${ROOT?}/gae
-gcloud --quiet --project ${PROJECT?} app deploy --no-promote
+gcloud --quiet --project ${PROJECT?} app deploy
