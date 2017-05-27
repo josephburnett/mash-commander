@@ -62,7 +62,7 @@
           (assoc-in c [:active :letters] (cons key letters))
           (assoc-in c [:active :trie-stack] (cons trie trie-stack))
           (assoc-in c [:active :command-trie-stack] (cons command-trie command-trie-stack))
-          (assoc-in c [:acitve :trie] (mash-words/get-word-trie))
+          (assoc-in c [:active :trie] (mash-words/get-word-trie))
           (assoc-in c [:active :command-trie] {}) ;; only the first word is a command
           (if (= :typing state)
             (do

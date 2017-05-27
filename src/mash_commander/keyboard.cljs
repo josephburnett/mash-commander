@@ -47,13 +47,14 @@
     (render [_]
       (let [rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
+                                  :top "475px"
                                   :width "100vw"
                                   :heigth "100vh"}}
                  (dom/div #js {:style #js {:backgroundColor "#ddd"
                                            :width "870px"
                                            :height "25vm"
                                            :maxHeight "100%"
-                                           :margin "60vh auto 0 auto"
+                                           :margin "0 auto"
                                            :zIndex "100"}}
                           (rv (concat
                                [{:key "Escape" :display "Esc" :style {:width "80px" :marginRight "20px"}}]
