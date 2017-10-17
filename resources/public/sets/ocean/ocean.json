@@ -1,0 +1,154 @@
+[
+    {
+	"when": {
+	    "type": "ocean",
+	    "then": {
+		"say": {
+		    "phrase": "The ocean is a body of saline water that covers two thirds of the earth's surface."
+		},
+		"show": {
+		    "picture": {
+			"file": "ocean.jpg",
+			"source": "By Tiago Fioreze (Own work) [CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0) or GFDL (http://www.gnu.org/copyleft/fdl.html)], via Wikimedia Commons"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "artic",
+	    "then": {
+		"say": {
+		    "phrase": "The Arctic Ocean is the smallest and shallowest of the world's five major oceans.",
+		    "source": "https://en.wikipedia.org/wiki/Arctic_Ocean"
+		},
+		"show": {
+		    "picture": {
+			"file": "artic.png",
+			"source": "By CIA - CIA World Factbook (https://www.cia.gov/library/publications/the-world-factbook/geos/xq.html), Public Domain, https://commons.wikimedia.org/w/index.php?curid=7627324"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "atlantic",
+	    "then": {
+		"say": {
+		    "phrase": "The Atlantic Ocean is the second largest of the world's oceans with a total area of about 41,100,000 square miles. It covers approximately 20 percent of the Earth's surface and about 29 percent of its water surface area.",
+		    "source": "https://en.wikipedia.org/wiki/Atlantic_Ocean"
+		},
+		"show": {
+		    "picture": {
+			"file": "atlantic.png",
+			"source": "By Catrin (Own work, Using GMT) [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0)], via Wikimedia Commons"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "indian",
+	    "then": {
+		"say": {
+		    "phrase": "The Indian Ocean is the third largest of the world's oceanic divisions, covering 27,240,000 sq miles, approximately 20% of the water on the Earth's surface.",
+		    "source": "https://en.wikipedia.org/wiki/Indian_Ocean"
+		},
+		"show": {
+		    "picture": {
+			"file": "indian.png",
+			"source": "By United States Central Intelligence Agency - The World Factbook, Public Domain, https://commons.wikimedia.org/w/index.php?curid=89448"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "pacific",
+	    "then": {
+		"say": {
+		    "phrase": "The Pacific Ocean is the largest and deepest of Earth's oceanic divisions.",
+		    "source": "https://en.wikipedia.org/wiki/Pacific_Ocean"
+		},
+		"show": {
+		    "picture": {
+			"file": "pacific.png",
+			"source": "By CIA World Factbook - CIA World Factbook, Public Domain, https://commons.wikimedia.org/w/index.php?curid=7627409"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "southern",
+	    "then": {
+		"say": {
+		    "phrase": "The Southern Ocean, also known as the Antarctic Ocean[1] or the Austral Ocean,[2][note 4] comprises the southernmost waters of the World Ocean, generally taken to be south of 60° S latitude and encircling Antarctica.",
+		    "source": "https://en.wikipedia.org/wiki/Southern_Ocean"
+		},
+		"show": {
+		    "picture": {
+			"file": "southern.png",
+			"source": "By Connormah - Own work by uploader, based on File:Location Antarctica.svg, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=8029654"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "fish",
+	    "then": {
+		"say": {
+		    "phrase": "Fish have backbones, gills and fins, and are cold blooded.",
+		    "source": "https://en.wikipedia.org/wiki/Fish"
+		},
+		"show": {
+		    "picture": {
+			"file": "fish.jpg",
+			"source": "By Diliff, CC BY 2.5, https://commons.wikimedia.org/w/index.php?curid=823649"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "jellyfish",
+	    "then": {
+		"say": {
+		    "phrase": "Jellyfish or jellies[1] are softbodied, free-swimming aquatic animals with a gelatinous umbrella-shaped bell and trailing tentacles.",
+		    "source": "https://en.wikipedia.org/wiki/Jellyfish"
+		},
+		"show": {
+		    "picture": {
+			"file": "jellyfish.jpg",
+			"source": "By Dan90266 - http://www.flickr.com/photos/dan90266/37269957/, CC BY-SA 2.0, https://commons.wikimedia.org/w/index.php?curid=527474"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "whale",
+	    "then": {
+		"say": {
+		    "phrase": "Whales are a widely distributed and diverse group of fully aquatic placental marine mammals.",
+		    "source": "https://en.wikipedia.org/wiki/Whale"
+		},
+		"show": {
+		    "picture": {
+			"file": "whale.jpg",
+			"source": "By Michaël CATANZARITI - by Michaël CATANZARITI, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=396382"
+		    }
+		}
+	    }
+	}
+    }
+]
