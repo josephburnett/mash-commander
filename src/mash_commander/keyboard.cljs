@@ -50,7 +50,7 @@
     (render [_]
       (let [rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
-                                  :top "475px"
+                                  :top "575px"
                                   :width "100vw"
                                   :heigth "100vh"}}
                  (dom/div #js {:style #js {:backgroundColor "#ddd"
