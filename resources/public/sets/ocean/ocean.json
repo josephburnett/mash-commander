@@ -221,7 +221,7 @@
     },
     {
 	"when": {
-	    "type": "shimp",
+	    "type": "shrimp",
 	    "then": {
 		"say": {
 		    "phrase": "Shrimp are swimming crustaceans with long narrow muscular abdomens and long antennae.",
