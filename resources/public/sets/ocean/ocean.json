@@ -150,5 +150,192 @@
 		}
 	    }
 	}
+    },
+    {
+	"when": {
+	    "type": "dolphin",
+	    "then": {
+		"say": {
+		    "phrase": "Dolphins are a widely distributed and diverse group of aquatic mammals.",
+		    "source": "https://en.wikipedia.org/wiki/Dolphin"
+		},
+		"show": {
+		    "picture": {
+			"file": "dolphin.jpg",
+			"source": "By NASAs - http://mediaarchive.ksc.nasa.gov/detail.cfm?mediaid=21807, Public Domain, https://commons.wikimedia.org/w/index.php?curid=112006"
+		    }
+		}
+	    },
+	}
+    },
+    {
+	"when": {
+	    "type": "octopus",
+	    "then": {
+		"say": {
+		    "phrase": "The octopus is a soft-bodied, eight-armed mollusc.",
+		    "source": "https://en.wikipedia.org/wiki/Octopus"
+		},
+		"show": {
+		    "picture": {
+			"file": "octopus.jpg",
+			"source": "By albert kok - ma photo, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2795257"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "octopus",
+	    "then": {
+		"say": {
+		    "phrase": "Squid are cephalopods of the order Teuthida, which comprises around 304 species.",
+		    "source": "https://en.wikipedia.org/wiki/Squid"
+		},
+		"show": {
+		    "picture": {
+			"file": "squid.jpg",
+			"source": "By © Hans Hillewaert, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=385705"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "lobster",
+	    "then": {
+		"say": {
+		    "phrase": "Lobsters have long bodies with muscular tails, and live in crevices or burrows on the sea floor.",
+		    "source": "https://en.wikipedia.org/wiki/Lobster"
+		},
+		"show": {
+		    "picture": {
+			"file": "lobster.jpg",
+			"source": "By Bart Braun - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=4425087"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "shimp",
+	    "then": {
+		"say": {
+		    "phrase": "Shrimp are swimming crustaceans with long narrow muscular abdomens and long antennae.",
+		    "source": "https://en.wikipedia.org/wiki/Shrimp"
+		},
+		"show": {
+		    "picture": {
+			"file": "shrimp.jpg",
+			"source": "By Etrusko25 - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=8045392"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "krill",
+	    "then": {
+		"say": {
+		    "phrase": "Krill are small crustaceans of the order Euphausiacea, and are found in all the world's oceans.",
+		    "source": "https://en.wikipedia.org/wiki/Krill"
+		},
+		"show": {
+		    "picture": {
+			"file": "krill.jpg",
+			"source": "By Øystein Paulsen - MAR-ECO, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=225249"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "plankton",
+	    "then": {
+		"say": {
+		    "phrase": "Plankton are the diverse collection of organisms that live in large bodies of water and are unable to swim against a current. They provide a crucial source of food to many large aquatic organisms, such as fish and whales.",
+		    "source": "https://en.wikipedia.org/wiki/Plankton"
+		},
+		"show": {
+		    "picture": {
+			"file": "plankton.jpg",
+			"source": "By Kils at the German language Wikipedia, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=4852729"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "plankton",
+	    "then": {
+		"say": {
+		    "phrase": "Starfish are marine invertebrates. They typically have a central disc and five arms, though some species have a larger number of arms.",
+		    "source": "https://en.wikipedia.org/wiki/Starfish"
+		},
+		"show": {
+		    "picture": {
+			"file": "starfish.jpg",
+			"source": "By Nhobgood Nick Hobgood - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=6279893"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "sand",
+	    "then": {
+		"say": {
+		    "phrase": "Sand is a naturally occurring granular material composed of finely divided rock and mineral particles. It is defined by size, being finer than gravel and coarser than silt.",
+		    "source": "https://en.wikipedia.org/wiki/Sand"
+		},
+		"show": {
+		    "picture": {
+			"file": "sand.jpg",
+			"source": "By Siim Sepp - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=17276362"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "water",
+	    "then": {
+		"say": {
+		    "phrase": "Water is a transparent and nearly colorless chemical substance that is the main constituent of Earth's streams, lakes, and oceans, and the fluids of most living organisms.",
+		    "source": "https://en.wikipedia.org/wiki/Water"
+		},
+		"show": {
+		    "picture": {
+			"file": "water.jpg",
+			"source": "By Kim Hansen - Own work (Own photo), CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=2847421"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "beach",
+	    "then": {
+		"say": {
+		    "phrase": "A beach is a landform alongside a body of water which consists of loose particles.",
+		    "source": "https://en.wikipedia.org/wiki/Beach"
+		},
+		"show": {
+		    "picture": {
+			"file": "beach.jpg",
+			"source": "By Adrian Pingstone (Arpingstone) - Own work, Public Domain, https://commons.wikimedia.org/w/index.php?curid=7303133"
+		    }
+		}
+	    }
+	}
     }
 ]
