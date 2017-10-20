@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd ~/mash-commander/resources/public
+
+python -m SimpleHTTPServer 8080 &
+SERVER_PID=$!
+
+function cleanup {
+  kill $SERVER_PID
+}
+trap cleanup EXIT
+
+chromium-browser --kiosk http://localhost:8080
