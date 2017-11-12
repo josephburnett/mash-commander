@@ -9,17 +9,17 @@
         potential (mode/key-potential line-cursor key)]
     (dom/div #js {:style (clj->js
                           (merge
-                           {:height "46px"
-                            :width "56px"
-                            :padding "10px 0 0 0"
+                           {:height "4.5vw"
+                            :width "5vw"
+                            :padding "1.2vw 0 0 0"
                             :backgroundColor "#222"
                             :float "left"
                             :textAlign "center"
-                            :fontSize "30px"
-                            :borderWidth "1px"
+                            :fontSize "3vw"
+                            :borderWidth "0.3vw"
                             :borderColor "#000"
                             :borderStyle "solid"
-                            :borderRadius "8px"
+                            :borderRadius "1.2vw"
                             :color (condp = potential
                                      :command "#33f"
                                       :typing "#0b0"
@@ -50,22 +50,23 @@
     (render [_]
       (let [rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
-                                  :top "650px"
+                                  :bottom "7vh"
                                   :width "100vw"
                                   :heigth "100vh"}}
                  (dom/div #js {:style #js {:backgroundColor "#ddd"
-                                           :width "870px"
+                                           :width "90vw"
                                            :height "25vm"
                                            :maxHeight "100%"
                                            :margin "0 auto"
+                                           :padding "0 0 0 3vw"
                                            :zIndex "100"}}
                           (rv (concat
-                               [{:key "Escape" :display "Esc" :style {:width "80px" :marginRight "20px"}}]
+                               [{:key "Escape" :display "Esc" :style {:width "8vw" :marginRight "2vw"}}]
                                (standard-keys "1234567890")
-                               [{:key "Backspace" :display "<--" :style {:width "100px" :marginLeft "60px"}}]) "0px")
-                          (rv (standard-keys "qwertyuiop") "130px")
+                               [{:key "Backspace" :display "<--" :style {:width "10vw" :marginLeft "8vw"}}]) "0vw")
+                          (rv (standard-keys "qwertyuiop") "13vw")
                           (rv (concat
                                (standard-keys "asdfghjkl")
-                               [{:key "Enter" :display "Enter":style {:width "120px" :marginLeft "50px"}}]) "150px")
-                          (rv (standard-keys "zxcvbnm") "170px")
-                          (rv [{:key " " :display "Space" :style {:width "295px"}}] "290px")))))))
+                               [{:key "Enter" :display "Enter":style {:width "15vw" :marginLeft "4vw"}}]) "15vw")
+                          (rv (standard-keys "zxcvbnm") "18vw")
+                          (rv [{:key " " :display "Space" :style {:width "27vw"}}] "29vw")))))))

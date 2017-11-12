@@ -28,19 +28,23 @@
     om/IRender
     (render [_]
       (let [image-url (get-in cursor [:showing-image-url])]
-        (dom/div #js {:style #js {:height "100vh"
-                                  :width "100vw"
-                                  :overflow "hidden"
-                                  :padding "0"
-                                  :margin "0"
-                                  :position "absolute"}}
-                 (dom/div #js {:style #js {:height "40vh"
-                                           :width "50vw"
-                                           :maxHeight "100%"
+        (dom/div #js {:style (clj->js
+                              (merge {:height "100vh"
+                                      :width "100vw"
+                                      :overflow "hidden"
+                                      :padding "0"
+                                      :margin "0"
+                                      :position "absolute"}
+                                     (if (nil? image-url) {}
+                                         {:zIndex "200"})))}
+                 (dom/div #js {:style #js {:height "50vw"
+                                           :width "90vw"
+                                           :maxHeight "75vh"
                                            :padding "0"
                                            :margin "15vh auto 0 auto"
                                            :textAlign "center"}}
                           (when-not (nil? image-url)
                             (dom/img #js {:src image-url
+                                          :zIndex "200"
                                           :className "display"}))))))))
                           
