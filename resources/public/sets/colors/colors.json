@@ -1,0 +1,107 @@
+[
+    {
+	"when": {
+	    "type": "red",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "red.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "red"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "blue",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "blue.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "blue"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "yellow",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "yellow.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "yellow"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "green",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "green.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "green"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "purple",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "purple.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "purple"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "orange",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "orange.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "orange"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "pink",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "pink.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "pink"
+		}
+	    }
+	}
+    }
+]
