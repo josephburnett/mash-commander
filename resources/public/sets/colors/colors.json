@@ -103,5 +103,65 @@
 		}
 	    }
 	}
+    },
+    {
+	"when": {
+	    "type": "white",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "white.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "white"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "black",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "black.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "black"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "brown",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "brown.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "brown"
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "grey",
+	    "then": {
+		"show": {
+		    "picture": {
+			"file": "grey.jpg"
+		    }
+		},
+		"say": {
+		    "phrase": "grey"
+		}
+	    }
+	}
     }
 ]
