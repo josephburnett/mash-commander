@@ -1,0 +1,1277 @@
+[
+    {
+	"when": {
+	    "type": "a",
+	    "then": {
+		"say": {
+		    "phrase": "a"
+		},
+		"show": {
+		    "picture": {
+			"file": "a.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "and",
+	    "then": {
+		"say": {
+		    "phrase": "and"
+		},
+		"show": {
+		    "picture": {
+			"file": "and.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "are",
+	    "then": {
+		"say": {
+		    "phrase": "are"
+		},
+		"show": {
+		    "picture": {
+			"file": "are.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "can",
+	    "then": {
+		"say": {
+		    "phrase": "can"
+		},
+		"show": {
+		    "picture": {
+			"file": "can.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "i",
+	    "then": {
+		"say": {
+		    "phrase": "i"
+		},
+		"show": {
+		    "picture": {
+			"file": "i.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "is",
+	    "then": {
+		"say": {
+		    "phrase": "is"
+		},
+		"show": {
+		    "picture": {
+			"file": "is.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "me",
+	    "then": {
+		"say": {
+		    "phrase": "me"
+		},
+		"show": {
+		    "picture": {
+			"file": "me.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "see",
+	    "then": {
+		"say": {
+		    "phrase": "see"
+		},
+		"show": {
+		    "picture": {
+			"file": "see.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "the",
+	    "then": {
+		"say": {
+		    "phrase": "the"
+		},
+		"show": {
+		    "picture": {
+			"file": "the.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "we",
+	    "then": {
+		"say": {
+		    "phrase": "we"
+		},
+		"show": {
+		    "picture": {
+			"file": "we.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "you",
+	    "then": {
+		"say": {
+		    "phrase": "you"
+		},
+		"show": {
+		    "picture": {
+			"file": "you.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "by",
+	    "then": {
+		"say": {
+		    "phrase": "by"
+		},
+		"show": {
+		    "picture": {
+			"file": "by.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "can't",
+	    "then": {
+		"say": {
+		    "phrase": "can't"
+		},
+		"show": {
+		    "picture": {
+			"file": "can't.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "down",
+	    "then": {
+		"say": {
+		    "phrase": "down"
+		},
+		"show": {
+		    "picture": {
+			"file": "down.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "get",
+	    "then": {
+		"say": {
+		    "phrase": "get"
+		},
+		"show": {
+		    "picture": {
+			"file": "get.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "he",
+	    "then": {
+		"say": {
+		    "phrase": "he"
+		},
+		"show": {
+		    "picture": {
+			"file": "he.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "here",
+	    "then": {
+		"say": {
+		    "phrase": "here"
+		},
+		"show": {
+		    "picture": {
+			"file": "here.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "isn't",
+	    "then": {
+		"say": {
+		    "phrase": "isn't"
+		},
+		"show": {
+		    "picture": {
+			"file": "isn't.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "my",
+	    "then": {
+		"say": {
+		    "phrase": "my"
+		},
+		"show": {
+		    "picture": {
+			"file": "my.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "no",
+	    "then": {
+		"say": {
+		    "phrase": "no"
+		},
+		"show": {
+		    "picture": {
+			"file": "no.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "saw",
+	    "then": {
+		"say": {
+		    "phrase": "saw"
+		},
+		"show": {
+		    "picture": {
+			"file": "saw.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "she",
+	    "then": {
+		"say": {
+		    "phrase": "she"
+		},
+		"show": {
+		    "picture": {
+			"file": "she.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "they",
+	    "then": {
+		"say": {
+		    "phrase": "they"
+		},
+		"show": {
+		    "picture": {
+			"file": "they.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "to",
+	    "then": {
+		"say": {
+		    "phrase": "to"
+		},
+		"show": {
+		    "picture": {
+			"file": "to.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "where",
+	    "then": {
+		"say": {
+		    "phrase": "where"
+		},
+		"show": {
+		    "picture": {
+			"file": "where.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "yes",
+	    "then": {
+		"say": {
+		    "phrase": "yes"
+		},
+		"show": {
+		    "picture": {
+			"file": "yes.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "come",
+	    "then": {
+		"say": {
+		    "phrase": "come"
+		},
+		"show": {
+		    "picture": {
+			"file": "come.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "do",
+	    "then": {
+		"say": {
+		    "phrase": "do"
+		},
+		"show": {
+		    "picture": {
+			"file": "do.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "have",
+	    "then": {
+		"say": {
+		    "phrase": "have"
+		},
+		"show": {
+		    "picture": {
+			"file": "have.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "her",
+	    "then": {
+		"say": {
+		    "phrase": "her"
+		},
+		"show": {
+		    "picture": {
+			"file": "her.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "his",
+	    "then": {
+		"say": {
+		    "phrase": "his"
+		},
+		"show": {
+		    "picture": {
+			"file": "his.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "home",
+	    "then": {
+		"say": {
+		    "phrase": "home"
+		},
+		"show": {
+		    "picture": {
+			"file": "home.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "like",
+	    "then": {
+		"say": {
+		    "phrase": "like"
+		},
+		"show": {
+		    "picture": {
+			"file": "like.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "little",
+	    "then": {
+		"say": {
+		    "phrase": "little"
+		},
+		"show": {
+		    "picture": {
+			"file": "little.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "of",
+	    "then": {
+		"say": {
+		    "phrase": "of"
+		},
+		"show": {
+		    "picture": {
+			"file": "of.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "out",
+	    "then": {
+		"say": {
+		    "phrase": "out"
+		},
+		"show": {
+		    "picture": {
+			"file": "out.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "put",
+	    "then": {
+		"say": {
+		    "phrase": "put"
+		},
+		"show": {
+		    "picture": {
+			"file": "put.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "said",
+	    "then": {
+		"say": {
+		    "phrase": "said"
+		},
+		"show": {
+		    "picture": {
+			"file": "said.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "say",
+	    "then": {
+		"say": {
+		    "phrase": "say"
+		},
+		"show": {
+		    "picture": {
+			"file": "say.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "says",
+	    "then": {
+		"say": {
+		    "phrase": "says"
+		},
+		"show": {
+		    "picture": {
+			"file": "says.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "so",
+	    "then": {
+		"say": {
+		    "phrase": "so"
+		},
+		"show": {
+		    "picture": {
+			"file": "so.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "some",
+	    "then": {
+		"say": {
+		    "phrase": "some"
+		},
+		"show": {
+		    "picture": {
+			"file": "some.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "was",
+	    "then": {
+		"say": {
+		    "phrase": "was"
+		},
+		"show": {
+		    "picture": {
+			"file": "was.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "what",
+	    "then": {
+		"say": {
+		    "phrase": "what"
+		},
+		"show": {
+		    "picture": {
+			"file": "what.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "again",
+	    "then": {
+		"say": {
+		    "phrase": "again"
+		},
+		"show": {
+		    "picture": {
+			"file": "again.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "be",
+	    "then": {
+		"say": {
+		    "phrase": "be"
+		},
+		"show": {
+		    "picture": {
+			"file": "be.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "both",
+	    "then": {
+		"say": {
+		    "phrase": "both"
+		},
+		"show": {
+		    "picture": {
+			"file": "both.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "could",
+	    "then": {
+		"say": {
+		    "phrase": "could"
+		},
+		"show": {
+		    "picture": {
+			"file": "could.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "does",
+	    "then": {
+		"say": {
+		    "phrase": "does"
+		},
+		"show": {
+		    "picture": {
+			"file": "does.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "find",
+	    "then": {
+		"say": {
+		    "phrase": "find"
+		},
+		"show": {
+		    "picture": {
+			"file": "find.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "from",
+	    "then": {
+		"say": {
+		    "phrase": "from"
+		},
+		"show": {
+		    "picture": {
+			"file": "from.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "good",
+	    "then": {
+		"say": {
+		    "phrase": "good"
+		},
+		"show": {
+		    "picture": {
+			"file": "good.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "look",
+	    "then": {
+		"say": {
+		    "phrase": "look"
+		},
+		"show": {
+		    "picture": {
+			"file": "look.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "make",
+	    "then": {
+		"say": {
+		    "phrase": "make"
+		},
+		"show": {
+		    "picture": {
+			"file": "make.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "many",
+	    "then": {
+		"say": {
+		    "phrase": "many"
+		},
+		"show": {
+		    "picture": {
+			"file": "many.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "people",
+	    "then": {
+		"say": {
+		    "phrase": "people"
+		},
+		"show": {
+		    "picture": {
+			"file": "people.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "should",
+	    "then": {
+		"say": {
+		    "phrase": "should"
+		},
+		"show": {
+		    "picture": {
+			"file": "should.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "there",
+	    "then": {
+		"say": {
+		    "phrase": "there"
+		},
+		"show": {
+		    "picture": {
+			"file": "there.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "very",
+	    "then": {
+		"say": {
+		    "phrase": "very"
+		},
+		"show": {
+		    "picture": {
+			"file": "very.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "want",
+	    "then": {
+		"say": {
+		    "phrase": "want"
+		},
+		"show": {
+		    "picture": {
+			"file": "want.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "water",
+	    "then": {
+		"say": {
+		    "phrase": "water"
+		},
+		"show": {
+		    "picture": {
+			"file": "water.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "were",
+	    "then": {
+		"say": {
+		    "phrase": "were"
+		},
+		"show": {
+		    "picture": {
+			"file": "were.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "would",
+	    "then": {
+		"say": {
+		    "phrase": "would"
+		},
+		"show": {
+		    "picture": {
+			"file": "would.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "your",
+	    "then": {
+		"say": {
+		    "phrase": "your"
+		},
+		"show": {
+		    "picture": {
+			"file": "your.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "boy",
+	    "then": {
+		"say": {
+		    "phrase": "boy"
+		},
+		"show": {
+		    "picture": {
+			"file": "boy.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "brother",
+	    "then": {
+		"say": {
+		    "phrase": "brother"
+		},
+		"show": {
+		    "picture": {
+			"file": "brother.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "cold",
+	    "then": {
+		"say": {
+		    "phrase": "cold"
+		},
+		"show": {
+		    "picture": {
+			"file": "cold.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "don't",
+	    "then": {
+		"say": {
+		    "phrase": "don't"
+		},
+		"show": {
+		    "picture": {
+			"file": "don't.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "every",
+	    "then": {
+		"say": {
+		    "phrase": "every"
+		},
+		"show": {
+		    "picture": {
+			"file": "every.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "father",
+	    "then": {
+		"say": {
+		    "phrase": "father"
+		},
+		"show": {
+		    "picture": {
+			"file": "father.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "mother",
+	    "then": {
+		"say": {
+		    "phrase": "mother"
+		},
+		"show": {
+		    "picture": {
+			"file": "mother.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "old",
+	    "then": {
+		"say": {
+		    "phrase": "old"
+		},
+		"show": {
+		    "picture": {
+			"file": "old.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "one",
+	    "then": {
+		"say": {
+		    "phrase": "one"
+		},
+		"show": {
+		    "picture": {
+			"file": "one.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "other",
+	    "then": {
+		"say": {
+		    "phrase": "other"
+		},
+		"show": {
+		    "picture": {
+			"file": "other.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "over",
+	    "then": {
+		"say": {
+		    "phrase": "over"
+		},
+		"show": {
+		    "picture": {
+			"file": "over.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "school",
+	    "then": {
+		"say": {
+		    "phrase": "school"
+		},
+		"show": {
+		    "picture": {
+			"file": "school.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "their",
+	    "then": {
+		"say": {
+		    "phrase": "their"
+		},
+		"show": {
+		    "picture": {
+			"file": "their.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "thought",
+	    "then": {
+		"say": {
+		    "phrase": "thought"
+		},
+		"show": {
+		    "picture": {
+			"file": "thought.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "told",
+	    "then": {
+		"say": {
+		    "phrase": "told"
+		},
+		"show": {
+		    "picture": {
+			"file": "told.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "too",
+	    "then": {
+		"say": {
+		    "phrase": "too"
+		},
+		"show": {
+		    "picture": {
+			"file": "too.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "toward",
+	    "then": {
+		"say": {
+		    "phrase": "toward"
+		},
+		"show": {
+		    "picture": {
+			"file": "toward.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "two",
+	    "then": {
+		"say": {
+		    "phrase": "two"
+		},
+		"show": {
+		    "picture": {
+			"file": "two.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "who",
+	    "then": {
+		"say": {
+		    "phrase": "who"
+		},
+		"show": {
+		    "picture": {
+			"file": "who.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "woman",
+	    "then": {
+		"say": {
+		    "phrase": "woman"
+		},
+		"show": {
+		    "picture": {
+			"file": "woman.png"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "won't",
+	    "then": {
+		"say": {
+		    "phrase": "won't"
+		},
+		"show": {
+		    "picture": {
+			"file": "won't.png"
+		    }
+		}
+	    }
+	}
+    }
+]

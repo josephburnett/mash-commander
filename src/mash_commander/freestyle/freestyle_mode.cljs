@@ -15,7 +15,8 @@
 
 (def ^:private valid-letters
   (set (concat (str/split "abcdefghijklmnopqrstuvwxyz" "")
-               (str/split "1234567890" ""))))
+               (str/split "1234567890" "")
+               (str/split "'-" ""))))
 
 (defn- last-word [letters]
   (as-> letters l

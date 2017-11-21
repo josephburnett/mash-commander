@@ -62,11 +62,11 @@
                                            :zIndex "100"}}
                           (rv (concat
                                [{:key "Escape" :display "Esc" :style {:width "8vw" :marginRight "2vw"}}]
-                               (standard-keys "1234567890")
-                               [{:key "Backspace" :display "<--" :style {:width "10vw" :marginLeft "8vw"}}]) "0vw")
+                               (standard-keys "1234567890-")
+                               [{:key "Backspace" :display "<--" :style {:width "10vw" :marginLeft "7vw"}}]) "0vw")
                           (rv (standard-keys "qwertyuiop") "13vw")
                           (rv (concat
-                               (standard-keys "asdfghjkl")
-                               [{:key "Enter" :display "Enter":style {:width "15vw" :marginLeft "4vw"}}]) "15vw")
+                               (standard-keys "asdfghjkl'")
+                               [{:key "Enter" :display "Enter":style {:width "15vw" :marginLeft "3vw"}}]) "15vw")
                           (rv (standard-keys "zxcvbnm") "18vw")
                           (rv [{:key " " :display "Space" :style {:width "27vw"}}] "29vw")))))))
