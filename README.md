@@ -6,6 +6,18 @@ The command-line shell for kids: https://mash-commander.appspot.com/
 
 Mash Commander is a command-line game for kids with an extremely low barrier to entry--just mash on the keyboard.  It drops kids into a world they can explore through the keyboard.  Curated sets of words and images guide children to learn by typing words in the command-line shell.  Discover commands, highlighted in blue, that make things happen!
 
+## Quickstart
+
+Online: https://mash-commander.appspot.com/
+
+Offline:
+```
+git clone https://github.com/josephburnett/mash-commander.git
+cd mash-commander/resources/public
+python -m SimpleHTTPServer 8080
+chromium-browser --kiosk http://localhost:8080
+```
+
 ### Freestyle mode
 
 ![screenshot of mash-commander freestyle mode](doc/mash-commander-freestyle.png)
