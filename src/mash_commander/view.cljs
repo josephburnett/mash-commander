@@ -4,6 +4,7 @@
             [mash-commander.keyboard :as keyboard]
             [mash-commander.freestyle.freestyle-mode]
             [mash-commander.set.set-mode]
+            [mash-commander.nix.nix-mode]
             [mash-commander.image :as image]
             [mash-commander.state :as state]
             [ajax.core :refer [GET]]
