@@ -1,8 +1,11 @@
 (ns mash-commander.nix.nix-mode
-  (:require [mash-commander.freestyle.command :as command]
+  (:require [clojure.string :as str]
+            [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
             [mash-commander.nix.filesystem :as fs]
             [mash-commander.nix.command :as nix-command]
+            [mash-commander.state :as mash-state]
+            [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]))
 
 ;; Register `nix` as a freestyle command
@@ -16,11 +19,37 @@
 ;; Mode methods
 (defmethod mode/dispatch-keydown :nix
   [line owner key]
-  (print key))
+  (om/transact!
+   (om/observe owner (mash-state/lines))
+   #(let [trie (:command-trie (:active %))
+          stack (:command-trie-stack (:active %))
+          letters (:letters (:active %))]
+      (cond
+        ;; Backspace
+        (and (= "Backspace" key) (not (empty? letters)))
+        (as-> % c
+          (assoc-in c [:active :letters] (rest letters))
+          (assoc-in c [:active :command-trie] (first stack))
+          (assoc-in c [:active :command-trie-stack] (rest stack)))
+        ;; Valid transition
+        (contains? (:command-trie (:active %)) key)
+        (as-> % c
+          (assoc-in c [:active :command-trie-stack] (cons trie stack))
+          (assoc-in c [:active :command-trie] (get trie key))
+          (assoc-in c [:active :letters] (cons key letters)))
+        ;; Ignore everything else
+        :default %))))
+
 
 (defmethod mode/line-render-state :nix
   [line owner state]
-  [(dom/span nil "nix line")])
+  (let [words (str/split (str/join (reverse (:letters line))) " ")
+        prompt (dom/span #js {:style #js {:color "#33f"
+                                          :fontWeight "bold"}}
+                         (str/join "/" (concat ["nix "] (:cwd line) [" $ "])))
+        cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
+        rendered-words (dom/span nil words)]
+    [prompt words cursor]))
 
 (defmethod mode/initial-line-state :nix
   [state]
