@@ -32,7 +32,11 @@
               (fn [e] (mode/dispatch-keydown next owner (.-key e))))))
     om/IRenderState
     (render-state [_ state]
-      (mode/line-render-state cursor owner state))))
+      (apply dom/div #js {:style #js {:fontSize "30px"
+                                      :lineHeight "40px"
+                                      :padding "15px 15px 0 15px"}
+                          :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
+             (mode/line-render-state cursor owner state)))))
 
 (defn app-view [cursor owner]
   (reify

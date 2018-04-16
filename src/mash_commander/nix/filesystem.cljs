@@ -1,11 +1,21 @@
 (ns mash-commander.nix.filesystem)
 
+(declare ls)
+
 (defonce root
-  (atom {:chmod #{:r}
-         :ls {"bin" {:chmod #{:r}
-                     :ls {"ls" {:chmod #{:r}
-                                :file "joe was here"}}}}}))
+  (atom {:fs {:mod #{:r}
+              :type :dir
+              :files {"bin" {:mod #{:r}
+                             :type :dir
+                             :files {"ls" {:mod #{:x}
+                                           :type :file
+                                           :fn ls}}}}}
+         :cwd []
+         :ps []}))
+
+(defn ls []
+  (let [dir (get-in (:fs @root) (:cwd @root))]
+    (keys (:ls dir))))
 
 (defn init []
-  ;; TODO: Load initial filesystem state
   (print "nix up"))

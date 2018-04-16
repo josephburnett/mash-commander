@@ -85,15 +85,11 @@
                                                   :fontWeight "bold"}}
                                  (str (:set cursor) " $ "))
         cursor-char (dom/span #js {:style #js {:color "#900"}} "\u2588")]
-    (apply dom/div #js {:style #js {:fontSize "30px"
-                                    :lineHeight "40px"
-                                    :padding "15px 15px 0 15px"}
-                        :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
-           (if (:focus state)
-             [command-prompt
-              rendered-words
-              cursor-char]
-             [rendered-words]))))
+    (if (:focus state)
+      [command-prompt
+       rendered-words
+       cursor-char]
+      [rendered-words])))
 
 (defmethod mode/initial-line-state :set [state]
   (let [trie (get-in @set-manifest/sets [(:set state) :trie])]

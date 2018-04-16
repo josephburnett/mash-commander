@@ -108,16 +108,12 @@
                                 (dom/span #js {:style #js {:color "#0f0"}} %)
                                 (dom/span #js {:style #js {:color "#080"}} %))
                              words))]
-    (apply dom/div #js {:style #js {:fontSize "30px"
-                                    :lineHeight "40px"
-                                    :padding "15px 15px 0 15px"}
-                        :onClick #(when-not (:focus state) (go (>! (om/get-shared owner :set-line) cursor)))}
-           (as-> rendered-words r
-             (if (and (:focus state) spacing) (concat r [(dom/span nil " ") cursor-char]) r)
-             (if (and (:focus state) (not spacing)) (concat r [cursor-char]) r)
-             (if commanding (cons (dom/span #js {:style #js {:color "#33f"}} (first words))
-                                  (rest r)) r)
-             (if (:focus state) (cons command-prompt r) r)))))
+    (as-> rendered-words r
+      (if (and (:focus state) spacing) (concat r [(dom/span nil " ") cursor-char]) r)
+      (if (and (:focus state) (not spacing)) (concat r [cursor-char]) r)
+      (if commanding (cons (dom/span #js {:style #js {:color "#33f"}} (first words))
+                           (rest r)) r)
+      (if (:focus state) (cons command-prompt r) r))))
 
 (defmethod mode/initial-line-state :freestyle [state]
   (merge state

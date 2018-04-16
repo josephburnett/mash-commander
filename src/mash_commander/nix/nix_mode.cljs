@@ -1,9 +1,11 @@
 (ns mash-commander.nix.nix-mode
   (:require [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
+            [mash-commander.nix.filesystem :as fs]
+            [mash-commander.nix.command :as nix-command]
             [om.dom :as dom :include-macros true]))
 
-;; Enter nix mode
+;; Register `nix` as a freestyle command
 (defmethod command/dispatch-enter "nix"
   [cursor _]
   (as-> cursor c
@@ -18,12 +20,19 @@
 
 (defmethod mode/line-render-state :nix
   [line owner state]
-  (dom/div nil "nix line"))
+  [(dom/span nil "nix line")])
 
 (defmethod mode/initial-line-state :nix
   [state]
-  state)
+  (merge state
+         {:command-trie (nix-command/command-trie)
+          :command-trie-stack []
+          :letters []}))
 
 (defmethod mode/key-potential :nix
   [line key]
-  :disabled)
+  (cond
+    ;; Command potential
+    (contains? (:command-trie line) key) :command
+    ;; All other keys disabled
+    :default :disabled))
