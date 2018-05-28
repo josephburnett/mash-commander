@@ -23,12 +23,16 @@
    (om/observe owner (mash-state/lines))
    #(let [trie (:command-trie (:active %))
           stack (:command-trie-stack (:active %))
+          mode (:nix-mode (:active %))
+          mode-stack (:nix-mode-stack (:active %))
           letters (:letters (:active %))]
       (cond
         ;; Backspace
         (and (= "Backspace" key) (not (empty? letters)))
         (as-> % c
           (assoc-in c [:active :letters] (rest letters))
+          (assoc-in c [:active :nix-mode] (first mode-stack))
+          (assoc-in c [:active :nix-mode-stack] (rest mode-stack))
           (assoc-in c [:active :command-trie] (first stack))
           (assoc-in c [:active :command-trie-stack] (rest stack)))
         ;; Valid transition
@@ -36,7 +40,18 @@
         (as-> % c
           (assoc-in c [:active :command-trie-stack] (cons trie stack))
           (assoc-in c [:active :command-trie] (get trie key))
+          (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
           (assoc-in c [:active :letters] (cons key letters)))
+        ;; Complete command -- start taking arguments
+        (and (= " " key)
+             (contains? (:command-trie (:active %)) ""))
+        (as-> % c
+          (assoc-in c [:active :command-trie-stack] (cons trie stack))
+          (assoc-in c [:active :command-trie] {})
+          (assoc-in c [:active :letters] (cons key letters))
+          (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
+          (assoc-in c [:active :nix-mode] :args)
+          (assoc-in c [:active :args] []))
         ;; Ignore everything else
         :default %))))
 
@@ -56,6 +71,9 @@
   (merge state
          {:command-trie (nix-command/command-trie)
           :command-trie-stack []
+          :command-map (nix-command/command-map)
+          :nix-mode :command
+          :nix-mode-stack []
           :letters []}))
 
 (defmethod mode/key-potential :nix
@@ -63,5 +81,10 @@
   (cond
     ;; Command potential
     (contains? (:command-trie line) key) :command
+    ;; Complete command
+    (and (= "Enter" key)
+         (contains? (:command-trie line) "")) :command
+    (and (= " " key)
+         (contains? (:command-trie line) "")) :command
     ;; All other keys disabled
     :default :disabled))

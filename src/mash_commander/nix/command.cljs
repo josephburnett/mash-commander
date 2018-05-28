@@ -4,17 +4,19 @@
 
 (declare command-line)
 
-(defn- command-list [dir]
+(defn commands [dir]
   (let [files (seq (:files dir))]
     (apply concat 
-           ;; Flattened list of lists of commands
+           ;; Flattened list of lists of command structures
            (map #(cond
-                   (= :dir (:type (second %))) (command-list (second %))
-                   (and (= :file (:type (second %))) (contains? (:mod (second %)) :x)) [(first %)]
+                   (= :dir (:type (second %))) (commands (second %))
+                   (and (= :file (:type (second %))) (contains? (:mod (second %)) :x)) [(assoc (second %) :name (first %))]
                    :default [])
                 files))))
 
 (defn command-trie []
-  (let [commands (command-list (:fs @fs/root))]
-    (trie/build commands)))
+  (let [c (map :name (commands (:fs @fs/root)))]
+    (trie/build c)))
     
+(defn command-map []
+  (reduce #(assoc %1 (:name %2) %2) {} (commands (:fs @fs/root))))

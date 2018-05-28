@@ -9,7 +9,8 @@
                              :type :dir
                              :files {"ls" {:mod #{:x}
                                            :type :file
-                                           :fn ls}}}}}
+                                           :fn ls
+                                           :args []}}}}}
          :cwd []
          :ps []}))
 
