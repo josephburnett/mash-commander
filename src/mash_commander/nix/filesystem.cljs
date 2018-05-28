@@ -10,7 +10,7 @@
                              :files {"ls" {:mod #{:x}
                                            :type :file
                                            :fn ls
-                                           :args []}}}}}
+                                           :args [["foo" "bar"]]}}}}}
          :cwd []
          :ps []}))
 

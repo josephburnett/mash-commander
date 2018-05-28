@@ -20,3 +20,4 @@
     
 (defn command-map []
   (reduce #(assoc %1 (:name %2) %2) {} (commands (:fs @fs/root))))
+
