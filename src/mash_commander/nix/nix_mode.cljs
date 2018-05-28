@@ -54,7 +54,7 @@
              (contains? (:command-trie (:active %)) ""))
         (as-> % c
           (assoc-in c [:active :command-trie-stack] (cons trie stack))
-          (assoc-in c [:active :command-trie] (trie/build (first (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
+          (assoc-in c [:active :command-trie] (nix-command/args-trie (first (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
           (assoc-in c [:active :letters] (cons key letters))
           (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
           (assoc-in c [:active :nix-mode] :args))
@@ -64,13 +64,12 @@
         (as-> % c
           (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
                 func (get-in (nix-command/command-map) [command-string :fn])
-                result (func (reverse letters))]
+                result (func (drop (+ 1 (count command-string)) (reverse letters)))]
             (assoc-in c [:active :result] result))
           (assoc-in c [:history] (cons (:active c) (:history c)))
           (assoc-in c [:active] (mode/initial-line-state {:mode :nix})))
         ;; Ignore everything else
         :default %))))
-
 
 (defmethod mode/line-render-state :nix
   [line owner state]
@@ -79,7 +78,7 @@
         args (str/join "" (drop-while #(not (= " " %)) (reverse (:letters line))))
         prompt (dom/span #js {:style #js {:color "#080"
                                           :fontWeight "bold"}}
-                         (str/join "/" (concat ["nix:"] (:cwd line) ["$ "])))
+                         (str/join "/" (concat ["nix:"] (:cwd @fs/root) ["$ "])))
         cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
         result (dom/span #js {:style #js {:color "#fff"
                                           :fontSize "0.7em"

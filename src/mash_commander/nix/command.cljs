@@ -21,3 +21,13 @@
 (defn command-map []
   (reduce #(assoc %1 (:name %2) %2) {} (commands (:fs @fs/root))))
 
+(defn args-trie [args-spec]
+  (cond
+    ;; Looking for a valid filename
+    (= :file args-spec)
+    (let [root @fs/root
+          cwd (get-in (:fs root) (:cwd root))]
+      (trie/build (fs/files cwd)))
+    ;; Pre-specified parameters
+    :default
+    (trie/build args-spec)))
