@@ -64,14 +64,14 @@
 
 (defmethod mode/line-render-state :nix
   [line owner state]
-  (let [;words (str/split (str/join (reverse (:letters line))) " ")
-        words (str/join "" (reverse (:letters line)))
-        prompt (dom/span #js {:style #js {:color "#33f"
+  (let [command (dom/span #js {:style #js {:color "#33f"}}
+                          (first (str/split (str/join (reverse (:letters line))) " ")))
+        args (str/join "" (drop-while #(not (= " " %)) (reverse (:letters line))))
+        prompt (dom/span #js {:style #js {:color "#080"
                                           :fontWeight "bold"}}
-                         (str/join "/" (concat ["nix "] (:cwd line) [" $ "])))
-        cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
-        rendered-words (dom/span nil words)]
-    [prompt words cursor]))
+                         (str/join "/" (concat ["nix:"] (:cwd line) ["$ "])))
+        cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")]
+    [prompt command args cursor]))
 
 (defmethod mode/initial-line-state :nix
   [state]
