@@ -58,6 +58,16 @@
           (assoc-in c [:active :letters] (cons key letters))
           (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
           (assoc-in c [:active :nix-mode] :args))
+        ;; Run command
+        (and (= "Enter" key)
+             (contains? (:command-trie (:active %)) ""))
+        (as-> % c
+          (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
+                func (get-in (nix-command/command-map) [command-string :fn])
+                result (func (reverse letters))]
+            (assoc-in c [:active :result] result))
+          (assoc-in c [:history] (cons (:active c) (:history c)))
+          (assoc-in c [:active] (mode/initial-line-state {:mode :nix})))
         ;; Ignore everything else
         :default %))))
 
@@ -70,8 +80,17 @@
         prompt (dom/span #js {:style #js {:color "#080"
                                           :fontWeight "bold"}}
                          (str/join "/" (concat ["nix:"] (:cwd line) ["$ "])))
-        cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")]
-    [prompt command args cursor]))
+        cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
+        result (dom/span #js {:style #js {:color "#fff"
+                                          :fontSize "0.7em"
+                                          :margin "1em 0.5em"
+                                          :padding "0.5em"
+                                          :backgroundColor "#222"
+                                          :border "1px solid #555"}} (:result line))
+        arrow (dom/span #js {:style #js {:color "#33f"}} "\u21B3")]
+    (if (:focus state)
+      [prompt command args cursor]
+      [(dom/div nil command args) (dom/div nil arrow result)])))
 
 (defmethod mode/initial-line-state :nix
   [state]

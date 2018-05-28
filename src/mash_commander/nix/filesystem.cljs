@@ -1,6 +1,11 @@
-(ns mash-commander.nix.filesystem)
+(ns mash-commander.nix.filesystem
+  (:require [clojure.string :as str]))
 
-(declare ls)
+(declare root)
+
+(defn ls []
+  (let [dir (get-in (:fs @root) (:cwd @root))]
+    (str/join "\t" (keys (:files dir)))))
 
 (defonce root
   (atom {:fs {:mod #{:r}
@@ -10,13 +15,11 @@
                              :files {"ls" {:mod #{:x}
                                            :type :file
                                            :fn ls
-                                           :args [["foo" "bar"]]}}}}}
+                                           :args [["foo" "bar"]]}}}
+                      "usr" {:mod #{:r}
+                             :type :dir
+                             :files {}}}}
          :cwd []
          :ps []}))
-
-(defn ls []
-  (let [dir (get-in (:fs @root) (:cwd @root))]
-    (keys (:ls dir))))
-
 (defn init []
   (print "nix up"))
