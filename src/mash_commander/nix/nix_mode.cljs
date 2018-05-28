@@ -87,11 +87,18 @@
   [line key]
   (cond
     ;; Command potential
-    (contains? (:command-trie line) key) :command
+    (and (= :command (:nix-mode line))
+         (contains? (:command-trie line) key)) :command
     ;; Complete command
     (and (= "Enter" key)
+         (= :command (:nix-mode line))
          (contains? (:command-trie line) "")) :command
+    ;; Arguments allowed
     (and (= " " key)
-         (contains? (:command-trie line) "")) :command
+         (= :command (:nix-mode line))
+         (contains? (:command-trie line) "")) :typing
+    ;; Argument potential
+    (and (= :args (:nix-mode line))
+         (contains? (:command-trie line) key)) :typing
     ;; All other keys disabled
     :default :disabled))
