@@ -12,7 +12,9 @@
   (let [path (str/split (str/join "" dir) "/")
         cwd (:cwd @root)
         new-cwd (concat cwd path)]
-    (swap! root #(assoc % :cwd new-cwd))))
+    (swap! root #(assoc % :cwd new-cwd))
+    nil))
+
 
 (reset! root
       {:fs {:mod #{:r}

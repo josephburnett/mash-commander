@@ -48,10 +48,11 @@
           (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
           (assoc-in c [:active :nix-args-stack] (cons args args-stack))
           (assoc-in c [:active :letters] (cons key letters)))
-        ;; Complete command
+        ;; Command with args
         (and (= " " key)
              (= :command mode)
-             (contains? (:command-trie (:active %)) ""))
+             (contains? (:command-trie (:active %)) "")
+             (not (empty? (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
         (as-> % c
           (assoc-in c [:active :command-trie-stack] (cons trie stack))
           (assoc-in c [:active :command-trie] (nix-command/args-trie (first (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
@@ -60,6 +61,9 @@
           (assoc-in c [:active :nix-mode] :args))
         ;; Run command
         (and (= "Enter" key)
+             (or (and (= :command mode)
+                      (= [] (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args])))
+                 (= :args mode))
              (contains? (:command-trie (:active %)) ""))
         (as-> % c
           (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
@@ -89,7 +93,7 @@
         arrow (dom/span #js {:style #js {:color "#33f"}} "\u21B3")]
     (if (:focus state)
       [prompt command args cursor]
-      [(dom/div nil command args) (dom/div nil arrow result)])))
+      [(dom/div nil command args) (when (:result line) (dom/div nil arrow result))])))
 
 (defmethod mode/initial-line-state :nix
   [state]
@@ -109,12 +113,15 @@
          (contains? (:command-trie line) key)) :command
     ;; Complete command
     (and (= "Enter" key)
-         (= :command (:nix-mode line))
+         (or (and (= :command (:nix-mode line))
+                  (= [] (get-in (nix-command/command-map) [(str/join "" (reverse (:letters line))) :args])))
+             (= :args (:nix-mode line)))
          (contains? (:command-trie line) "")) :command
     ;; Arguments allowed
     (and (= " " key)
          (= :command (:nix-mode line))
-         (contains? (:command-trie line) "")) :typing
+         (contains? (:command-trie line) "")
+         (not (empty? (get-in (nix-command/command-map) [(str/join "" (reverse (:letters line))) :args])))) :typing
     ;; Argument potential
     (and (= :args (:nix-mode line))
          (contains? (:command-trie line) key)) :typing
