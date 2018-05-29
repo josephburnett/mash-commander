@@ -5,15 +5,17 @@
 (declare files)
 
 (defn ls []
-  (let [dir (get-in (:fs @root) (:cwd @root))]
+  (let [dir (get-in (:fs @root) (interleave (repeat :files) (:cwd @root)))]
     (str/join "\t" (keys (:files dir)))))
 
 (defn cd [dir]
-  (let [path (str/split (str/join "" dir) "/")
-        cwd (:cwd @root)
-        new-cwd (concat cwd path)]
-    (swap! root #(assoc % :cwd new-cwd))
-    nil))
+  (if (= ["." "."] dir)
+    (swap! root #(assoc % :cwd (drop-last (:cwd %))))
+    (let [path (str/split (str/join "" dir) "/")
+          cwd (:cwd @root)
+          new-cwd (concat cwd path)]
+      (swap! root #(assoc % :cwd new-cwd))))
+  nil)
 
 
 (reset! root

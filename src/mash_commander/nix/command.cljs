@@ -27,7 +27,9 @@
     (= :file args-spec)
     (let [root @fs/root
           cwd (get-in (:fs root) (:cwd root))]
-      (trie/build (fs/files cwd)))
+      (if (empty? cwd)
+        (trie/build (cons ".." (fs/files cwd)))
+        (trie/build (fs/files cwd))))
     ;; Pre-specified parameters
     :default
     (trie/build args-spec)))
