@@ -14,37 +14,37 @@
     (render-state [_ state]
       (let [state (:state cursor)
             eye-height (condp = state
-                         :resting "35px"
-                         :blinking "5px")]
-        (dom/svg #js {:style #js {:width "500px"
-                                  :height "800px"
+                         :resting "2.1vh"
+                         :blinking ".3vh")]
+        (dom/svg #js {:style #js {:width "30.0vh"
+                                  :height "48.0vh"
                                   :float "right"}}
-                 (dom/rect #js {:style #js {:x "5px"
-                                            :y "35px"
-                                            :width "450px"
-                                            :height "700px"
-                                            :rx "80px"
-                                            :ry "80px"
+                 (dom/rect #js {:style #js {:x ".3.vh"
+                                            :y "2.1vh"
+                                            :width "27.0vh"
+                                            :height "42.0vh"
+                                            :rx "4.8vh"
+                                            :ry "4.8vh"
                                             :stroke "black"
                                             :fill "white"
-                                            :strokeWidth "8px"}})
-                 (dom/rect #js {:style #js {:x "45px"
-                                            :y "75px"
-                                            :width "370px"
-                                            :height "480px"
-                                            :rx "45px"
-                                            :ry "45px"
+                                            :strokeWidth ".5vh"}})
+                 (dom/rect #js {:style #js {:x "2.7vh"
+                                            :y "4.5vh"
+                                            :width "22.0vh"
+                                            :height "28.0vh"
+                                            :rx "2.7vh"
+                                            :ry "2.7vh"
                                             :stroke "black"
                                             :fill "#f4f9ff"
-                                            :strokeWidth "8px"}})
-                 (dom/ellipse #js {:style #js {:cx "160px"
-                                               :cy "210px"
-                                               :rx "13px"
+                                            :strokeWidth ".5vh"}})
+                 (dom/ellipse #js {:style #js {:cx "9.6vh"
+                                               :cy "12.6vh"
+                                               :rx ".8vh"
                                                :ry eye-height
                                                :fill "#0e3487"}})
-                 (dom/ellipse #js {:style #js {:cx "295px"
-                                               :cy "210px"
-                                               :rx "13px"
+                 (dom/ellipse #js {:style #js {:cx "17.7vh"
+                                               :cy "12.6vh"
+                                               :rx ".8vh"
                                                :ry eye-height
                                                :fill "#0e3487"}}))))
     om/IDidMount
