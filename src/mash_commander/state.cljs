@@ -6,7 +6,9 @@
 
 (defonce app-state
   (atom {:lines {:history []}
-         :words {}}))
+         :words {}
+         :characters {
+                      :nix {:state :resting}}}))
 
 (defn lines []
   (om/ref-cursor (:lines (om/root-cursor app-state))))

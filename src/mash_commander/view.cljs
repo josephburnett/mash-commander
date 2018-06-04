@@ -5,6 +5,7 @@
             [mash-commander.freestyle.freestyle-mode]
             [mash-commander.set.set-mode]
             [mash-commander.nix.nix-mode]
+            [mash-commander.nix.character :as character]
             [mash-commander.image :as image]
             [mash-commander.state :as state]
             [ajax.core :refer [GET]]
@@ -52,8 +53,11 @@
                (cons
                 (om/build keyboard/keyboard-view (get-in cursor [:lines]))
                 (cons
-                 (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
-                 (om/build-all line-view (get-in cursor [:lines :history])))))))))
+                 (when (= :nix (get-in cursor [:lines :active :mode]))
+                   (om/build character/view (get-in cursor [:characters :nix])))
+                 (cons
+                  (om/build line-view (get-in cursor [:lines :active]) {:state {:focus true}})
+                  (om/build-all line-view (get-in cursor [:lines :history]))))))))))
 
 (defn init[]
   (om/root app-view state/app-state
