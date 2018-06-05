@@ -9,7 +9,7 @@
          :words {}
          :characters {
                       :nix {:state :resting
-                            :current-page :page-1}}}))
+                            :page {:current-page :page-1}}}}))
 
 (defn lines []
   (om/ref-cursor (:lines (om/root-cursor app-state))))

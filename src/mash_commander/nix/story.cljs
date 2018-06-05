@@ -43,9 +43,11 @@
         (close! done))
     done)))
 
-(defn begin [cursor]
-  (go-loop []
-    (let [page (get story-line (:current-page cursor))]
-      (<! (run-page cursor page)))
-    (recur)))
+(defn component [cursor]
+  (reify
+    om/IRender
+    (render [_]
+      (let [page (get story-line (:current-page cursor))]
+        (run-page cursor page))
+      nil)))
           

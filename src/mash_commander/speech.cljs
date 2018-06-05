@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [ajax.core :refer [GET]]
             [cljs-hash.md5 :as digest]
-            [cljs.core.async :refer [chan put! close! <! >!]]))
+            [cljs.core.async :refer [timeout chan put! close! <! >!]]))
 
 (def ^:private speech-manifest (atom {}))
 
@@ -44,8 +44,9 @@
 
 (defn- adhoc-say [what done]
   (if (nil? polly)
-    (do
+    (go
       (print "adhoc-say: " what)
+      (<! (timeout 1000))
       (when done (close! done)))
 
     (. polly synthesizeSpeech (clj->js {:Text what
