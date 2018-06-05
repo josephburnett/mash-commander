@@ -33,16 +33,21 @@
                          (.-webkitAudioContext js/window))]
     (AudioContext.)))
 
-(defn- play-audio [buffer]
+(defn- play-audio [buffer done]
   (go
     (let [decoded-buffer (<! (decode-audio-data audio-context buffer))
           source (doto (.createBufferSource audio-context)
                    (aset "buffer" decoded-buffer))]
       (.connect source (.-destination audio-context))
-      (.start source 0))))
+      (.start source 0)
+      (aset source "onended" #(when done (close! done))))))
 
-(defn- adhoc-say [what]
-  (when-not (nil? polly)
+(defn- adhoc-say [what done]
+  (if (nil? polly)
+    (do
+      (print "adhoc-say: " what)
+      (when done (close! done)))
+
     (. polly synthesizeSpeech (clj->js {:Text what
                                         :OutputFormat "mp3"
                                         :VoiceId "Ivy"})
@@ -50,9 +55,9 @@
          (if err
            (print err err.stack)
            (let [buffer (.-buffer (.-AudioStream data))]
-             (play-audio buffer)))))))
+             (play-audio buffer done)))))))
 
-(defn- cache-say [what]
+(defn- cache-say [what done]
   (let [md5 (digest/md5 what)
         filename (str "/cache/speech:ivy:" md5 ".mp3")]
     (GET filename
@@ -60,13 +65,18 @@
           :response-format {:type :arraybuffer
                             :read #(.getResponse %)}})))
 
+(defn wait-say [what]
+  (let [done (chan)]
+    (if (contains? @speech-manifest (digest/md5 what))
+      (cache-say what done)
+      (adhoc-say what done))
+    done))
+
 (def say (chan))
-    (go-loop []
-      (let [what (<! say)]
-        (if (contains? @speech-manifest (digest/md5 what))
-          (cache-say what)
-          (adhoc-say what))
-        (recur)))
+(go-loop []
+  (let [what (<! say)]
+    (<! (wait-say what))
+    (recur)))
 
 (defn init []
   (let [done (chan)]

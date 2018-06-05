@@ -1,9 +1,11 @@
 (ns mash-commander.nix.nix-mode
   (:require [clojure.string :as str]
+            [cljs.core.async :refer [put!]]
             [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
             [mash-commander.nix.filesystem :as fs]
             [mash-commander.nix.command :as nix-command]
+            [mash-commander.nix.story :as story]
             [mash-commander.state :as mash-state]
             [mash-commander.trie :as trie]
             [om.core :as om :include-macros true]
@@ -65,13 +67,18 @@
                       (= [] (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args])))
                  (= :args mode))
              (contains? (:command-trie (:active %)) ""))
-        (as-> % c
-          (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
-                func (get-in (nix-command/command-map) [command-string :fn])
-                result (func (drop (+ 1 (count command-string)) (reverse letters)))]
-            (assoc-in c [:active :result] result))
-          (assoc-in c [:history] (cons (:active c) (:history c)))
-          (assoc-in c [:active] (mode/initial-line-state {:mode :nix})))
+        (do
+          (let [last-line (str/join "" (reverse letters))
+                new-c (as-> % c
+                        (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
+                              func (get-in (nix-command/command-map) [command-string :fn])
+                              result (func (drop (+ 1 (count command-string)) (reverse letters)))]
+                          (assoc-in c [:active :result] result))
+                        (assoc-in c [:history] (cons (:active c) (:history c)))
+                        (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))
+                        (assoc-in c [:characters :nix :last-line] last-line))]
+            (put! story/event-chan {:type :new-line :line last-line})
+            new-c))
         ;; Ignore everything else
         :default %))))
 

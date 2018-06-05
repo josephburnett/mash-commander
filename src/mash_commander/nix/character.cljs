@@ -1,6 +1,7 @@
 (ns mash-commander.nix.character
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [om.core :as om :include-macros true]
+  (:require [mash-commander.nix.story :as story]
+            [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
             [cljs.core.async :refer [chan put! close! <! >! timeout]]))
 
@@ -60,4 +61,5 @@
         (>! state-chan :resting)
         ;; blink every 2-5 seconds
         (<! (timeout (+ (rand-int 3000) 2000)))
-        (recur)))))
+        (recur))
+      (story/begin cursor))))
