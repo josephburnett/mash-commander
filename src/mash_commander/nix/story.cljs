@@ -1,6 +1,7 @@
 (ns mash-commander.nix.story
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.speech :as speech]
+            [mash-commander.state :as state]
             [cljs.core.async :refer [pub sub chan put! close! <! >!]]
             [om.core :as om :include-macros true]))
 
@@ -32,6 +33,10 @@
   (let [done (chan)]
     (go
       (when (:say page)
+        (om/transact! (state/lines)
+                      #(let [new-line {:mode :nix
+                                       :result (:say page)}]
+                         (assoc % :history (cons new-line (:history %)))))
         (<! (speech/wait-say (:say page))))
       (when (:wait page)
         (<! (wait (:wait page))))

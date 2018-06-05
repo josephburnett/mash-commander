@@ -97,10 +97,12 @@
                                           :padding "0.5em"
                                           :backgroundColor "#222"
                                           :border "1px solid #555"}} (:result line))
-        arrow (dom/span #js {:style #js {:color "#33f"}} "\u21B3")]
+        arrow (when (:letters line) (dom/span #js {:style #js {:color "#33f"}} "\u21B3"))]
     (if (:focus state)
-      [prompt command args cursor]
-      [(dom/div nil command args) (when (:result line) (dom/div nil arrow result))])))
+      [(dom/div #js {:style #js {:padding "0 0 0.7em 0"}} prompt command args cursor)]
+      [(dom/div nil command args)
+       (when (:result line)
+         (dom/div #js {:style #js {:padding "0 0 0.7em 0"}} arrow result))])))
 
 (defmethod mode/initial-line-state :nix
   [state]
