@@ -12,13 +12,13 @@
 (def event-chan (chan))
 (def event-pub (pub event-chan :type))
 
-(defn wait [test]
+(defn wait-event [e]
   (let [done (chan)
         event-sub (chan)]
-    (sub event-pub :new-line event-sub)
+    (sub event-pub (:type e) event-sub)
     (go-loop []
       (let [event (<! event-sub)]
-        (if (test event)
+        (if (= e event)
           (do
             (close! event-sub)
             (close! done))
@@ -34,8 +34,9 @@
                                        :result (:say page)}]
                          (assoc % :history (cons new-line (:history %)))))
         (<! (speech/wait-say (:say page))))
-      (when (:wait page)
-        (<! (wait (:wait page))))
+      (when (:wait-event page)
+        (print "waiting")
+        (<! (wait-event (:wait-event page))))
       (when (:then page)
         (<! (run-page cursor (:then page))))
       (when (:goto page)
