@@ -16,3 +16,7 @@
 (defmulti key-potential
   (fn [line key]
     (get line :mode)))
+
+(defmulti can-restore
+  (fn [line key]
+    (get line :mode)))

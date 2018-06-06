@@ -20,6 +20,8 @@
 
 ;; Mode methods
 
+(defmethod mode/can-restore :nix [_ _ _] false)
+
 (defn- backspace [owner]
   (om/transact!
    (om/observe owner (mash-state/lines))

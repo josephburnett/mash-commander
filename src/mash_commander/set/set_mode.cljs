@@ -25,6 +25,8 @@
       (when-not (nil? url)
         (go (>! image/show url))))))
 
+(defmethod mode/can-restore :set [_ _ _] true)
+
 (defmethod mode/dispatch-keydown :set
   [cursor owner key]
   (om/transact!

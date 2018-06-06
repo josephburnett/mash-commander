@@ -32,7 +32,9 @@
 (defn- trie-step [trie letter]
   (if (or (empty? trie) (not (contains? trie letter))) {}
       (get trie letter)))
-      
+
+(defmethod mode/can-restore :freestyle [_ _ _] true)
+
 (defmethod mode/dispatch-keydown :freestyle
   [cursor owner key]
   (om/transact!

@@ -24,7 +24,8 @@
               (fn [e] (mode/dispatch-keydown cursor owner (.-key e))))
         (go-loop []
           (let [state (<! (om/get-shared owner :set-line))]
-            (om/update! cursor state))
+            (when (mode/can-restore state)
+              (om/update! cursor state)))
           (recur))))
     om/IWillReceiveProps
     (will-receive-props [_ next]
