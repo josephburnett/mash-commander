@@ -4,7 +4,6 @@
             [mash-commander.freestyle.command :as command]
             [mash-commander.mode :as mode]
             [mash-commander.nix.filesystem :as fs]
-            [mash-commander.nix.command :as nix-command]
             [mash-commander.nix.character :as character]
             [mash-commander.state :as mash-state]
             [mash-commander.trie :as trie]
@@ -54,24 +53,24 @@
         (and (= " " key)
              (= :command mode)
              (contains? (:command-trie (:active %)) "")
-             (not (empty? (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
+             (not (empty? (get-in (fs/command-map) [(str/join "" (reverse letters)) :args]))))
         (as-> % c
           (assoc-in c [:active :command-trie-stack] (cons trie stack))
-          (assoc-in c [:active :command-trie] (nix-command/args-trie (first (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args]))))
+          (assoc-in c [:active :command-trie] (fs/args-trie (first (get-in (fs/command-map) [(str/join "" (reverse letters)) :args]))))
           (assoc-in c [:active :letters] (cons key letters))
           (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
           (assoc-in c [:active :nix-mode] :args))
         ;; Run command
         (and (= "Enter" key)
              (or (and (= :command mode)
-                      (= [] (get-in (nix-command/command-map) [(str/join "" (reverse letters)) :args])))
+                      (= [] (get-in (fs/command-map) [(str/join "" (reverse letters)) :args])))
                  (= :args mode))
              (contains? (:command-trie (:active %)) ""))
         (do
           (let [last-line (str/join "" (reverse letters))
                 new-c (as-> % c
                         (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
-                              func (get-in (nix-command/command-map) [command-string :fn])
+                              func (get-in (fs/command-map) [command-string :fn])
                               result (func (drop (+ 1 (count command-string)) (reverse letters)))]
                           (assoc-in c [:active :result] result))
                         (assoc-in c [:history] (cons (:active c) (:history c)))
@@ -107,9 +106,9 @@
 (defmethod mode/initial-line-state :nix
   [state]
   (merge state
-         {:command-trie (nix-command/command-trie)
+         {:command-trie (fs/command-trie)
           :command-trie-stack []
-          :command-map (nix-command/command-map)
+          :command-map (fs/command-map)
           :nix-mode :command
           :nix-mode-stack []
           :letters []}))
@@ -123,14 +122,14 @@
     ;; Complete command
     (and (= "Enter" key)
          (or (and (= :command (:nix-mode line))
-                  (= [] (get-in (nix-command/command-map) [(str/join "" (reverse (:letters line))) :args])))
+                  (= [] (get-in (fs/command-map) [(str/join "" (reverse (:letters line))) :args])))
              (= :args (:nix-mode line)))
          (contains? (:command-trie line) "")) :command
     ;; Arguments allowed
     (and (= " " key)
          (= :command (:nix-mode line))
          (contains? (:command-trie line) "")
-         (not (empty? (get-in (nix-command/command-map) [(str/join "" (reverse (:letters line))) :args])))) :typing
+         (not (empty? (get-in (fs/command-map) [(str/join "" (reverse (:letters line))) :args])))) :typing
     ;; Argument potential
     (and (= :args (:nix-mode line))
          (contains? (:command-trie line) key)) :typing
