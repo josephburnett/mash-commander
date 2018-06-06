@@ -33,7 +33,7 @@
                          (.-webkitAudioContext js/window))]
     (AudioContext.)))
 
-(defn- play-audio [buffer done]
+(defn- play-audio [done buffer]
   (go
     (let [decoded-buffer (<! (decode-audio-data audio-context buffer))
           source (doto (.createBufferSource audio-context)
@@ -56,13 +56,13 @@
          (if err
            (print err err.stack)
            (let [buffer (.-buffer (.-AudioStream data))]
-             (play-audio buffer done)))))))
+             (play-audio done buffer)))))))
 
 (defn- cache-say [what done]
   (let [md5 (digest/md5 what)
         filename (str "/cache/speech:ivy:" md5 ".mp3")]
     (GET filename
-         {:handler play-audio
+         {:handler (partial play-audio done)
           :response-format {:type :arraybuffer
                             :read #(.getResponse %)}})))
 

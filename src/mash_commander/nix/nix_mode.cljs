@@ -5,7 +5,7 @@
             [mash-commander.mode :as mode]
             [mash-commander.nix.filesystem :as fs]
             [mash-commander.nix.command :as nix-command]
-            [mash-commander.nix.story :as story]
+            [mash-commander.nix.character :as character]
             [mash-commander.state :as mash-state]
             [mash-commander.trie :as trie]
             [om.core :as om :include-macros true]
@@ -77,7 +77,7 @@
                         (assoc-in c [:history] (cons (:active c) (:history c)))
                         (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))
                         (assoc-in c [:characters :nix :last-line] last-line))]
-            (put! story/event-chan {:type :new-line :line last-line})
+            (put! character/event-chan {:type :new-line :line last-line})
             new-c))
         ;; Ignore everything else
         :default %))))
