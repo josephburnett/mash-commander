@@ -19,67 +19,84 @@
 (command/add-command "nix")
 
 ;; Mode methods
-(defmethod mode/dispatch-keydown :nix
-  [line owner key]
+
+(defn- backspace [owner]
   (om/transact!
    (om/observe owner (mash-state/lines))
-   #(let [trie (:command-trie (:active %))
-          stack (:command-trie-stack (:active %))
-          mode (:nix-mode (:active %))
-          mode-stack (:nix-mode-stack (:active %))
-          args (:nix-args (:active %))
-          args-stack (:nix-args-stack (:active %))
-          letters (:letters (:active %))]
-      (cond
-        ;; Backspace
-        (and (= "Backspace" key) (not (empty? letters)))
-        (as-> % c
-          (assoc-in c [:active :letters] (rest letters))
-          (assoc-in c [:active :nix-mode] (first mode-stack))
-          (assoc-in c [:active :nix-mode-stack] (rest mode-stack))
-          (assoc-in c [:active :nix-args] (first args-stack))
-          (assoc-in c [:active :nix-args-stack] (rest args-stack))
-          (assoc-in c [:active :command-trie] (first stack))
-          (assoc-in c [:active :command-trie-stack] (rest stack)))
-        ;; Valid transition
-        (contains? (:command-trie (:active %)) key)
-        (as-> % c
-          (assoc-in c [:active :command-trie-stack] (cons trie stack))
-          (assoc-in c [:active :command-trie] (get trie key))
-          (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
-          (assoc-in c [:active :nix-args-stack] (cons args args-stack))
-          (assoc-in c [:active :letters] (cons key letters)))
-        ;; Command with args
-        (and (= " " key)
-             (= :command mode)
-             (contains? (:command-trie (:active %)) "")
-             (not (empty? (get-in (fs/command-map) [(str/join "" (reverse letters)) :args]))))
-        (as-> % c
-          (assoc-in c [:active :command-trie-stack] (cons trie stack))
-          (assoc-in c [:active :command-trie] (fs/args-trie (first (get-in (fs/command-map) [(str/join "" (reverse letters)) :args]))))
-          (assoc-in c [:active :letters] (cons key letters))
-          (assoc-in c [:active :nix-mode-stack] (cons mode mode-stack))
-          (assoc-in c [:active :nix-mode] :args))
-        ;; Run command
-        (and (= "Enter" key)
-             (or (and (= :command mode)
-                      (= [] (get-in (fs/command-map) [(str/join "" (reverse letters)) :args])))
-                 (= :args mode))
-             (contains? (:command-trie (:active %)) ""))
-        (do
-          (let [last-line (str/join "" (reverse letters))
-                new-c (as-> % c
-                        (let [command-string (str/join "" (take-while (fn [l] (not (= " " l))) (reverse letters)))
-                              func (get-in (fs/command-map) [command-string :fn])
-                              result (func (drop (+ 1 (count command-string)) (reverse letters)))]
-                          (assoc-in c [:active :result] result))
-                        (assoc-in c [:history] (cons (:active c) (:history c)))
-                        (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))
-                        (assoc-in c [:characters :nix :last-line] last-line))]
-            (put! character/event-chan {:type :new-line :line last-line})
-            new-c))
-        ;; Ignore everything else
-        :default %))))
+   #(as-> % c
+      (assoc-in c [:active :letters] (rest (get-in c [:active :letters])))
+      (assoc-in c [:active :nix-mode] (first (get-in c [:active :nix-mode-stack])))
+      (assoc-in c [:active :nix-mode-stack] (rest (get-in c [:active :nix-mode-stack])))
+      (assoc-in c [:active :nix-args] (first (get-in c [:active :nix-args-stack])))
+      (assoc-in c [:active :nix-args-stack] (rest (get-in c [:active :nix-argx-stack])))
+      (assoc-in c [:active :command-trie] (first (get-in c [:active :command-trie-stack])))
+      (assoc-in c [:active :command-trie-stack] (rest (get-in c [:active :command-trie-stack]))))))
+
+(defn- transition [owner key]
+  (om/transact!
+   (om/observe owner (mash-state/lines))
+   #(as-> % c
+      (assoc-in c [:active :command-trie-stack] (cons (get-in c [:active :command-trie])
+                                                      (get-in c [:active :command-trie-stack])))
+      (assoc-in c [:active :command-trie] (get-in c [:active :command-trie key]))
+      (assoc-in c [:active :nix-mode-stack] (cons (get-in c [:active :nix-mode])
+                                                  (get-in c [:active :nix-mode-stack])))
+      (assoc-in c [:active :nix-args-stack] (cons (get-in c [:active :nix-args])
+                                                  (get-in c [:active :nix-args-stack])))
+      (assoc-in c [:active :letters] (cons key (get-in c [:active :letters]))))))
+
+(defn- command-args [owner key]
+  (om/transact!
+   (om/observe owner (mash-state/lines))
+   #(as-> % c
+      (assoc-in c [:active :command-trie-stack] (cons (get-in c [:active :command-trie])
+                                                      (get-in c [:active :command-trie-stack])))
+      (let [args (first (get-in (fs/command-map) [(str/join "" (reverse (get-in c [:active :letters]))) :args]))]
+        (assoc-in c [:active :command-trie] (fs/args-trie args)))
+      (assoc-in c [:active :letters] (cons key (get-in c [:active :letters])))
+      (assoc-in c [:active :nix-mode-stack] (cons (get-in c [:active :nix-mode])
+                                                  (get-in c [:active :nix-mode-stack])))
+      (assoc-in c [:active :nix-mode] :args))))
+
+(defn- run-command [owner]
+  (let [letters (get-in @(mash-state/lines) [:active :letters])
+        last-line (str/join "" (reverse letters))
+        command-string (str/join "" (take-while #(not (= " " %)) (reverse letters)))
+        func (get-in (fs/command-map) [command-string :fn])
+        result (func (drop (+ 1 (count command-string)) (reverse letters)))]
+    (om/transact!
+     (om/observe owner (mash-state/lines))
+     #(as-> % c
+        (assoc-in c [:active :result] result)
+        (assoc-in c [:history] (cons (:active c) (:history c)))
+        (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))))
+    (put! character/event-chan {:type :new-line :line last-line})))
+
+(defmethod mode/dispatch-keydown :nix
+  [line owner key]
+  (let [active (get-in @(mash-state/lines) [:active])]
+    (cond
+      ;; Backspace
+      (and (= "Backspace" key) (not (empty? (:letters active))))
+      (backspace owner)
+      ;; Valid transition
+      (contains? (:command-trie active) key)
+      (transition owner key)
+      ;; Command with args
+      (and (= " " key)
+           (= :command (:nix-mode active))
+           (contains? (:command-trie active) "")
+           (not (empty? (get-in (fs/command-map) [(str/join "" (reverse (:letters active))) :args]))))
+      (command-args owner key)
+      ;; Run command
+      (and (= "Enter" key)
+           (or (and (= :command (:nix-mode active))
+                    (= [] (get-in (fs/command-map) [(str/join "" (reverse (:letters active))) :args])))
+               (= :args (:nix-mode active)))
+           (contains? (:command-trie active) ""))
+      (run-command owner)
+      ;; Ignore everything else
+      :default nil)))
 
 (defmethod mode/line-render-state :nix
   [line owner state]
@@ -88,7 +105,7 @@
         args (str/join "" (drop-while #(not (= " " %)) (reverse (:letters line))))
         prompt (dom/span #js {:style #js {:color "#080"
                                           :fontWeight "bold"}}
-                         (str/join "/" (concat ["nix:"] (:cwd @fs/root) ["$ "])))
+                         (str/join "/" (concat ["nix:"] (:cwd @(fs/root-cursor)) ["$ "])))
         cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
         result (dom/span #js {:style #js {:color "#fff"
                                           :fontSize "0.7em"

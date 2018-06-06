@@ -1,44 +1,48 @@
 (ns mash-commander.nix.filesystem
   (:require [clojure.string :as str]
-            [mash-commander.trie :as trie]))
+            [mash-commander.state :as state]
+            [mash-commander.trie :as trie]
+            [om.core :as om :include-macros true]))
 
-(def root (atom {}))
+(defn root-cursor []
+  (om/ref-cursor (get-in (om/root-cursor state/app-state) [:characters :nix :root])))
+
 (declare files)
 
 (defn ls []
-  (let [dir (get-in (:fs @root) (interleave (repeat :files) (:cwd @root)))]
+  (let [root @(root-cursor)
+        dir (get-in (:fs root) (interleave (repeat :files) (:cwd root)))]
     (str/join "\t" (keys (:files dir)))))
 
 (defn cd [dir]
   (if (= ["." "."] dir)
-    (swap! root #(assoc % :cwd (drop-last (:cwd %))))
+    (om/transact! (root-cursor) #(assoc % :cwd (drop-last (:cwd %))))
     (let [path (str/split (str/join "" dir) "/")
-          cwd (:cwd @root)
+          cwd (:cwd @(root-cursor))
           new-cwd (concat cwd path)]
-      (swap! root #(assoc % :cwd new-cwd))))
+      (om/transact! (root-cursor) #(assoc % :cwd new-cwd))))
   nil)
 
-(reset! root
-      {:fs {:mod #{:r}
-            :type :dir
-            :files {"bin" {:mod #{:r}
-                           :type :dir
-                           :files {"ls" {:mod #{:x}
-                                         :type :file
-                                         :fn ls
-                                         :args []}
-                                   "cd" {:mod #{:x}
-                                         :type :file
-                                         :fn cd
-                                         :args [:file]}}}
-                    "usr" {:mod #{:r}
-                           :type :dir
-                           :files {}}}}
-       :cwd []
-       :ps []})
-
 (defn init []
-  (print "nix up"))
+  (om/update!
+   (root-cursor)
+   {:fs {:mod #{:r}
+         :type :dir
+         :files {"bin" {:mod #{:r}
+                        :type :dir
+                        :files {"ls" {:mod #{:x}
+                                      :type :file
+                                      :fn ls
+                                      :args []}
+                                "cd" {:mod #{:x}
+                                      :type :file
+                                      :fn cd
+                                      :args [:file]}}}
+                 "usr" {:mod #{:r}
+                        :type :dir
+                        :files {}}}}
+    :cwd []
+    :ps []}))
 
 (defn files
   ([cwd] (files [] cwd))
@@ -66,17 +70,17 @@
                 files))))
 
 (defn command-trie []
-  (let [c (map :name (commands (:fs @root)))]
+  (let [c (map :name (commands (:fs @(root-cursor))))]
     (trie/build c)))
     
 (defn command-map []
-  (reduce #(assoc %1 (:name %2) %2) {} (commands (:fs @root))))
+  (reduce #(assoc %1 (:name %2) %2) {} (commands (:fs @(root-cursor)))))
 
 (defn args-trie [args-spec]
   (cond
     ;; Looking for a valid filename
     (= :file args-spec)
-    (let [root @root
+    (let [root @(root-cursor)
           cwd (get-in (:fs root) (:cwd root))]
       (if (empty? cwd)
         (trie/build (cons ".." (files cwd)))

@@ -35,7 +35,6 @@
                          (assoc % :history (cons new-line (:history %)))))
         (<! (speech/wait-say (:say page))))
       (when (:wait-event page)
-        (print "waiting")
         (<! (wait-event (:wait-event page))))
       (when (:then page)
         (<! (run-page cursor (:then page))))

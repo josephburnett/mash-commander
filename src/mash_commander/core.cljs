@@ -4,6 +4,7 @@
   (:require [om.core :as om :include-macros true]
             [clojure.string :as str]
             [cljs.core.async :as async :refer [chan <!]]
+            [mash-commander.nix.filesystem :as fs]
             [mash-commander.set.manifest :as set-manifest]
             [mash-commander.speech :as speech]
             [mash-commander.state :as state]
@@ -18,4 +19,5 @@
         (words/init)
         (speech/init)]))
   (state/init)
+  (fs/init)
   (view/init))

@@ -9,6 +9,7 @@
          :words {}
          :characters {
                       :nix {:state :resting
+                            :root {}
                             :page {:current-page :page-1}}}}))
 
 (defn lines []
@@ -28,7 +29,6 @@
 
 (defn init []
   (let [set (:set (url-params))]
-    (print "set: " set)
     (if (contains? @set-manifest/sets set)
       (swap! app-state #(assoc-in % [:lines]
                                   {:active (mode/initial-line-state {:mode :set
