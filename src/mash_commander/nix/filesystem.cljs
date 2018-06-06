@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [mash-commander.state :as state]
             [mash-commander.trie :as trie]
+            [mash-commander.mode :as mode]
             [om.core :as om :include-macros true]))
 
 (defn fs-cursor []
@@ -23,6 +24,14 @@
       (om/transact! (fs-cursor) #(assoc % :cwd new-cwd))))
   nil)
 
+(defn clear []
+  (om/transact!
+   (state/lines)
+   #(as-> % c
+      (assoc-in c [:history] [])
+      (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))))
+  nil)
+
 (defn init []
   (om/update!
    (fs-cursor)
@@ -37,7 +46,11 @@
                                   "cd" {:mod #{:x}
                                         :type :file
                                         :fn cd
-                                        :args [:file]}}}
+                                        :args [:file]}
+                                  "clear" {:mod #{:x}
+                                           :type :file
+                                           :fn clear
+                                           :args []}}}
                    "usr" {:mod #{:r}
                           :type :dir
                           :files {}}}}
