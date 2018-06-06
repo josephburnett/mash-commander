@@ -105,7 +105,7 @@
         args (str/join "" (drop-while #(not (= " " %)) (reverse (:letters line))))
         prompt (dom/span #js {:style #js {:color "#080"
                                           :fontWeight "bold"}}
-                         (str/join "/" (concat ["nix:"] (:cwd @(fs/root-cursor)) ["$ "])))
+                         (str/join "/" (concat ["nix:"] (:cwd @(fs/fs-cursor)) ["$ "])))
         cursor (dom/span #js {:style #js {:color "#900"}} "\u2588")
         result (dom/span #js {:style #js {:color "#fff"
                                           :fontSize "0.7em"

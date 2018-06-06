@@ -9,7 +9,7 @@
          :words {}
          :characters {
                       :nix {:state :resting
-                            :root {}
+                            :fs {}
                             :page {:current-page :page-1}}}}))
 
 (defn lines []
