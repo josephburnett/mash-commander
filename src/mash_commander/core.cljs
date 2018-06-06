@@ -18,6 +18,6 @@
        [(set-manifest/init)
         (words/init)
         (speech/init)]))
-  (state/init)
   (fs/init)
+  (state/init)
   (view/init))

@@ -28,13 +28,22 @@
                [(keyword k) v]))))
 
 (defn init []
-  (let [set (:set (url-params))]
-    (if (contains? @set-manifest/sets set)
+  (let [set (:set (url-params))
+        chroot (:chroot (url-params))]
+    (cond
+      ;; Start Nix
+      (= "nix" chroot)
+      (swap! app-state #(assoc-in % [:lines] {:active (mode/initial-line-state {:mode :nix})
+                                              :history []}))
+      ;; Start in a set
+      (contains? @set-manifest/sets set)
       (swap! app-state #(assoc-in % [:lines]
                                   {:active (mode/initial-line-state {:mode :set
                                                                      :set set})
                                    :prev-active (mode/initial-line-state {:mode :freestyle})
                                    :prev-history []}))
+      ;; Start in freestyle mode
+      :default
       (swap! app-state #(assoc-in % [:lines :active]
                                   (mode/initial-line-state {:mode :freestyle}))))))
 
