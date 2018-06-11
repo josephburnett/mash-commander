@@ -51,14 +51,19 @@
       (let [rv (partial row-view (:active cursor) owner)]
         (dom/div #js {:style #js {:position "absolute"
                                   :bottom "7vh"
-                                  :width "100vmin"
-                                  :heigth "100vh"}}
+                                  :width "95vmin"
+                                  :border "solid #666 0.5vmin"
+                                  :borderRadius "2vmin"
+                                  :padding "1.3vmin 0.5vmin"
+                                  :margin "0 0 0 1.5vmin"
+                                  :zIndex "100"
+                                  :background "#000"}}
                  (dom/div #js {:style #js {:backgroundColor "#ddd"
                                            :width "90vmin"
                                            :height "25vm"
                                            :maxHeight "100%"
                                            :margin "0 auto"
-                                           :padding "0 0 0 3vmin"
+                                           :padding "0 0 0 1vmin"
                                            :zIndex "100"}}
                           (rv (concat
                                [{:key "Escape" :display "Esc" :style {:width "8vmin" :marginRight "2vmin"}}]

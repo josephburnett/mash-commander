@@ -63,11 +63,12 @@
                          :resting "21"
                          :blinking "3")]
         (dom/div nil
+                 ;; Nix character
                  (dom/svg #js {:style #js {:width "30.0vh"
-                                           :height "48.0vh"
+                                           :height "100.0vh"
                                            :float "right"
                                            :padding "5vh"}
-                               :viewBox "0 0 300 480"}
+                               :viewBox "0 0 300 1000"}
                           (dom/rect #js {:x "5"
                                          :y "5"
                                          :width "295"
@@ -95,7 +96,42 @@
                                             :cy "126"
                                             :rx "8"
                                             :ry eye-height
-                                            :fill "#0e3487"}))
+                                            :fill "#0e3487"})
+                          (dom/rect #js {:x "130"
+                                         :y "482"
+                                         :width "40"
+                                         :height "20"
+                                         :fill "#fff"})
+                          (dom/circle #js {:cx "150"
+                                           :cy "502"
+                                           :r "20"
+                                           :fill "#fff"})
+                          (dom/rect #js {:x "145"
+                                         :y "500"
+                                         :width "10"
+                                         :height "500"
+                                         :fill "#fff"}))
+                 ;; Keyboard cable
+                 (dom/svg #js {:style #js {:position "absolute"
+                                           :bottom "0vh"
+                                           :width "100vh"
+                                           :height "7vh"}
+                               :viewBox "0 0 1000 70"}
+                          (dom/rect #js {:x "455"
+                                         :y "0"
+                                         :width "10"
+                                         :height "100"
+                                         :fill "#fff"})
+                          (dom/rect #js {:x "440"
+                                         :y "0"
+                                         :width "40"
+                                         :height "20"
+                                         :fill "#fff"})
+                          (dom/circle #js {:cx "460"
+                                           :cy "20"
+                                           :r "20"
+                                           :fill "#fff"}))
+                 ;; Story telling
                  (om/build story-component (:page cursor)))))
     om/IDidMount
     (did-mount [_]
