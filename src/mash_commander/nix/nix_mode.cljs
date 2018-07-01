@@ -65,7 +65,8 @@
         last-line (str/join "" (reverse letters))
         command-string (str/join "" (take-while #(not (= " " %)) (reverse letters)))
         func (get-in (fs/command-map) [command-string :fn])
-        result (func (drop (+ 1 (count command-string)) (reverse letters)))]
+        params (str/join (drop (+ 1 (count command-string)) (reverse letters)))
+        result (func params)]
     (om/transact!
      (om/observe owner (mash-state/lines))
      #(as-> % c

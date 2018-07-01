@@ -16,9 +16,9 @@
     (str/join "\t" (keys (:files dir)))))
 
 (defn cd [dir]
-  (if (= ["." "."] dir)
+  (if (= [".."] dir)
     (om/transact! (fs-cursor) #(assoc % :cwd (drop-last (:cwd %))))
-    (let [path (str/split (str/join "" dir) "/")
+    (let [path (str/split dir "/")
           cwd (:cwd @(fs-cursor))
           new-cwd (concat cwd path)]
       (om/transact! (fs-cursor) #(assoc % :cwd new-cwd))))
