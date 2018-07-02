@@ -31,7 +31,7 @@
     (str/join "\t" (keys (:files dir)))))
 
 (defn cd [param]
-  (if (= [".."] param)
+  (if (= ".." param)
     (om/transact! (fs-cursor) #(assoc % :cwd (drop-last (:cwd %))))
     (let [path (str/split param "/")
           cwd (:cwd @(fs-cursor))
