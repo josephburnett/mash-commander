@@ -23,6 +23,9 @@
                    :then {:say "Do you see the `clear` command? What do you think it does?"
                           :wait-event {:type :new-line :line "clear"}
                           :then {:goto :page-6}}}}
-   :page-6 {:say "Cool. That's all for now. I'm still a work in progress!"}})
+   :page-6 {:say "Cool. That's all for now. I'm still a work in progress!"
+            :wait-event {:type :key-down :test #(true)}
+            :goto :page-7}
+   :page-7 {:say "Bonus."}})
                    
                    

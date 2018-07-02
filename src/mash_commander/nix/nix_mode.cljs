@@ -78,6 +78,7 @@
 (defmethod mode/dispatch-keydown :nix
   [line owner key]
   (let [active (get-in @(mash-state/lines) [:active])]
+    (put! character/event-chan {:type :key-down :key key})
     (cond
       ;; Backspace
       (and (= "Backspace" key) (not (empty? (:letters active))))

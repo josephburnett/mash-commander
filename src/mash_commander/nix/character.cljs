@@ -14,11 +14,14 @@
 
 (defn wait-event [e]
   (let [done (chan)
-        event-sub (chan)]
+        event-sub (chan)
+        test (if (contains? e :test)
+               (:test e)
+               #(= e %))]
     (sub event-pub (:type e) event-sub)
     (go-loop []
       (let [event (<! event-sub)]
-        (if (= e event)
+        (if (test event)
           (do
             (close! event-sub)
             (close! done))
