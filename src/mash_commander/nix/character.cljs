@@ -61,10 +61,15 @@
     (init-state [_] {})
     om/IRenderState
     (render-state [_ state]
-      (let [state (:state cursor)
+      (let [state (get-in cursor [:appearance :state])
             eye-height (condp = state
                          :resting "21"
-                         :blinking "3")]
+                         :blinking "3")
+            color (condp = (get-in cursor [:appearance :color])
+                    "white" "#fff"
+                    "blue" "#00f"
+                    "red" "#f00"
+                    "green" "#0f0")]
         (dom/div nil
                  ;; Nix character
                  (dom/svg #js {:style #js {:width "30.0vh"
@@ -79,7 +84,7 @@
                                          :rx "48"
                                          :ry "48"
                                          :stroke "black"
-                                         :fill "white"
+                                         :fill color
                                          :strokeWidth "5"})
                           (dom/rect #js {:x "30"
                                          :y "30"
@@ -140,7 +145,7 @@
     (did-mount [_]
       (go-loop []
         (let [state (<! state-chan)]
-          (om/transact! cursor #(assoc % :state state)))
+          (om/transact! cursor #(assoc-in % [:appearance :state] state)))
         (recur))
       (go-loop []
         (<! (timeout 500))

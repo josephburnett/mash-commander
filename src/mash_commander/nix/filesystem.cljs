@@ -8,6 +8,9 @@
 (defn fs-cursor []
   (om/ref-cursor (get-in (om/root-cursor state/app-state) [:characters :nix :fs])))
 
+(defn appearance-cursor []
+  (om/ref-cursor (get-in (om/root-cursor state/app-state) [:characters :nix :appearance])))
+
 (defn commands [dir]
   (let [files (seq (:files dir))]
     (apply concat 
@@ -58,6 +61,12 @@
       :default
       (str param " is not a command"))))        
 
+(defn set-cmd [param]
+  (let [kv (str/split param " ")]
+    (when (= "color" (first kv))
+      (om/transact! (appearance-cursor) #(assoc % :color (second kv))))
+    nil))
+
 (defn init []
   (om/update!
    (fs-cursor)
@@ -84,7 +93,12 @@
                                           :type :file
                                           :fn help
                                           :args [:cmd]
-                                          :help "`help` teaches you about other commands."}}}
+                                          :help "`help` teaches you about other commands."}
+                                  "set" {:mod #{:x}
+                                         :type :file
+                                         :fn set-cmd
+                                         :args [["color red" "color blue" "color green" "color white"]]
+                                         :help "`set` appearance. E.g `set color red`."}}}
                    "usr" {:mod #{:r}
                           :type :dir
                           :files {}}}}

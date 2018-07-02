@@ -8,7 +8,8 @@
   (atom {:lines {:history []}
          :words {}
          :characters {
-                      :nix {:state :resting
+                      :nix {:appearance {:state :resting
+                                         :color "white"}
                             :fs {}
                             :page {:current-page :page-1}}}}))
 
