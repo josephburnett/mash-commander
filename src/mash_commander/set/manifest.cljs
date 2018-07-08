@@ -15,10 +15,10 @@
     (map (fn [word]
            (cond
              (empty? word) {:error "Word must not be empty."}
-             (not (re-matches #"^[a-z'\-]+( [a-z'\-]+)*$" word))
+             (not (re-matches #"^[0-9a-z'\-]+( [0-9a-z'\-]+)*$" word))
              {:error (str "Word must contain only lower case letters, "
                           "single spaces and no leading or trailing "
-                          "whitespace")}
+                          "whitespace: " word)}
              :default word))
          words)))
 

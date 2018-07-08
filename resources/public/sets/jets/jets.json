@@ -1,0 +1,70 @@
+[
+    {
+	"when": {
+	    "type": "f-22",
+	    "then": {
+		"say": {
+		    "phrase": "The Lockheed Martin F-22 Raptor is a fifth-generation, single-seat, twin-engine, all-weather stealth tactical fighter aircraft developed for the United States Air Force",
+		    "source": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-22.jpg",
+			"source": "By Rob Shenk from Great Falls, VA, USA - F-22 Raptor, CC BY-SA 2.0, https://commons.wikimedia.org/w/index.php?curid=6414481"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f-14",
+	    "then": {
+		"say": {
+		    "phrase": "The Grumman F-14 Tomcat is an American supersonic, twin-engine, two-seat, twin-tail, variable-sweep wing fighter aircraft.",
+		    "source": "https://en.wikipedia.org/wiki/Grumman_F-14_Tomcat"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-14.jpg",
+			"source": "By U.S. Navy photo - This Image was released by the United States Navy with the ID 051105-F-5480T-005 (next).This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing for more information.বাংলা | Deutsch | English | español | euskara | فارسی | français | italiano | 日本語 | 한국어 | македонски | മലയാളം | Plattdüütsch | Nederlands | polski | پښتو | português | Türkçe | українська | 中文 | 中文（简体）‎ | +/−, Public Domain, https://commons.wikimedia.org/w/index.php?curid=8220824"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f-18",
+	    "then": {
+		"say": {
+		    "phrase": "The McDonnell Douglas F/A-18 Hornet is a twin-engine, supersonic, all-weather, carrier-capable, multirole combat jet, designed as both a fighter and attack aircraft.",
+		    "source": "https://en.wikipedia.org/wiki/McDonnell_Douglas_F/A-18_Hornet"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-18.jpg",
+			"source": "Public Domain, https://commons.wikimedia.org/w/index.php?curid=620231"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f-16",
+	    "then": {
+		"say": {
+		    "phrase": "The General Dynamics F-16 Fighting Falcon is a single-engine supersonic multirole fighter aircraft originally developed by General Dynamics (now Lockheed Martin) for the United States Air Force.",
+		    "source": "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-16.jpg",
+			"source": "By Master Sgt. Andy Dunaway - This Image was released by the United States Air Force with the ID 080610-F-BC606-048 (next).This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing for more information.বাংলা | Deutsch | English | español | euskara | فارسی | français | italiano | 日本語 | 한국어 | македонски | മലയാളം | Plattdüütsch | Nederlands | polski | پښتو | português | Türkçe | українська | 中文 | 中文（简体）‎ | +/−, Public Domain, https://commons.wikimedia.org/w/index.php?curid=4534330"
+		    }
+		}
+	    }
+	}
+    }
+]
