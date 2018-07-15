@@ -22,6 +22,10 @@ Nix will guide you through a series of command-line tasks to fix some small prob
 * On-screen keyboard provides discoverability of commands and parameters by color coding keys.  
 * Lower levels rely more on story and guidance, constraining commands available. Higher levels provide less guidance and a full range of Unix commands. 
 
+## Prototype
+
+http://mash-commander.appspot.com/?chroot=nix
+
 ## Learning Objectives
 
 ### Level 1
