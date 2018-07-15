@@ -18,6 +18,10 @@ Nix is a friendly and helpful robot.  But she has a rebooting problem and she ne
 
 Nix will guide you through a series of command-line tasks to fix some small problems.  Maybe finding a missing file or a fixing a glitch in her system.  Ultimately you will help her fix her rebooting problem.  If you stop interacting with her terminal for 5 minutes then she will reboot and forget everything you've done so far.  But don't worry, you can remind her of where you left off with a special command.
 
+* Mash Commander prevents the user from typing invalid commands by maintaining a trie of valid key transitions. Invalid keys are disabled. 
+* On-screen keyboard provides discoverability of commands and parameters by color coding keys.  
+* Lower levels rely more on story and guidance, constraining commands available. Higher levels provide less guidance and a full range of Unix commands. 
+
 ## Learning Objectives
 
 ### Level 1
