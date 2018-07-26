@@ -2,6 +2,8 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop]])
   (:require [mash-commander.speech :as speech]
             [mash-commander.state :as state]
+            [mash-commander.mode :as mode]
+            [mash-commander.trie :as trie]
             [mash-commander.nix.story :as story]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
@@ -11,6 +13,11 @@
 
 (def event-chan (chan))
 (def event-pub (pub event-chan :type))
+(def allowed-commands-trie (atom :any))
+
+(defn allows? [letters]
+  (if (= :any @allowed-commands-trie) true
+      (not (= nil (get-in @allowed-commands-trie letters)))))
 
 (defn wait-event [e]
   (let [done (chan)
@@ -31,6 +38,10 @@
 (defn run-page [cursor page]
   (let [done (chan)]
     (go
+      (when (:allow page)
+        (reset! allowed-commands-trie (trie/build (:allow page)))
+        (om/transact! (state/lines)
+                      #(assoc % :active (mode/initial-line-state {:allow (:allow page) :mode :nix}))))
       (when (:say page)
         (om/transact! (state/lines)
                       #(let [new-line {:mode :nix
@@ -52,6 +63,7 @@
     om/IRender
     (render [_]
       (let [page (get story/pages (:current-page cursor))]
+        (reset! allowed-commands-trie :any)
         (run-page cursor page))
       nil)))
           
