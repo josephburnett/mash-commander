@@ -20,7 +20,7 @@
           (om/transact!
            cursor
            #(let [sequence (inc (:sequence %))]
-              (js/setTimeout (partial display-clear cursor sequence) 3000)
+              (js/setTimeout (partial display-clear cursor sequence) 6000)
               (as-> % c
                 (assoc c :sequence sequence)
                 (assoc c :showing-image-url what)))))
