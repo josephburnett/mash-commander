@@ -1,7 +1,7 @@
 [
     {
 	"when": {
-	    "type": "f-22",
+	    "type": "f22",
 	    "then": {
 		"say": {
 		    "phrase": "The Lockheed Martin F-22 Raptor is a fifth-generation, single-seat, twin-engine, all-weather stealth tactical fighter aircraft developed for the United States Air Force",
@@ -18,7 +18,7 @@
     },
     {
 	"when": {
-	    "type": "f-14",
+	    "type": "f14",
 	    "then": {
 		"say": {
 		    "phrase": "The Grumman F-14 Tomcat is an American supersonic, twin-engine, two-seat, twin-tail, variable-sweep wing fighter aircraft.",
@@ -35,7 +35,7 @@
     },
     {
 	"when": {
-	    "type": "f-18",
+	    "type": "f18",
 	    "then": {
 		"say": {
 		    "phrase": "The McDonnell Douglas F/A-18 Hornet is a twin-engine, supersonic, all-weather, carrier-capable, multirole combat jet, designed as both a fighter and attack aircraft.",
@@ -52,7 +52,7 @@
     },
     {
 	"when": {
-	    "type": "f-16",
+	    "type": "f16",
 	    "then": {
 		"say": {
 		    "phrase": "The General Dynamics F-16 Fighting Falcon is a single-engine supersonic multirole fighter aircraft originally developed by General Dynamics (now Lockheed Martin) for the United States Air Force.",
@@ -62,6 +62,227 @@
 		    "picture": {
 			"file": "f-16.jpg",
 			"source": "By Master Sgt. Andy Dunaway - This Image was released by the United States Air Force with the ID 080610-F-BC606-048 (next).This tag does not indicate the copyright status of the attached work. A normal copyright tag is still required. See Commons:Licensing for more information.বাংলা | Deutsch | English | español | euskara | فارسی | français | italiano | 日本語 | 한국어 | македонски | മലയാളം | Plattdüütsch | Nederlands | polski | پښتو | português | Türkçe | українська | 中文 | 中文（简体）‎ | +/−, Public Domain, https://commons.wikimedia.org/w/index.php?curid=4534330"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f4",
+	    "then": {
+		"say": {
+		    "phrase": "The McDonnell Douglas F-4 Phantom II[N 1] is a tandem two-seat, twin-engine, all-weather, long-range supersonic jet interceptor and fighter-bomber originally developed for the United States Navy by McDonnell Aircraft.",
+		    "source": "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-4_Phantom_II"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-4.jpg",
+			"source": "By USAF - holloman.af.mil, Public Domain, https://commons.wikimedia.org/w/index.php?curid=50920146"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "av8",
+	    "then": {
+		"say": {
+		    "phrase": "The Harrier, informally referred to as the Harrier Jump Jet, is a family of jet-powered attack aircraft capable of vertical/short takeoff and landing operations.",
+		    "source": "https://en.wikipedia.org/wiki/Harrier_Jump_Jet"
+		},
+		"show": {
+		    "picture": {
+			"file": "av-8.jpg",
+			"source": "By Javier Rodríguez from Palma de Mallorca, España - Spanish EAV-8B Harrier II+ \"Cobra\", CC BY-SA 2.0, https://commons.wikimedia.org/w/index.php?curid=70947113"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "a10",
+	    "then": {
+		"say": {
+		    "phrase": "The Fairchild Republic A-10 Thunderbolt II is a single-seat, twin turbofan engine, straight wing jet aircraft developed by Fairchild-Republic for the United States Air Force.",
+		    "source": "https://en.wikipedia.org/wiki/Fairchild_Republic_A-10_Thunderbolt_II"
+		},
+		"show": {
+		    "picture": {
+			"file": "a-10.jpg",
+			"source": "By US Air Force - commons, Public Domain, https://commons.wikimedia.org/w/index.php?curid=61587687"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f117",
+	    "then": {
+		"say": {
+		    "phrase": "The Lockheed F-117 Nighthawk is an American single-seat, twin-engine stealth attack aircraft that was developed by Lockheed's secretive Skunk Works division and operated by the United States Air Force.",
+		    "source": "https://en.wikipedia.org/wiki/Lockheed_F-117_Nighthawk"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-117.jpg",
+			"source": "By Staff Sgt. Aaron Allmon II - http://www.defenselink.mil/, Public Domain, https://commons.wikimedia.org/w/index.php?curid=3770855"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f15",
+	    "then": {
+		"say": {
+		    "phrase": "The McDonnell Douglas F-15 Eagle is an American twin-engine, all-weather tactical fighter aircraft designed by McDonnell Douglas (now Boeing) to gain and maintain air supremacy in all aspects of aerial combat.",
+		    "source": "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15_Eagle"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-15.jpg",
+			"source": "By U.S. Air Force photo/Staff Sgt. Samuel Rogers - [1], [2], Public Domain, https://commons.wikimedia.org/w/index.php?curid=3068033"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "f35",
+	    "then": {
+		"say": {
+		    "phrase": "The Lockheed Martin F-35 Lightning II is a family of single-seat, single-engine, all-weather stealth multirole fighters.",
+		    "source": "https://en.wikipedia.org/wiki/Lockheed_Martin_F-35_Lightning_II"
+		},
+		"show": {
+		    "picture": {
+			"file": "f-35.jpg",
+			"source": "By U.S. Air Force photo by Master Sgt. Donald R. Allen - http://www.dvidshub.net/image/935698/aerial-refueling-f-35-lightning-ii-joint-strike-fighters-eglin-afb-fla#.UZyEMrVU8QY, Public Domain, https://commons.wikimedia.org/w/index.php?curid=49689165"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "jas39",
+	    "then": {
+		"say": {
+		    "phrase": "The Saab JAS 39 Gripen (IPA: [²griːp.ɛn]; English: \"griffin\")[Nb 3][7] is a light single-engine multirole fighter aircraft manufactured by the Swedish aerospace company Saab.",
+		    "source": "https://en.wikipedia.org/wiki/Saab_JAS_39_Gripenhttps://en.wikipedia.org/wiki/Saab_JAS_39_Gripen"
+		},
+		"show": {
+		    "picture": {
+			"file": "jas-39.jpg",
+			"source": "By Tuomo Salonen / SIMFinnish Aviation Museum - commons file, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=61459095"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "mig35",
+	    "then": {
+		"say": {
+		    "phrase": "The Mikoyan MiG-35 is a Russian multirole fighter that is designed by Mikoyan, a division of the United Aircraft Corporation.",
+		    "source": "https://en.wikipedia.org/wiki/Mikoyan_MiG-35"
+		},
+		"show": {
+		    "picture": {
+			"file": "mig-35.jpg",
+			"source": "By Carlos Menendez San Juan - MiG-35D, CC BY-SA 2.0, https://commons.wikimedia.org/w/index.php?curid=37274264"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "su57",
+	    "then": {
+		"say": {
+		    "phrase": "The Sukhoi Su-57 is the designation for a stealth, single-seat, twin-engine multirole fifth-generation jet fighter being developed for air superiority and attack operations.",
+		    "source": "https://en.wikipedia.org/wiki/Sukhoi_Su-57"
+		},
+		"show": {
+		    "picture": {
+			"file": "su-57.jpg",
+			"source": "By Alex Beltyukov - http://www.airliners.net/photo/Russia---Air/Sukhoi-T-50/2002344/L/, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=17128712"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "j20",
+	    "then": {
+		"say": {
+		    "phrase": "The Chengdu J-20 is a single-seat, twinjet, all-weather, stealth fifth-generation fighter aircraft developed by China's Chengdu Aerospace Corporation for the People's Liberation Army Air Force.",
+		    "source": "https://en.wikipedia.org/wiki/Chengdu_J-20"
+		},
+		"show": {
+		    "picture": {
+			"file": "j-20.jpg",
+			"source": "By Alert5 - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=52820207"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "ef2000",
+	    "then": {
+		"say": {
+		    "phrase": "The Eurofighter Typhoon is a twin-engine, canard-delta wing, multirole fighter.",
+		    "source": "https://en.wikipedia.org/wiki/Eurofighter_Typhoon"
+		},
+		"show": {
+		    "picture": {
+			"file": "ef-2000.jpg",
+			"source": "By Chris Lofting - http://www.airliners.net/photo/UK---Air/Eurofighter-EF-2000-Typhoon/1189137/L/, GFDL 1.2, https://commons.wikimedia.org/w/index.php?curid=20654565"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "su35",
+	    "then": {
+		"say": {
+		    "phrase": "The Sukhoi Su-35 is the designation for two improved derivatives of the Su-27 air-defence fighter. They are single-seat, twin-engine, supermaneuverable aircraft, designed by the Sukhoi Design Bureau and built by the Komsomolsk-on-Amur Aircraft Plant.",
+		    "source": "https://en.wikipedia.org/wiki/Sukhoi_Su-35"
+		},
+		"show": {
+		    "picture": {
+			"file": "su-35.jpg",
+			"source": "By Dmitry Terekhov from Odintsovo, Russian Federation - IMG_8624, CC BY-SA 2.0, https://commons.wikimedia.org/w/index.php?curid=43786022"
+		    }
+		}
+	    }
+	}
+    },
+    {
+	"when": {
+	    "type": "mig31",
+	    "then": {
+		"say": {
+		    "phrase": "The Mikoyan MiG-31 is a supersonic interceptor aircraft developed for use by the Soviet Air Forces.",
+		    "source": "https://en.wikipedia.org/wiki/Mikoyan_MiG-31"
+		},
+		"show": {
+		    "picture": {
+			"file": "mig-31.jpg",
+			"source": "By Dmitriy Pichugin - http://www.airliners.net/photo/Russia---Air/Mikoyan-Gurevich-MiG-31/2040593/L/, GFDL 1.2, https://commons.wikimedia.org/w/index.php?curid=18921158"
 		    }
 		}
 	    }
