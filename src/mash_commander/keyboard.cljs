@@ -73,5 +73,5 @@
                           (rv (concat
                                (standard-keys "asdfghjkl'")
                                [{:key "Enter" :display "Enter":style {:width "15vmin" :marginLeft "3vmin"}}]) "15vmin")
-                          (rv (standard-keys "zxcvbnm") "18vmin")
+                          (rv (standard-keys "zxcvbnm.") "18vmin")
                           (rv [{:key " " :display "Space" :style {:width "27vmin"}}] "29vmin")))))))
