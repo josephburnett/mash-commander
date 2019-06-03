@@ -9,7 +9,8 @@
          :words {}
          :characters {
                       :nix {:appearance {:state :resting
-                                         :color "white"}
+                                         :color "white"
+                                         :speech-bubble []}
                             :fs {}
                             :page {:current-page :page-1}}}}))
 
@@ -18,6 +19,9 @@
 
 (defn words []
   (om/ref-cursor (:words (om/root-cursor app-state))))
+
+(defn nix-appearance []
+  (om/ref-cursor (get-in (om/root-cursor app-state) [:characters :nix :appearance])))
 
 (defn load []
   (print "State loaded."))

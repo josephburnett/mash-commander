@@ -43,10 +43,9 @@
         (om/transact! (state/lines)
                       #(assoc % :active (mode/initial-line-state {:allow (:allow page) :mode :nix}))))
       (when (:say page)
-        (om/transact! (state/lines)
-                      #(let [new-line {:mode :nix
-                                       :result (:say page)}]
-                         (assoc % :history (cons new-line (:history %)))))
+        (om/transact!
+         (state/nix-appearance)
+         #(assoc % :speech-bubble (cons (:say page) (:speech-bubble %))))
         (<! (speech/wait-say (:say page))))
       (when (:wait-event page)
         (<! (wait-event (:wait-event page))))
@@ -54,6 +53,9 @@
         (<! (run-page cursor (:then page))))
       (when (:goto page)
         (let [new-page (:goto page)]
+          (om/transact!
+           (state/nix-appearance)
+           #(assoc % :speech-bubble []))
           (om/transact! cursor #(assoc % :current-page (:goto page))))
         (close! done))
     done)))
@@ -66,7 +68,31 @@
         (reset! allowed-commands-trie :any)
         (run-page cursor page))
       nil)))
-          
+
+(defn speech-bubble [cursor]
+  (reify
+    om/IRender
+    (render [_]
+      (dom/div
+       #js {:style #js {:float "right"
+                        :position "relative"
+                        :top "50"
+                        :background-color "#fff"
+                        :border "solid 2"
+                        :border-radius "20"
+                        :padding "30"
+                        :margin "0"
+                        :font-size "15"
+                        :font-weight "bold"
+                        :line-height "25"
+                        :color "#0e3487"
+                        }}
+       (apply (partial dom/ul #js {:style #js {:list-style "none"
+                                               :padding "0"
+                                               :margin "0"}})
+              (map (partial dom/li nil)
+                   (reverse (:speech-bubble cursor))))))))
+
 (defn view [cursor owner]
   (reify
     om/IInitState
@@ -151,6 +177,8 @@
                                            :cy "20"
                                            :r "20"
                                            :fill "#fff"}))
+                 ;; Speech bubble
+                 (om/build speech-bubble (:appearance cursor))
                  ;; Story telling
                  (om/build story-component (:page cursor)))))
     om/IDidMount
