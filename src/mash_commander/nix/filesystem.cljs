@@ -28,12 +28,19 @@
 (defn command-map []
   (reduce #(assoc %1 (:name %2) %2) {} (commands (:root @(fs-cursor)))))
 
-(defn ls []
-  (let [fs @(fs-cursor)
-        dir (get-in (:root fs) (interleave (repeat :files) (:cwd fs)))]
-    (str/join "\t" (keys (:files dir)))))
+(defn cwd []
+  (let [fs @(fs-cursor)]
+    (get-in (:root fs) (interleave (repeat :files) (:cwd fs)))))
 
-(defn cd [param]
+(defn create-file-in-fs [fs name file]
+  (print "creating file " name " with " file)
+  (let [path (conj [:root] (interleave (repeat :files) (:cwd fs)) [name])]
+    (assoc-in fs path file)))
+
+(defn ls-cmd []
+  (str/join "\t" (keys (:files (cwd)))))
+
+(defn cd-cmd [param]
   (if (= ".." param)
     (om/transact! (fs-cursor) #(assoc % :cwd (drop-last (:cwd %))))
     (let [path (str/split param "/")
@@ -42,7 +49,7 @@
       (om/transact! (fs-cursor) #(assoc % :cwd new-cwd))))
   nil)
 
-(defn clear []
+(defn clear-cmd []
   (om/transact!
    (state/lines)
    #(as-> % c
@@ -50,9 +57,8 @@
       (assoc-in c [:active] (mode/initial-line-state {:mode :nix}))))
   nil)
 
-(defn help [param]
+(defn help-cmd [param]
   (let [cmd (get (command-map) param)]
-    (print (str ">" param "<"))
     (cond
       (and cmd (:help cmd))
       (:help cmd)
@@ -67,6 +73,15 @@
       (om/transact! (appearance-cursor) #(assoc % :color (second kv))))
     nil))
 
+(defn touch-cmd [param]
+  (if (contains? param (:files (cwd)))
+    "500 error: file already exists"
+    (om/transact!
+     (fs-cursor)
+    #(create-file-in-fs % param {:mod #{:r :w}
+                                  :type :file
+                                  :contents ""}))))
+
 (defn init []
   (om/update!
    (fs-cursor)
@@ -76,29 +91,34 @@
                           :type :dir
                           :files {"ls" {:mod #{:x}
                                         :type :file
-                                        :fn ls
+                                        :fn ls-cmd
                                         :args []
-                                        :help "`ls` tells you what in your current directory."}
+                                        :help "`ls` tells you what is in your current directory."}
                                   "cd" {:mod #{:x}
                                         :type :file
-                                        :fn cd
+                                        :fn cd-cmd
                                         :args [:file]
                                         :help "`cd` changes your current directory."}
                                   "clear" {:mod #{:x}
                                            :type :file
-                                           :fn clear
+                                           :fn clear-cmd
                                            :args []
                                            :help "`clear` clears the screen."}
                                   "help" {:mod #{:x}
                                           :type :file
-                                          :fn help
+                                          :fn help-cmd
                                           :args [:cmd]
                                           :help "`help` teaches you about other commands."}
                                   "set" {:mod #{:x}
                                          :type :file
                                          :fn set-cmd
                                          :args [["color red" "color blue" "color green" "color white"]]
-                                         :help "`set` appearance. E.g `set color red`."}}}
+                                         :help "`set` appearance. E.g `set color red`."}
+                                  "touch" {:mod #{:x}
+                                          :type :file
+                                          :fn touch-cmd
+                                          :args [:alpha]
+                                          :help "`touch` creates an empty file."}}}
                    "usr" {:mod #{:r}
                           :type :dir
                           :files {}}}}
@@ -119,7 +139,14 @@
                     :default
                     [(str/join "/" new-path)]))
                (seq (:files cwd))))))
-   
+
+;; TODO: cache delay evaluation
+(defn- alpha-trie [level]
+  (print "alpha-trie level " level)
+  (let [alpha "abcdefghijklmnopqrstuvwxyz"
+        t (reduce #(assoc %1 %2 (delay (alpha-trie (+ 1 level)))) {} alpha)]
+    (if (< 0 level) (assoc t "" "") t)))
+
 (defn args-trie [args-spec]
   (cond
     ;; Looking for a valid filename
@@ -132,6 +159,9 @@
     ;; Looking for a valid command
     (= :cmd args-spec)
     (trie/build (keys (command-map)))
+    ;; Any characters a-z
+    :alpha
+    (alpha-trie 0)
     ;; Pre-specified parameters
     :default
     (trie/build args-spec)))

@@ -12,7 +12,7 @@
                                          :color "white"
                                          :speech-bubble []}
                             :fs {}
-                            :page {:current-page :page-1}}}}))
+                            :page {:current-page :page-0}}}}))
 
 (defn lines []
   (om/ref-cursor (:lines (om/root-cursor app-state))))

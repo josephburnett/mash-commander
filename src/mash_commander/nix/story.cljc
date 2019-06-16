@@ -1,7 +1,9 @@
 (ns mash-commander.nix.story)
 
 (def pages
-  {;; Learning `ls` and typing commands.
+  {;; Debugging
+   :page-0 {}
+   ;; Learning `ls` and typing commands.
    :page-1 {:allow []
             :say "Hi, I'm Nix."
             :then {:say "Type `ls` and then press Enter to look around!"
