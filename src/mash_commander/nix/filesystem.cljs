@@ -160,12 +160,12 @@
                                          :type :file
                                          :fn cat-cmd
                                          :args [:file]
-                                         :help "`cat` shows the contents of a file"}
+                                         :help "`cat` shows the contents of a file."}
                                   "rm" {:mod #{:x}
                                         :type :file
                                         :fn rm-cmd
                                         :args [:file]
-                                        :help "`rm` removes a files."}}}
+                                        :help "`rm` removes a file."}}}
                    "usr" {:mod #{:r :w}
                           :type :dir
                           :files {}}}}

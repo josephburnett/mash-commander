@@ -76,18 +76,18 @@
       (dom/div
        #js {:style #js {:float "right"
                         :position "relative"
-                        :top "50"
-                        :background-color "#fff"
-                        :border "solid 2"
-                        :border-radius "20"
-                        :padding "30"
+                        :top "5vh"
+                        :backgroundColor "#fff"
+                        :border "solid 0.2vh"
+                        :borderRadius "2vh"
+                        :padding "2vh"
                         :margin "0"
-                        :font-size "15"
-                        :font-weight "bold"
-                        :line-height "25"
+                        :fontSize "1.5vh"
+                        :fontWeight "bold"
+                        :lineHeight "2.5vh"
                         :color "#0e3487"
                         }}
-       (apply (partial dom/ul #js {:style #js {:list-style "none"
+       (apply (partial dom/ul #js {:style #js {:listStyle "none"
                                                :padding "0"
                                                :margin "0"}})
               (map (partial dom/li nil)
