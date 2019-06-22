@@ -39,8 +39,18 @@
     (get-in (:root fs) (interleave (repeat :files) (:cwd fs)))))
 
 (defn create-file-in-fs [fs name file]
-  (let [path (apply concat [:root] (interleave (repeat :files) (:cwd fs)) [[:files name]])]
+  (let [path (apply concat
+                    [:root]
+                    (interleave (repeat :files) (:cwd fs))
+                    [[:files name]])]
     (assoc-in fs path file)))
+
+(defn delete-file-in-fs [fs name]
+  (let [path (concat
+              [:root]
+              (interleave (repeat :files) (:cwd fs))
+              [:files])]
+    (update-in fs path #(dissoc % name)))) 
 
 (defn ls-cmd []
   (str/join "\t" (keys (:files (cwd)))))
@@ -99,6 +109,16 @@
       :default
       (:contents f))))
 
+(defn rm-cmd [param]
+  (let [f (get (:files (cwd)) param)]
+    (cond
+      (not (contains? (:mod f) :w))
+      "409 error: permission denied"
+      :default
+      (om/transact!
+       (fs-cursor)
+       #(delete-file-in-fs % param)))))
+
 (defn init []
   (om/update!
    (fs-cursor)
@@ -140,7 +160,12 @@
                                          :type :file
                                          :fn cat-cmd
                                          :args [:file]
-                                         :help "`cat` shows the contents of a file"}}}
+                                         :help "`cat` shows the contents of a file"}
+                                  "rm" {:mod #{:x}
+                                        :type :file
+                                        :fn rm-cmd
+                                        :args [:file]
+                                        :help "`rm` removes a files."}}}
                    "usr" {:mod #{:r :w}
                           :type :dir
                           :files {}}}}
