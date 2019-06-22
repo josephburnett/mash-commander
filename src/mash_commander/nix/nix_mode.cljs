@@ -26,13 +26,7 @@
 (defn- trie-get-in [t ks]
   (let [v (get-in t ks)]
     (when v
-      (if (= cljs.core/Delay (type v)) @v v))))
-
-;;; contains? for tries which containe delays
-(defn- trie-contains? [t k]
-  (let [v (get t k)]
-    (when v
-      (if (= cljs.core/Delay (type v)) @v v))))
+      (if (fn? v) (v) v))))
 
 (defn- backspace [owner]
   (om/transact!
@@ -99,13 +93,13 @@
       (and (= "Backspace" key) (not (empty? (:letters active))))
       (backspace owner)
       ;; Valid transition
-      (and (trie-contains? (:command-trie active) key)
+      (and (contains? (:command-trie active) key)
            (character/allows? line-str))
       (transition owner key)
       ;; Command with args
       (and (= " " key)
            (= :command (:nix-mode active))
-           (trie-contains? (:command-trie active) "")
+           (contains? (:command-trie active) "")
            (character/allows? line-str)
            (not (empty? (get-in (fs/command-map) [(str/join "" (reverse (:letters active))) :args]))))
       (command-args owner key)
@@ -114,7 +108,7 @@
            (or (and (= :command (:nix-mode active))
                     (= [] (get-in (fs/command-map) [(str/join "" (reverse (:letters active))) :args])))
                (= :args (:nix-mode active)))
-           (trie-contains? (:command-trie active) "")
+           (contains? (:command-trie active) "")
            (character/allows? line-str))
       (run-command owner)
       ;; Ignore everything else
@@ -160,24 +154,24 @@
     (cond
       ;; Command potential
       (and (= :command (:nix-mode line))
-           (trie-contains? (:command-trie line) key)
+           (contains? (:command-trie line) key)
            (character/allows? line-str)) :command
       ;; Complete command
       (and (= "Enter" key)
            (or (and (= :command (:nix-mode line))
                     (= [] (get-in (fs/command-map) [(str/join "" (reverse (:letters line))) :args])))
                (= :args (:nix-mode line)))
-           (trie-contains? (:command-trie line) "")
+           (contains? (:command-trie line) "")
            (character/allows? line-str)) :command
       ;; Arguments allowed
       (and (= " " key)
            (= :command (:nix-mode line))
-           (trie-contains? (:command-trie line) "")
+           (contains? (:command-trie line) "")
            (character/allows? line-str)
            (not (empty? (get-in (fs/command-map) [(str/join "" (reverse (:letters line))) :args])))) :typing
       ;; Argument potential
       (and (= :args (:nix-mode line))
-           (trie-contains? (:command-trie line) key)
+           (contains? (:command-trie line) key)
            (character/allows? line-str)) :typing
       ;; All other keys disabled
       :default :disabled)))

@@ -172,10 +172,9 @@
     :cwd []
     :ps []}))
 
-;; TODO: cache delay evaluation
 (defn- alpha-trie [level]
   (let [alpha "abcdefghijklmnopqrstuvwxyz"
-        t (reduce #(assoc %1 %2 (delay (alpha-trie (+ 1 level)))) {} alpha)]
+        t (reduce #(assoc %1 %2 (memoize (fn [] (alpha-trie (+ 1 level))))) {} alpha)]
     (if (< 0 level) (assoc t "" "") t)))
 
 (defn args-trie [args-spec]
