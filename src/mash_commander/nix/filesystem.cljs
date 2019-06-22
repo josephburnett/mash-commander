@@ -16,8 +16,14 @@
     (apply concat 
            ;; Flattened list of lists of command structures
            (map #(cond
-                   (= :dir (:type (second %))) (commands (second %))
-                   (and (= :file (:type (second %))) (contains? (:mod (second %)) :x)) [(assoc (second %) :name (first %))]
+                   ;;; directory
+                   (= :dir (:type (second %)))
+                   (commands (second %))
+                   ;;; executable files
+                   (and (= :file (:type (second %)))
+                        (contains? (:mod (second %)) :x))
+                   [(assoc (second %) :name (first %))]
+                   ;;; nothing
                    :default [])
                 files))))
 
@@ -33,8 +39,7 @@
     (get-in (:root fs) (interleave (repeat :files) (:cwd fs)))))
 
 (defn create-file-in-fs [fs name file]
-  (print "creating file " name " with " file)
-  (let [path (conj [:root] (interleave (repeat :files) (:cwd fs)) [name])]
+  (let [path (apply concat [:root] (interleave (repeat :files) (:cwd fs)) [[:files name]])]
     (assoc-in fs path file)))
 
 (defn ls-cmd []
@@ -74,11 +79,15 @@
     nil))
 
 (defn touch-cmd [param]
-  (if (contains? param (:files (cwd)))
+  (cond
+    (contains? param (:files (cwd)))
     "500 error: file already exists"
+    (not (contains? (:mod (cwd)) :w))
+    "409 error: directory is not writable"
+    :default
     (om/transact!
      (fs-cursor)
-    #(create-file-in-fs % param {:mod #{:r :w}
+     #(create-file-in-fs % param {:mod #{:r :w}
                                   :type :file
                                   :contents ""}))))
 
@@ -97,7 +106,7 @@
                                   "cd" {:mod #{:x}
                                         :type :file
                                         :fn cd-cmd
-                                        :args [:file]
+                                        :args [:dir]
                                         :help "`cd` changes your current directory."}
                                   "clear" {:mod #{:x}
                                            :type :file
@@ -119,7 +128,7 @@
                                           :fn touch-cmd
                                           :args [:alpha]
                                           :help "`touch` creates an empty file."}}}
-                   "usr" {:mod #{:r}
+                   "usr" {:mod #{:r :w}
                           :type :dir
                           :files {}}}}
     :cwd []
@@ -142,7 +151,6 @@
 
 ;; TODO: cache delay evaluation
 (defn- alpha-trie [level]
-  (print "alpha-trie level " level)
   (let [alpha "abcdefghijklmnopqrstuvwxyz"
         t (reduce #(assoc %1 %2 (delay (alpha-trie (+ 1 level)))) {} alpha)]
     (if (< 0 level) (assoc t "" "") t)))
@@ -156,6 +164,14 @@
       (if (empty? cwd)
         (trie/build (cons ".." (files cwd)))
         (trie/build (files cwd))))
+    ;; Looking for a valid directory in the current working directory
+    (= :dir args-spec)
+    (let [everything (seq (:files (cwd)))
+          dirs (filter #(= :dir (:type (second %))) everything)
+          names (map first dirs)]
+      (if (empty? (:cwd @(fs-cursor)))
+        (trie/build names)
+        (trie/build (cons ".." names))))
     ;; Looking for a valid command
     (= :cmd args-spec)
     (trie/build (keys (command-map)))
