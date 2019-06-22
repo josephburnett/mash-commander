@@ -91,6 +91,14 @@
                                   :type :file
                                   :contents ""}))))
 
+(defn cat-cmd [param]
+  (let [f (get (:files (cwd)) param)]
+    (cond
+      (not (contains? (:mod f) :r))
+      "409 error: permission denied"
+      :default
+      (:contents f))))
+
 (defn init []
   (om/update!
    (fs-cursor)
@@ -124,10 +132,15 @@
                                          :args [["color red" "color blue" "color green" "color white"]]
                                          :help "`set` appearance. E.g `set color red`."}
                                   "touch" {:mod #{:x}
-                                          :type :file
-                                          :fn touch-cmd
-                                          :args [:alpha]
-                                          :help "`touch` creates an empty file."}}}
+                                           :type :file
+                                           :fn touch-cmd
+                                           :args [:alpha]
+                                           :help "`touch` creates an empty file."}
+                                  "cat" {:mod #{:x}
+                                         :type :file
+                                         :fn cat-cmd
+                                         :args [:file]
+                                         :help "`cat` shows the contents of a file"}}}
                    "usr" {:mod #{:r :w}
                           :type :dir
                           :files {}}}}
@@ -142,6 +155,12 @@
 
 (defn args-trie [args-spec]
   (cond
+    ;; Looking for a valid file in the current working directory
+    (= :file args-spec)
+    (let [everything (seq (:files (cwd)))
+          files (filter #(= :file (:type (second %))) everything)
+          names (map first files)]
+      (trie/build names))
     ;; Looking for a valid directory in the current working directory
     (= :dir args-spec)
     (let [everything (seq (:files (cwd)))
@@ -154,7 +173,7 @@
     (= :cmd args-spec)
     (trie/build (keys (command-map)))
     ;; Any characters a-z
-    :alpha
+    (= :alpha args-spec)
     (alpha-trie 0)
     ;; Pre-specified parameters
     :default
