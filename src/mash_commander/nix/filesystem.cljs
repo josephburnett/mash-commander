@@ -134,21 +134,6 @@
     :cwd []
     :ps []}))
 
-(defn files
-  ([cwd] (files [] cwd))
-  ([path cwd]
-   (apply concat
-          (map #(let [new-path (concat path [(first %)])]
-                  (cond 
-                    ;; Recursive case
-                    (= :dir (:type (second %)))
-                    (cons (str/join "/" new-path)
-                          (files new-path (second %)))
-                    ;; Base case
-                    :default
-                    [(str/join "/" new-path)]))
-               (seq (:files cwd))))))
-
 ;; TODO: cache delay evaluation
 (defn- alpha-trie [level]
   (let [alpha "abcdefghijklmnopqrstuvwxyz"
@@ -157,13 +142,6 @@
 
 (defn args-trie [args-spec]
   (cond
-    ;; Looking for a valid filename
-    (= :file args-spec)
-    (let [root @(fs-cursor)
-          cwd (get-in (:root root) (:cwd root))]
-      (if (empty? cwd)
-        (trie/build (cons ".." (files cwd)))
-        (trie/build (files cwd))))
     ;; Looking for a valid directory in the current working directory
     (= :dir args-spec)
     (let [everything (seq (:files (cwd)))
