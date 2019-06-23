@@ -73,25 +73,26 @@
   (reify
     om/IRender
     (render [_]
-      (dom/div
-       #js {:style #js {:float "right"
-                        :position "relative"
-                        :top "5vh"
-                        :backgroundColor "#fff"
-                        :border "solid 0.2vh"
-                        :borderRadius "2vh"
-                        :padding "2vh"
-                        :margin "0"
-                        :fontSize "1.5vh"
-                        :fontWeight "bold"
-                        :lineHeight "2.5vh"
-                        :color "#0e3487"
-                        }}
-       (apply (partial dom/ul #js {:style #js {:listStyle "none"
-                                               :padding "0"
-                                               :margin "0"}})
-              (map (partial dom/li nil)
-                   (reverse (:speech-bubble cursor))))))))
+      (when-not (empty (:speech-bubble cursor))
+        (dom/div
+         #js {:style #js {:float "right"
+                          :position "relative"
+                          :top "5vh"
+                          :backgroundColor "#fff"
+                          :border "solid 0.2vh"
+                          :borderRadius "2vh"
+                          :padding "2vh"
+                          :margin "0"
+                          :fontSize "1.5vh"
+                          :fontWeight "bold"
+                          :lineHeight "2.5vh"
+                          :color "#0e3487"
+                          }}
+         (apply (partial dom/ul #js {:style #js {:listStyle "none"
+                                                 :padding "0"
+                                                 :margin "0"}})
+                (map (partial dom/li nil)
+                     (reverse (:speech-bubble cursor)))))))))
 
 (defn view [cursor owner]
   (reify
