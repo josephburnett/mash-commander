@@ -3,16 +3,25 @@
   (:require [mash-commander.speech :as speech]
             [mash-commander.state :as state]
             [mash-commander.mode :as mode]
+            [mash-commander.nix.filesystem :as fs]
             [mash-commander.trie :as trie]
             [mash-commander.nix.story :as story]
             [om.core :as om :include-macros true]
             [om.dom :as dom :include-macros true]
-            [cljs.core.async :refer [pub sub chan put! close! <! >! timeout]]))
+            [cljs.core.async :refer [pipe pub sub chan put! close! <! >! timeout]]))
 
 (defonce state-chan (chan))
 
 (def event-chan (chan))
 (def event-pub (pub event-chan :type))
+(pipe fs/event-chan event-chan)
+
+(let [event-sub (chan)]
+  (sub event-pub (:type :inotify) event-sub)
+  (go-loop []
+    (print (<! event-sub))
+    (recur)))
+
 (def allowed-commands-trie (atom :any))
 
 (defn allows? [letters]
@@ -21,14 +30,11 @@
 
 (defn wait-event [e]
   (let [done (chan)
-        event-sub (chan)
-        test (if (contains? e :test)
-               (:test e)
-               #(= e %))]
+        event-sub (chan)]
     (sub event-pub (:type e) event-sub)
     (go-loop []
       (let [event (<! event-sub)]
-        (if (test event)
+        (if ((:test e) event)
           (do
             (close! event-sub)
             (close! done))
@@ -38,19 +44,27 @@
 (defn run-page [cursor page]
   (let [done (chan)]
     (go
+      ;; restrict commands
       (when (:allow page)
         (reset! allowed-commands-trie (trie/build (:allow page)))
         (om/transact! (state/lines)
                       #(assoc % :active (mode/initial-line-state {:allow (:allow page) :mode :nix}))))
+      ;; async hook
+      (when (:when-event page)
+        (go (<! (wait-event (:when page)))))
+      ;; nix says something
       (when (:say page)
         (om/transact!
          (state/nix-appearance)
          #(assoc % :speech-bubble (cons (:say page) (:speech-bubble %))))
         (<! (speech/wait-say (:say page))))
+      ;; sync hook
       (when (:wait-event page)
         (<! (wait-event (:wait-event page))))
+      ;; linked list of pages
       (when (:then page)
         (<! (run-page cursor (:then page))))
+      ;; goto page
       (when (:goto page)
         (let [new-page (:goto page)]
           (om/transact!

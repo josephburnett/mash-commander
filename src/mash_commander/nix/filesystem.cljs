@@ -1,15 +1,25 @@
 (ns mash-commander.nix.filesystem
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [clojure.string :as str]
             [mash-commander.state :as state]
             [mash-commander.trie :as trie]
             [mash-commander.mode :as mode]
-            [om.core :as om :include-macros true]))
+            [om.core :as om :include-macros true]
+            [cljs.core.async :refer [chan]]))
+
+(def event-chan (chan))
 
 (defn fs-cursor []
   (om/ref-cursor (get-in (om/root-cursor state/app-state) [:characters :nix :fs])))
 
 (defn appearance-cursor []
   (om/ref-cursor (get-in (om/root-cursor state/app-state) [:characters :nix :appearance])))
+
+(defn- inotify [event path file]
+  (go (>! event-chan {:type :inotify
+                      :event event
+                      :path path
+                      :file file})))
 
 (defn commands [dir]
   (let [files (seq (:files dir))]
@@ -43,6 +53,7 @@
                     [:root]
                     (interleave (repeat :files) (:cwd fs))
                     [[:files name]])]
+    (inotify :create (cons name (:cwd fs)) file)
     (assoc-in fs path file)))
 
 (defn delete-file-in-fs [fs name]
@@ -50,7 +61,8 @@
               [:root]
               (interleave (repeat :files) (:cwd fs))
               [:files])]
-    (update-in fs path #(dissoc % name)))) 
+    (inotify :delete (cons name (:cwd fs)) nil)
+    (update-in fs path #(dissoc % name))))
 
 (defn ls-cmd []
   (str/join "\t" (keys (:files (cwd)))))
@@ -107,7 +119,9 @@
       (not (contains? (:mod f) :r))
       "409 error: permission denied"
       :default
-      (:contents f))))
+      (do
+        (inotify :read (cons param (:cwd @(fs-cursor))) f)
+        (:contents f)))))
 
 (defn rm-cmd [param]
   (let [f (get (:files (cwd)) param)]
