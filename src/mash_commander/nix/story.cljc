@@ -18,6 +18,7 @@
                           :wait-event {:type :new-line
                                        :then (eq {:type :new-line :line "ls"}
                                                  {:then {:goto :page-2}})}}}}
+                                                 {:goto :page-2})}}}}
    :page-2 {:allow []
             :say "Good job! The results of your command are shown underneath in the grey box."
             :goto :page-3}
@@ -28,6 +29,9 @@
                    :then {:allow ["cd bin"]
                           :wait-event {:test #(= {:type :new-line :line "cd bin"} %)}
                           :then {:goto :page-4}}}}
+                          :wait-event {:type :new-line
+                                       :then (eq {:type :new-line :line "cd bin"}
+                                                 {:goto :page-4})}}}}
    :page-4 {:allow []
             :say "Nice! Now your current directory is `bin`."
             :then {:say "Notice the green nix: command prompt changed to tell you where you are."
@@ -36,15 +40,18 @@
    :page-5 {:allow []
             :say "Now use `ls` again to list the files in the `bin` directory."
             :then {:allow ["ls"]
-                   :wait-event {:eq {:type :new-line :line "ls"}}
+                   :wait-event {:type :new-line
+                                :then (eq {:type :new-line :line "ls"} {})}
                    :then {:allow []
                           :say "Hey look! The `ls` and `cd` commands are actually just files in `bin`!"
                           :then {:allow ["clear"]
                                  :say "Do you see the `clear` command? What do you think it does?"
-                                 :wait-event {:eq {:type :new-line :line "clear"}}
+                                 :wait-event {:type :new-line
+                                              :then (eq {:type :new-line :line "clear"} {})}
                                  :then {:goto :page-6}}}}}
    :page-6 {:say "Cool. That's all for now. I'm still a work in progress!"
-            :wait-event {:type :key-down :test #(true)}
+            :wait-event {:type :key-down
+                         :then (fn [_ _] true)}
             :goto :page-7}
    :page-7 {:say "Bonus."}})
                    

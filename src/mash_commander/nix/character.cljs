@@ -33,13 +33,15 @@
         event-sub (chan)]
     (sub event-pub (:type e) event-sub)
     (go-loop []
-      (let [event (<! event-sub)]
-        (if ((:test e) event)
+      (let [event (<! event-sub)
+            next-page ((:then e) event)]
+        (if next-page
           (do
             (close! event-sub)
+            (>! done next-page)
             (close! done))
-          (recur)))
-      done)))
+          (recur))))
+    done))
     
 (defn run-page [cursor page]
   (let [done (chan)]
@@ -51,7 +53,11 @@
                       #(assoc % :active (mode/initial-line-state {:allow (:allow page) :mode :nix}))))
       ;; async hook
       (when (:when-event page)
-        (go (<! (wait-event (:when page)))))
+        (go-loop []
+          (let [next-page (<! (wait-event (:when-event page)))]
+            (when next-page (<! (run-page cursor next-page)))
+            (when (:recur (:when-event page))
+              (recur)))))
       ;; nix says something
       (when (:say page)
         (om/transact!
@@ -60,7 +66,8 @@
         (<! (speech/wait-say (:say page))))
       ;; sync hook
       (when (:wait-event page)
-        (<! (wait-event (:wait-event page))))
+        (let [next-page(<! (wait-event (:wait-event page)))]
+          (when next-page (<! (run-page cursor next-page)))))
       ;; linked list of pages
       (when (:then page)
         (<! (run-page cursor (:then page))))
@@ -87,7 +94,7 @@
   (reify
     om/IRender
     (render [_]
-      (when-not (empty (:speech-bubble cursor))
+      (when-not (empty? (:speech-bubble cursor))
         (dom/div
          #js {:style #js {:float "right"
                           :position "relative"
