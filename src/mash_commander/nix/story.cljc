@@ -17,7 +17,6 @@
                           :allow ["ls"]
                           :wait-event {:type :new-line
                                        :then (eq {:type :new-line :line "ls"}
-                                                 {:then {:goto :page-2}})}}}}
                                                  {:goto :page-2})}}}}
    :page-2 {:allow []
             :say "Good job! The results of your command are shown underneath in the grey box."
@@ -27,8 +26,6 @@
             :say "Let's try something new. You can change directories with the `cd` command."
             :then {:say "Try changing into the `bin` directory by typing `cd bin`."
                    :then {:allow ["cd bin"]
-                          :wait-event {:test #(= {:type :new-line :line "cd bin"} %)}
-                          :then {:goto :page-4}}}}
                           :wait-event {:type :new-line
                                        :then (eq {:type :new-line :line "cd bin"}
                                                  {:goto :page-4})}}}}
