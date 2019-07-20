@@ -5,10 +5,10 @@
 
 (def pages
   {;; Debugging
-   :page-0 {:when-event {:type :new-line
-                         :then (eq {:type :new-line :line "ls"}
-                                   {:say "saw `ls` command"})
-                         :recur true}}
+   :page-0 {:when-events [{:type :new-line
+                           :then (eq {:type :new-line :line "ls"}
+                                     {:say "saw `ls` command"})
+                           :recur true}]}
    ;; Learning `ls` and typing commands.
    :page-1 {:allow []
             :say "Hi, I'm Nix."

@@ -51,13 +51,15 @@
         (reset! allowed-commands-trie (trie/build (:allow page)))
         (om/transact! (state/lines)
                       #(assoc % :active (mode/initial-line-state {:allow (:allow page) :mode :nix}))))
-      ;; async hook
-      (when (:when-event page)
-        (go-loop []
-          (let [next-page (<! (wait-event (:when-event page)))]
-            (when next-page (<! (run-page cursor next-page)))
-            (when (:recur (:when-event page))
-              (recur)))))
+      ;; async hooks
+      (when (:when-events page)
+        (doall
+          (map #(go-loop []
+                  (let [next-page (<! (wait-event %))]
+                    (when next-page (<! (run-page cursor next-page)))
+                    (when (:recur %)
+                      (recur))))
+               (:when-events page))))
       ;; nix says something
       (when (:say page)
         (om/transact!
