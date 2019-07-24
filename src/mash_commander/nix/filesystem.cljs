@@ -182,7 +182,9 @@
                                         :help "`rm` removes a file."}}}
                    "usr" {:mod #{:r :w}
                           :type :dir
-                          :files {}}}}
+                          :files {"bad" {:mod #{:r :w}
+                                         :type :file
+                                         :contents "11001010101010101"}}}}}
     :cwd []
     :ps []}))
 

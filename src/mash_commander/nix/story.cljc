@@ -9,50 +9,42 @@
 
 (def pages
   {;; Debugging
-   :page-0 {:when-events [{:type :new-line
-                           :then (if-line "ls" {:say "saw `ls` command"})
-                           :recur true}
-                          {:type :inotify
-                           :then (if-inotify-path ["usr" "key"] {:say "key touched"})}]}
-   ;; Learning `ls` and typing commands.
-   :page-1 {:allow []
-            :say "Hi, I'm Nix."
-            :then {:say "Type `ls` and then press Enter to look around!"
-                   :then {
-                          :allow ["ls"]
-                          :wait-event {:type :new-line
-                                       :then (if-line "ls" {:goto :page-2})}}}}
-   :page-2 {:allow []
-            :say "Good job! The results of your command are shown underneath in the grey box."
-            :goto :page-3}
-   ;; Learning `cd` and the command prompt.
-   :page-3 {:allow []
-            :say "Let's try something new. You can change directories with the `cd` command."
-            :then {:say "Try changing into the `bin` directory by typing `cd bin`."
-                   :then {:allow ["cd bin"]
-                          :wait-event {:type :new-line
-                                       :then (if-line "cd bin" {:goto :page-4})}}}}
-   :page-4 {:allow []
-            :say "Nice! Now your current directory is `bin`."
-            :then {:say "Notice the green nix: command prompt changed to tell you where you are."
-                   :goto :page-5}}
-   ;; Learning `clear` and discovering new commands.
-   :page-5 {:allow []
-            :say "Now use `ls` again to list the files in the `bin` directory."
-            :then {:allow ["ls"]
-                   :wait-event {:type :new-line
-                                :then (if-line "ls" {})}
-                   :then {:allow []
-                          :say "Hey look! The `ls` and `cd` commands are actually just files in `bin`!"
-                          :then {:allow ["clear"]
-                                 :say "Do you see the `clear` command? What do you think it does?"
-                                 :wait-event {:type :new-line
-                                              :then (if-line "clear" {})}
-                                 :then {:goto :page-6}}}}}
-   :page-6 {:say "Cool. That's all for now. I'm still a work in progress!"
-            :wait-event {:type :key-down
-                         :then (fn [_ _] true)}
-            :goto :page-7}
-   :page-7 {:say "Bonus."}})
-                   
+   :debug
+   {:when-events [{:type :new-line
+                   :then (if-line "ls" {:say "saw `ls` command"})
+                   :recur true}
+                  {:type :inotify
+                   :then (if-inotify-path ["usr" "key"] {:say "key touched"})}]}
+   :start
+   {:allow []
+    :when-events [;; Delete a bad file from the usr directory.
+                  {:type :inotify
+                   :then #(let [file %]
+                           (when (and (= ["bad" "usr"] (:path %))
+                                      (= "11001010101010101" (get-in % [:file :contents]))))
+                           {:goto :bad-file-gone})}]
+    :then {:goto :help-me}}
+   
+   :help-me
+   {:allow ["cd usr"]
+    :when-events [;; Enter usr directory.
+                  {:type :new-line
+                   :then (if-line "cd usr" {:say "Yeah, it's right there."
+                                            :allow ["ls"]
+                                            :then {:say "Type `ls` to see it."}})}
+                  {:type :new-line
+                   :then (if-line "ls" {:goto :see-the-bad-file})}]
+    :say "Hello. I seem to have gotten a bad file stuck in my usr directory."
+    :then {:say "Can you help me remove it?"
+           :then {:say "Type `cd usr`."}}}
+
+   :see-the-bad-file
+   {:allow ["ls" "rm bad" "cat bad"]
+    :then {:say "Yeah, there it is."
+           :then {:say "It should have 11001010101010101 inside."
+                  :then {:say "Type `rm bad` to remove it."}}}}
+   
+   :bad-file-gone
+   {:say "Wow .. I feel so much better!"
+    :then {:say "Thank you."}}})
                    
